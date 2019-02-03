@@ -9,22 +9,7 @@ import os
 
 
 def get_prefix(bot, message):
-    prefixes = ['%', 'lynn ']
-
-    # Check to see if we are outside of a guild. e.g DM's etc.
-    if not message.guild:
-        # Only allow % to be used in DMs
-        return '%'
-
-    if message.guild.id == 485076757733572608:
-        return '/'
-    
-    if message.guild.id == 336642139381301249:
-        return 'lynn '
-
-    # If we are in a guild, we allow for the user to mention us or use any of the prefixes in our list.
-    return commands.when_mentioned_or(*prefixes)(bot, message)
-
+    config.get_prefix(bot, message)
 
 cogs_dir = 'extensions'
 bot = commands.Bot(command_prefix=get_prefix, description='Lynn 3.0_DEV')
