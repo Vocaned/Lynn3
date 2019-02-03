@@ -15,21 +15,14 @@ class APIs:
     async def __local_check(self, ctx):
         return ctx.message.guild.id != 485076757733572608
 
+    async def getAPI(self, url):
+        r = requests.get(url=url)
+        return(r.json())
+
     # ----
     # CLASSICUBE
     # ----
-    async def getClassiCubeAPI(self):
-        r = requests.get(url='https://www.classicube.net/api/players/')
-        return(r.json())
     
-    async def getClassiCubeIDAPI(self, id):
-        r = requests.get(url='https://www.classicube.net/api/id/' + id)
-        return(r.json())
-    
-    async def getClassiCubeNameAPI(self, name):
-        r = requests.get(url='https://www.classicube.net/api/player/' + name)
-        return(r.json())
-
     @commands.command(name='classicube', aliases=['cc'])
     async def classiCubeAPI(self, ctx, *, user=None):
         """Gets information about ClassiCube, or searches players.
@@ -37,9 +30,9 @@ class APIs:
         Leave as blank for general statistics"""
         message = await ctx.send('\N{HOURGLASS}')
         if user:
-            data = await APIs.getClassiCubeNameAPI(self, user)
+            data = await APIs.getAPI(self, 'https://www.classicube.net/api/player/'+user)
             if data["error"] != "":
-                data = await APIs.getClassiCubeIDAPI(self, user)
+                data = await APIs.getAPI(self, 'https://www.classicube.net/api/id/'+user)
                 if data["error"] != "":
                     await message.edit(content='User not found!')
                     return
@@ -69,7 +62,7 @@ class APIs:
             await message.edit(embed=embed, content='')
             return                
         else:
-            data = await APIs.getClassiCubeAPI(self)
+            data = await APIs.getAPI(self, 'https://www.classicube.net/api/players/')
             players = ''
             for p in data["lastfive"]:
                 players += str(p) + '\n'
@@ -128,10 +121,6 @@ class APIs:
             return(r2.json())
             
         return(None)
-
-    async def getMinecraftNameHistory(self, uuid):
-        r = requests.get(url='https://api.mojang.com/user/profiles/' + uuid + '/names')
-        return(r.json())
     
     async def getMinecraftSkinUrl(self, uuid):
         r = requests.get(url='https://sessionserver.mojang.com/session/minecraft/profile/' + uuid)
@@ -151,7 +140,7 @@ class APIs:
                 if not uuid:
                     await message.edit(content='User not found!')
                     return
-                history = await APIs.getMinecraftNameHistory(self, uuid["id"])
+                history = await APIs.getAPI(self, 'https://api.mojang.com/user/profiles/' + uuid["id"] + '/names')
                 names = []
                 for i in range(len(history)):
                     names.append(history[i]["name"])
@@ -184,15 +173,6 @@ class APIs:
                 await message.edit(embed=embed, content="")
         except Exception:
             await message.edit(content='\N{NO ENTRY SIGN}')
-    
-    @commands.command(name='steam', aliases=['valve'])
-    async def steamAPI(self, ctx, *, user=None):
-        """Gets information about Minecraft, or searches players.
-        Leave user as blank for general statistics"""
-        if user:
-            print('user')
-        else:
-            print('general')
 
 def setup(bot):
     bot.add_cog(APIs(bot))
