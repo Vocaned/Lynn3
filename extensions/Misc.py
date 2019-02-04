@@ -20,6 +20,7 @@ class Misc:
 
     @commands.command(name='speedtest')
     @commands.cooldown(60, 60)
+    @commands.is_owner()
     async def speedtest(self, ctx):
         """Speedtest"""
         message = await ctx.send('\N{HOURGLASS}')

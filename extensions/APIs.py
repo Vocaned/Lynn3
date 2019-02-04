@@ -99,10 +99,10 @@ class APIs:
                 mid = a + math.floor( ( b - a ) / 2)
                 ok = await APIs.getMinecraftAgeCheck(self, name, mid)
                 if ok:
-                    print('range: ' + str(a) + '\t<-| \t' + str(b))
+                    #print('range: ' + str(a) + '\t<-| \t' + str(b))
                     b = mid
                 else:
-                    print('range: ' + str(a) + '\t |->\t' + str(b))
+                    #print('range: ' + str(a) + '\t |->\t' + str(b))
                     a = mid+1
                     lastfail = mid
 

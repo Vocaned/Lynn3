@@ -23,24 +23,6 @@ if __name__ == '__main__':
             traceback.print_exc()
 
 @bot.event
-async def on_message(ctx):
-    if ctx.author.bot or ctx.guild.id != 485076757733572608:
-        await bot.process_commands(ctx)
-        return
-    if not os.path.exists(str(ctx.author.id)+'.dat'):
-        with open(str(ctx.author.id)+'.dat', 'w') as file:
-            file.write('0')
-            file.close()
-    with open(str(ctx.author.id)+'.dat','r') as file:
-        score = int(file.read())
-        file.close()
-    with open(str(ctx.author.id)+'.dat','w') as file:
-        file.write(str(score+1))
-        file.close()
-    print('Score ' + str(score+1))
-    await bot.process_commands(ctx)
-
-@bot.event
 async def on_ready():
     print(f'Logged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}')
 
