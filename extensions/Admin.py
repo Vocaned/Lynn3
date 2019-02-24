@@ -8,6 +8,8 @@ from contextlib import redirect_stdout
 import io
 import copy
 from typing import Union
+import os
+import time
 
 # to expose to the eval command
 import datetime
@@ -47,7 +49,7 @@ class Admin:
         except Exception as e:
             await ctx.send(f'```py\n{traceback.format_exc()}\n```')
         else:
-            await ctx.send('\N{OK HAND SIGN}')
+            await ctx.message.add_reaction('\N{OK HAND SIGN}')
 
     @commands.command(hidden=True)
     @commands.is_owner()
@@ -58,19 +60,39 @@ class Admin:
         except Exception as e:
             await ctx.send(f'```py\n{traceback.format_exc()}\n```')
         else:
-            await ctx.send('\N{OK HAND SIGN}')
+            await ctx.message.add_reaction('\N{OK HAND SIGN}')
 
     @commands.command(name='reload', hidden=True)
     @commands.is_owner()
     async def _reload(self, ctx, *, module):
-        """Reloads a module."""
-        try:
-            self.bot.unload_extension('extensions.'+module)
-            self.bot.load_extension('extensions.'+module)
-        except Exception as e:
-            await ctx.send(f'```py\n{traceback.format_exc()}\n```')
+        """Reloads a module.
+        Module can be \"all\""""
+        start = time.time()
+        if module == "all":
+            try:
+                n = 0
+                for file in os.listdir('extensions/'):
+                    if str(file).endswith(".py"):
+                        file = file[:-3]
+                        self.bot.unload_extension('extensions.'+file)
+                        self.bot.load_extension('extensions.'+file)
+                        n+=1
+                end = time.time()
+            except Exception as e:
+                await ctx.send(f'```py\n{traceback.format_exc()}\n```')
+            else:
+                await ctx.message.add_reaction('\N{OK HAND SIGN}')
+                await ctx.send('Reloaded `'+str(n)+'` modules in `' + str(round((end-start)*1000, 2)) + '`ms.')
         else:
-            await ctx.send('\N{OK HAND SIGN}')
+            try:
+                self.bot.unload_extension('extensions.'+module)
+                self.bot.load_extension('extensions.'+module)
+                end = time.time()
+            except Exception as e:
+                await ctx.send(f'```py\n{traceback.format_exc()}\n```')
+            else:
+                await ctx.message.add_reaction('\N{OK HAND SIGN}')
+                await ctx.send('Reloaded `'+str(module)+'` in `'+str(round((end-start)*1000, 2))+'`ms.')
 
     @commands.command(pass_context=True, hidden=True, name='eval')
     @commands.is_owner()
@@ -233,7 +255,7 @@ class Admin:
             await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=text[9:]))
         else:
             await self.bot.change_presence(activity=discord.Game(name=text))
-        await ctx.send('\N{OK HAND SIGN}')
+        await ctx.message.add_reaction('\N{OK HAND SIGN}')
 
 def setup(bot):
     bot.add_cog(Admin(bot))

@@ -85,7 +85,8 @@ class Fun:
 	@commands.command(name='minesweeper', aliases=['miinaharava'])
 	async def minesweeper(self, ctx, *, args=None):
 		"""Generates a game of minesweeper."""
-		message = await ctx.send('\N{HOURGLASS}')
+		await ctx.message.add_reaction('\N{HOURGLASS}')
+		
 		if args != None and len(str(args).split(' ')) > 2:
 			width = int(str(args).split(' ')[0])
 			height = int(str(args).split(' ')[1])
@@ -127,7 +128,9 @@ class Fun:
 		embed = discord.Embed(title='Minesweeper', colour=0xFFA500)
 		embed.description = output
 		embed.timestamp = datetime.utcnow()
-		await message.edit(embed=embed, content="")
+		await ctx.message.clear_reactions()
+		await ctx.message.add_reaction("\N{OK HAND SIGN}")
+		await ctx.send(embed=embed, content="")
 
 # The setup fucntion below is neccesarry. Remember we give bot.add_cog() the name of the class in this case SimpleCog.
 # When we load the cog, we use the name of the file.

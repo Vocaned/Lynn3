@@ -67,12 +67,11 @@ class ARG:
                     value.append("[ERROR]")
             except:
                 value.append('Invalid data')
-        message = await ctx.send('\N{HOURGLASS}')
         embed = discord.Embed(title='ARG Guess', colour=0x551a8b)
         for i in range(len(method)):
             embed.add_field(name=method[i], value=value[i])
         embed.timestamp = datetime.utcnow()
-        await message.edit(embed=embed, content="")
+        await ctx.send(embed=embed, content="")
 
 # The setup fucntion below is neccesarry. Remember we give bot.add_cog() the name of the class in this case SimpleCog.
 # When we load the cog, we use the name of the file.

@@ -75,13 +75,14 @@ class APIs:
     async def minecraftAPI(self, ctx, *, user=None):
         """Gets information about Minecraft, or searches players.
         Leave user as blank for general statistics"""
-        message = await ctx.send('\N{HOURGLASS}')
         try:
             if user:
                 uuid = await APIs.getMinecraftUUID(self, user)
                 if not uuid:
-                    await message.edit(content='User not found!')
+                    await ctx.send(content='User not found!')
+                    await ctx.message.add_reaction('\N{NO ENTRY SIGN}')
                     return
+                await ctx.message.add_reaction('\N{HOURGLASS}')
                 history = await APIs.getAPI(self, 'https://api.mojang.com/user/profiles/' + uuid["id"] + '/names')
                 names = []
                 for i in range(len(history)):
@@ -103,7 +104,8 @@ class APIs:
                 embed.add_field(name='Account created', value=created)
                 embed.set_footer(text='|', icon_url='https://minecraft.net/favicon-96x96.png')
                 embed.timestamp = datetime.utcnow()
-                await message.edit(embed=embed, content="")
+                await ctx.message.clear_reactions()
+                await ctx.send(embed=embed, content="")
             else:
                 sale = await APIs.getMinecraftSales(self)
                 embed = discord.Embed(title='Minecraft', colour=0x82540f)
@@ -112,9 +114,11 @@ class APIs:
 
                 embed.set_footer(text='|', icon_url='https://minecraft.net/favicon-96x96.png')
                 embed.timestamp = datetime.utcnow()
-                await message.edit(embed=embed, content="")
+                await ctx.message.clear_reactions()
+                await ctx.send(embed=embed, content="")
         except Exception:
-            await message.edit(content='\N{NO ENTRY SIGN}')
+            await ctx.message.clear_reactions()
+            await ctx.message.add_reaction(content='\N{NO ENTRY SIGN}')
 
     # ----
     # Apex Legends
@@ -128,7 +132,7 @@ class APIs:
     async def apexAPI(self, ctx, user):
         """Gets information about Apex Legends players.
            Only PC information for now."""
-        message = await ctx.send('\N{HOURGLASS}')
+        await ctx.message.add_reaction('\N{HOURGLASS}')
         try:
             data = await APIs.getApexAPI(self, "https://public-api.tracker.gg/apex/v1/standard/profile/5/" + user)
 
@@ -147,11 +151,13 @@ class APIs:
             for stat in stats:
                 embed.add_field(name=stat[0], value=stat[1])
 
-            embed.set_footer(text='Missing data because EA. |', icon_url='https://cdn.discordapp.com/icons/541484311354933258/b8fc0f55e75911e45fb3348eb510fa6f.webp')
+            embed.set_footer(text='Missing data because EA.', icon_url='https://cdn.discordapp.com/icons/541484311354933258/b8fc0f55e75911e45fb3348eb510fa6f.webp')
             embed.timestamp = datetime.utcnow()
-            await message.edit(embed=embed, content="")
+            await ctx.message.clear_reactions()
+            await ctx.send(embed=embed, content="")
         except Exception as e:
-            await message.edit(content='\N{NO ENTRY SIGN}')
+            await ctx.message.clear_reactions()
+            await ctx.message.add_reaction(content='\N{NO ENTRY SIGN}')
             print(e)
 
 class APIs2:
@@ -176,13 +182,15 @@ class APIs2:
         """Gets information about ClassiCube, or searches players.
         user = ID or name
         Leave as blank for general statistics"""
-        message = await ctx.send('\N{HOURGLASS}')
+        await ctx.message.add_reaction('\N{HOURGLASS}')
         if user:
             data = await APIs.getAPI(self, 'https://www.classicube.net/api/player/'+user)
             if data["error"] != "":
                 data = await APIs.getAPI(self, 'https://www.classicube.net/api/id/'+user)
                 if data["error"] != "":
-                    await message.edit(content='User not found!')
+                    await ctx.message.clear_reactions()
+                    await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
+                    await ctx.send('User not found!')
                     return
 
             flags = []
@@ -207,7 +215,8 @@ class APIs2:
             
             embed.set_footer(text='|', icon_url='https://www.classicube.net/static/img/cc-cube-small.png')
             embed.timestamp = datetime.utcnow()
-            await message.edit(embed=embed, content='')
+            await ctx.message.clear_reactions()
+            await ctx.send(embed=embed, content='')
             return                
         else:
             data = await APIs.getAPI(self, 'https://www.classicube.net/api/players/')
@@ -220,7 +229,8 @@ class APIs2:
 
             embed.set_footer(text='|', icon_url='https://www.classicube.net/static/img/cc-cube-small.png')
             embed.timestamp = datetime.utcnow()
-            await message.edit(embed=embed, content='')
+            await ctx.message.clear_reactions()
+            await ctx.send(embed=embed, content='')
     
 
 
