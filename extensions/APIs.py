@@ -232,6 +232,84 @@ class APIs2:
             await ctx.message.clear_reactions()
             await ctx.send(embed=embed, content='')
     
+    # ----
+    # Wynncraft
+    # ----
+    
+    @commands.command(name='wynncraft', aliases=['wc'])
+    async def WynncraftAPI(self, ctx, *, user=None):
+        """Gets information about Wynncraft, or searches players.
+        Leave as blank for general statistics"""
+        await ctx.message.add_reaction('\N{HOURGLASS}')
+        if user:
+            data = await APIs.getAPI(self, 'https://api.wynncraft.com/public_api.php?action=playerStats&command='+user)
+            if "error" in data:
+                await ctx.message.clear_reactions()
+                await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
+                await ctx.send(str(data["error"]))
+                return
+
+            rank = ""
+            if data["rank"] != "Player":
+                rank += "**" + data["rank"] + "**\n"
+
+            if data["veteran"]:
+                rank += "Veteran\n"
+
+            rank += data["tag"]
+
+            if rank == "":
+                rank = "Player"
+
+            stats = []
+            stats.append("**Items identified:** " + str(data["global"]["items_identified"]))
+            stats.append("**Mobs killed:** " + str(data["global"]["mobs_killed"]))
+            stats.append("**PvP kills:** " + str(data["global"]["pvp_kills"]))
+            stats.append("**PvP deaths:** " + str(data["global"]["pvp_deaths"]))
+            stats.append("**Chests found:** " + str(data["global"]["chests_found"]))
+            stats.append("**Blocks walked:** " + str(data["global"]["blocks_walked"]))
+            stats.append("**Logins:** " + str(data["global"]["logins"]))
+            stats.append("**Deaths:** " + str(data["global"]["deaths"]))
+            stats.append("**Total Level:** " + str(data["global"]["total_level"]))
+            stats.sort(key=lambda x:int(x.split(' ')[-1]))
+            stats.reverse()
+
+            classes = []
+            for s in data["classes"]:
+                classes.append("**" + ''.join([i for i in s.title() if not i.isdigit()]) + ":** Level " + str(round(data["classes"][s]["level"] + data["classes"][s]["xp"]/100, 1)))
+            classes.sort(key=lambda x:float(x.split(' ')[-1]))
+            classes.reverse()
+
+            embed = discord.Embed(title='Wynncraft Player', colour=0x7bbf32)
+            embed.set_author(name=data["username"],
+                    icon_url='https://crafatar.com/avatars/'+data["uuid"])
+            embed.add_field(name='Rank', value=rank)
+            embed.add_field(name='Guild', value=str(data["guild"]["name"]))
+            embed.add_field(name='Playtime', value=str(round(data["playtime"]/11.8, 2))+"h")
+            embed.add_field(name='Player ranking', value=str(data["rankings"]["player"]))
+            embed.add_field(name='First joined on', value=data["first_join_friendly"])
+            embed.add_field(name='Last joined on', value=data["last_join_friendly"])
+            if data["current_server"] != "null":
+                embed.add_field(name='Currently in', value=data["current_server"])
+            
+            embed.add_field(name='Global stats', value="\n".join(stats))
+            embed.add_field(name='Classes', value="\n".join(classes))
+            
+            embed.set_footer(text='|', icon_url='https://cdn.wynncraft.com/img/ico/android-icon-192x192.png')
+            embed.timestamp = datetime.utcnow()
+            await ctx.message.clear_reactions()
+            await ctx.send(embed=embed, content='')
+            return                
+        else:
+            data = await APIs.getAPI(self, 'https://api.wynncraft.com/public_api.php?action=onlinePlayersSum')
+            embed = discord.Embed(title='Wynncraft', colour=0x7bbf32)
+            embed.add_field(name='Players Online', value=data["players_online"])
+
+            embed.set_footer(text='|', icon_url='https://cdn.wynncraft.com/img/ico/android-icon-192x192.png')
+            embed.timestamp = datetime.utcnow()
+            await ctx.message.clear_reactions()
+            await ctx.send(embed=embed, content='')
+    
 
 
 def setup(bot):
