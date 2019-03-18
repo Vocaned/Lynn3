@@ -20,9 +20,10 @@ class EmoteFix:
                     em = emote.replace(":", "")
                     for e in message.guild.emojis:
                         if e.name.lower() == em.lower():
-                            if not e.animated:
-                                continue
-                            fullemote = "<a:" + str(em) + ":" + str(e.id) + ">"
+                            prefix = ""
+                            if e.animated:
+                                prefix = "a"
+                            fullemote = "<" + prefix + ":" + str(em) + ":" + str(e.id) + ">"
                             newmsg = newmsg.replace(emote, fullemote)
                             replaced.append(emote)
                             shouldSend = True
