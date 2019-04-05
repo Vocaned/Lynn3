@@ -160,6 +160,89 @@ class APIs:
             await ctx.message.add_reaction(content='\N{NO ENTRY SIGN}')
             print(e)
 
+    # ----
+    # CSGO
+    # ----
+
+    users = {
+        # Discord ID        :  Steam ID
+        "177424155371634688": "76561198068918964",
+        "257006753089060864": "76561198380462342",
+        "350701370719862785": "76561198263243813",
+        "287867554045624323": "76561198322549877",
+        "303922742569336832": "76561198358351343",
+        "415050364836904961": "76561198378745415",
+        "380758020843634688": "76561198030030959",
+        "413391798786850836": "76561198812709835",
+        "344550203564621826": "76561198452824423"
+    }
+
+    @commands.command(name='csgo', aliases=['cs'])
+    async def CSGOAPI(self, ctx, *, user=None):
+        """Gets information about CSGO players."""
+        if not user:
+            if APIs.users[str(ctx.author.id)]:
+                user = APIs.users[str(ctx.author.id)]
+            else:
+                await ctx.send("Please enter an steam id or custom url after the command.")
+                return
+        else:
+            try:
+                duser = await commands.UserConverter().convert(ctx, user)
+                if APIs.users[str(duser.id)]:
+                    user = APIs.users[str(duser.id)]
+            except:
+                pass
+        await ctx.message.add_reaction('\N{HOURGLASS}')
+        try:
+            if not str(user).isdigit():
+                data = await APIs.getAPI(self, "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=5F448887F3F06D8E18833E047BBCDB7E&vanityurl=" + user)
+                user = data["response"]["steamid"]
+
+            data = await APIs.getAPI(self, "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=5F448887F3F06D8E18833E047BBCDB7E&steamids=" + user)
+            name = data["response"]["players"][0]["personaname"]
+
+            data = await APIs.getAPI(self, "http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=730&key=5F448887F3F06D8E18833E047BBCDB7E&steamid=" + user)
+            data = data["playerstats"]
+
+            embed = discord.Embed(title='Counter-Strike: Global Offensive', colour=0xadd8e6)
+            embed.set_author(name=str(name))
+
+            kills = deaths = timep = head = won = played = hit = shot = 0
+            for i in data["stats"]:
+                if i["name"] == "total_kills":
+                    kills= i["value"]
+                if i["name"] == "total_deaths":
+                    deaths = i["value"]
+                if i["name"] == "total_time_played":
+                    timep = i["value"]
+                if i["name"] == "total_kills_headshot":
+                    head = i["value"]
+                if i["name"] == "total_matches_won":
+                    won = i["value"]
+                if i["name"] == "total_matches_played":
+                    played = i["value"]
+                if i["name"] == "total_shots_hit":
+                    hit = i["value"]
+                if i["name"] == "total_shots_fired":
+                    shot = i["value"]
+
+            embed.add_field(name="Kills", value=str(kills))
+            embed.add_field(name="K/D", value=str(round(kills/deaths, 2)))
+            embed.add_field(name="Time Played", value=str(round(timep / 60 / 60, 1)) + "h")
+            embed.add_field(name="Headshot %", value=str(round(head / kills * 100, 1)) + "%")
+            embed.add_field(name="Win %", value=str(round(won / played * 100, 1)) + "%")
+            embed.add_field(name="Accuracy", value=str(round(hit / shot * 100, 1)) + "%")
+
+            embed.timestamp = datetime.utcnow()
+
+            await ctx.message.clear_reactions()
+            await ctx.send(embed=embed, content="")
+        except Exception as e:
+            await ctx.message.clear_reactions()
+            await ctx.message.add_reaction('\N{NO ENTRY SIGN}')
+            print(e)
+
 class APIs2:
     """APIs2"""
 
