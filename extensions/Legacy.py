@@ -37,12 +37,12 @@ class Legacy:
         total = first + second
         await ctx.send(f'The sum of **{first}** and **{second}**  is  **{total}**')
 
-    @commands.command(name='me')
+    @commands.command(name='test')
     @commands.is_owner()
     async def only_me(self, ctx):
         """A simple command which only responds to the owner of the bot."""
 
-        await ctx.send(f'Hello {ctx.author.mention}. This command can only be used by you!!')
+        await ctx.send(f'Hello {ctx.author.mention}.')
 
     @commands.command(name='embeds')
     @commands.guild_only()

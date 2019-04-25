@@ -42,11 +42,22 @@ class Admin:
 
     @commands.command(hidden=True)
     @commands.is_owner()
+    async def modules(self, ctx):
+        """Lists all loaded modules"""
+        try:
+            await ctx.send("Loaded modules: ```" + "\n".join(self.bot.extensions) + "```")
+        except Exception:
+            await ctx.send(f'```py\n{traceback.format_exc()}\n```')
+        else:
+            await ctx.message.add_reaction('\N{OK HAND SIGN}')
+
+    @commands.command(hidden=True)
+    @commands.is_owner()
     async def load(self, ctx, *, module):
         """Loads a module."""
         try:
             self.bot.load_extension('extensions.'+module)
-        except Exception as e:
+        except Exception:
             await ctx.send(f'```py\n{traceback.format_exc()}\n```')
         else:
             await ctx.message.add_reaction('\N{OK HAND SIGN}')
@@ -57,7 +68,7 @@ class Admin:
         """Unloads a module."""
         try:
             self.bot.unload_extension('extensions.'+module)
-        except Exception as e:
+        except Exception:
             await ctx.send(f'```py\n{traceback.format_exc()}\n```')
         else:
             await ctx.message.add_reaction('\N{OK HAND SIGN}')
@@ -78,7 +89,7 @@ class Admin:
                         self.bot.load_extension('extensions.'+file)
                         n+=1
                 end = time.time()
-            except Exception as e:
+            except Exception:
                 await ctx.send(f'```py\n{traceback.format_exc()}\n```')
             else:
                 await ctx.message.add_reaction('\N{OK HAND SIGN}')
@@ -88,7 +99,7 @@ class Admin:
                 self.bot.unload_extension('extensions.'+module)
                 self.bot.load_extension('extensions.'+module)
                 end = time.time()
-            except Exception as e:
+            except Exception:
                 await ctx.send(f'```py\n{traceback.format_exc()}\n```')
             else:
                 await ctx.message.add_reaction('\N{OK HAND SIGN}')
@@ -244,7 +255,13 @@ class Admin:
         new_ctx.db = ctx.db
         await self.bot.invoke(new_ctx)
 
-    @commands.command(name='activity', hidden=True)
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def shutdown(self, ctx):
+        await ctx.send("Goodbye!")
+        await self.bot.close()
+
+    @commands.command(hidden=True)
     @commands.is_owner()
     async def activity(self, ctx, *, text):
         if str(text).lower().startswith('streaming'):

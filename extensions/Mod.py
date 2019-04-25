@@ -9,7 +9,7 @@ class Mod:
         self.bot = bot
 
     @commands.command(name='purge', aliases=['prune'])
-    @commands.has_permissions(manage_guild=True)
+    @commands.has_permissions(manage_messages=True)
     async def purge(self, ctx, amount: int=None):
         """Purge an amount of messages in a channel"""
         if amount>500 or amount<0:
