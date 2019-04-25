@@ -4,6 +4,7 @@ from datetime import datetime
 import subprocess
 import json
 import math
+import requests
 
 
 """Misc commands"""
@@ -32,6 +33,22 @@ class Misc:
         embed.description = 'Fam0r is paying for a 100Mb/100Mb connection, but is getting ' + str(down) + 'Mb/' + str(up) + 'Mb! (ping ' + str(ping) + 'ms)'
         embed.timestamp = datetime.utcnow()
         await message.edit(embed=embed, content="")
+    
+    @commands.command(name='match')
+    async def match(self, ctx, matchid):
+        m = matchid.split("%20")[1]
+        requests.get("https://csgo-stats.com/match/" + m)
+        await ctx.message.delete()
+        embed = discord.Embed(title='CS:GO Match', colour=0xadd8e6)
+        embed.description = "https://csgo-stats.com/match/" + m
+        embed.timestamp = datetime.utcnow()
+        await ctx.send(embed=embed, content="")
+    
+    @commands.command(name='lgbt')
+    async def lgbt(self, ctx):
+        await ctx.message.delete()
+        await ctx.send("<a:lgbt1:559809814943891457> <a:lgbt2:559809821377822720>")
+        
 
 # The setup fucntion below is neccesarry. Remember we give bot.add_cog() the name of the class in this case SimpleCog.
 # When we load the cog, we use the name of the file.
