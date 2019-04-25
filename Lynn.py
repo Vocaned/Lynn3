@@ -6,13 +6,8 @@ import sys, traceback
 import config
 import os
 
-
-
-def get_prefix(bot, message):
-    config.get_prefix(bot, message)
-
 cogs_dir = 'extensions'
-bot = commands.Bot(command_prefix=get_prefix, description='Lynn 3.0_DEV')
+bot = commands.Bot(command_prefix=config.get_prefix, description='Lynn 3.0_DEV')
 
 if __name__ == '__main__':
     for extension in [f.replace('.py', '') for f in listdir(cogs_dir) if isfile(join(cogs_dir, f))]:
