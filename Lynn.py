@@ -7,7 +7,7 @@ import config
 import os
 
 cogs_dir = 'extensions'
-bot = commands.Bot(command_prefix=config.get_prefix, description='Lynn 3.0_DEV')
+bot = commands.Bot(command_prefix=config.get_prefix, description=config.description)
 
 if __name__ == '__main__':
     for extension in [f.replace('.py', '') for f in listdir(cogs_dir) if isfile(join(cogs_dir, f))]:

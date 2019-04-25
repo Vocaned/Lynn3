@@ -1,5 +1,6 @@
 from discord.ext import commands
 token = "[TOKEN]"
+description = "Lynn 3.0_DEV"
 
 def get_prefix(bot, message):
     prefixes = ['%', 'lynn ']
