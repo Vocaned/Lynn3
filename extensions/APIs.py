@@ -292,9 +292,9 @@ class APIs2:
             embed.set_author(name=data["username"],
                 icon_url='https://www.classicube.net/face/'+data["username"]+'.png')
             embed.add_field(name='ID', value=data["id"])
-            if flags:
-                embed.add_field(name='Flags', value=', '.join(flags))
             embed.add_field(name='Registered on', value=datetime.utcfromtimestamp(data["registered"]).strftime('%c'))
+            if flags:
+                embed.add_field(name='Notes', value=', '.join(flags))
             
             embed.set_footer(text='|', icon_url='https://www.classicube.net/static/img/cc-cube-small.png')
             embed.timestamp = datetime.utcnow()
@@ -319,13 +319,14 @@ class APIs2:
     # Wynncraft
     # ----
     
-    @commands.command(name='wynncraft', aliases=['wc'])
+    @commands.command(name='wynncraft', aliases=['wc', 'wynn'])
     async def WynncraftAPI(self, ctx, *, user=None):
         """Gets information about Wynncraft, or searches players.
         Leave as blank for general statistics"""
         await ctx.message.add_reaction('\N{HOURGLASS}')
         if user:
-            data = await APIs.getAPI(self, 'https://api.wynncraft.com/public_api.php?action=playerStats&command='+user)
+            data = await APIs.getAPI(self, 'https://api.wynncraft.com/v2/player/'+user+'/stats')
+            data = data["data"][0]
             if "error" in data:
                 await ctx.message.clear_reactions()
                 await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
@@ -336,30 +337,32 @@ class APIs2:
             if data["rank"] != "Player":
                 rank += "**" + data["rank"] + "**\n"
 
-            if data["veteran"]:
+            if data["meta"]["veteran"]:
                 rank += "Veteran\n"
 
-            rank += data["tag"]
+            if data["meta"]["tag"]["value"]:
+                rank += data["meta"]["tag"]["value"]
 
             if rank == "":
                 rank = "Player"
 
             stats = []
-            stats.append("**Items identified:** " + str(data["global"]["items_identified"]))
-            stats.append("**Mobs killed:** " + str(data["global"]["mobs_killed"]))
-            stats.append("**PvP kills:** " + str(data["global"]["pvp_kills"]))
-            stats.append("**PvP deaths:** " + str(data["global"]["pvp_deaths"]))
-            stats.append("**Chests found:** " + str(data["global"]["chests_found"]))
-            stats.append("**Blocks walked:** " + str(data["global"]["blocks_walked"]))
+            stats.append("**Items identified:** " + str(data["global"]["itemsIdentified"]))
+            stats.append("**Mobs killed:** " + str(data["global"]["mobsKilled"]))
+            stats.append("**PvP kills:** " + str(data["global"]["pvp"]["kills"]))
+            stats.append("**PvP deaths:** " + str(data["global"]["pvp"]["deaths"]))
+            stats.append("**Chests found:** " + str(data["global"]["chestsFound"]))
+            stats.append("**Blocks walked:** " + str(data["global"]["blocksWalked"]))
             stats.append("**Logins:** " + str(data["global"]["logins"]))
             stats.append("**Deaths:** " + str(data["global"]["deaths"]))
-            stats.append("**Total Level:** " + str(data["global"]["total_level"]))
+            stats.append("**Combat Level:** " + str(data["global"]["totalLevel"]["combat"]))
+            stats.append("**Total Level:** " + str(data["global"]["totalLevel"]["combined"]))
             stats.sort(key=lambda x:int(x.split(' ')[-1]))
             stats.reverse()
 
             classes = []
             for s in data["classes"]:
-                classes.append("**" + ''.join([i for i in s.title() if not i.isdigit()]) + ":** Level " + str(round(data["classes"][s]["level"] + data["classes"][s]["xp"]/100, 1)))
+                classes.append("**" + ''.join([i for i in s["name"].title() if not i.isdigit()]) + ":** Level " + str(round(s["level"])))
             classes.sort(key=lambda x:float(x.split(' ')[-1]))
             classes.reverse()
 
@@ -368,12 +371,11 @@ class APIs2:
                     icon_url='https://crafatar.com/avatars/'+data["uuid"])
             embed.add_field(name='Rank', value=rank)
             embed.add_field(name='Guild', value=str(data["guild"]["name"]))
-            embed.add_field(name='Playtime', value=str(round(data["playtime"]/11.8, 2))+"h")
-            embed.add_field(name='Player ranking', value=str(data["rankings"]["player"]))
-            embed.add_field(name='First joined on', value=data["first_join_friendly"])
-            embed.add_field(name='Last joined on', value=data["last_join_friendly"])
-            if data["current_server"] != "null":
-                embed.add_field(name='Currently in', value=data["current_server"])
+            embed.add_field(name='Playtime', value=str(round(data["meta"]["playtime"]/12, 2))+"h")
+            embed.add_field(name='First joined on', value=data["meta"]["firstJoin"].replace("T", ", ").split(".")[0])
+            embed.add_field(name='Last joined on', value=data["meta"]["lastJoin"].replace("T", ", ").split(".")[0])
+            if data["meta"]["location"]["online"]:
+                embed.add_field(name='Currently in', value=data["meta"]["location"]["server"])
             
             embed.add_field(name='Global stats', value="\n".join(stats))
             embed.add_field(name='Classes', value="\n".join(classes))
