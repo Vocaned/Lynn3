@@ -15,6 +15,9 @@ class APIs:
     async def getAPI(self, url):
         r = requests.get(url=url)
         return(r.json())
+
+    def url(self, url):
+        return urllib.parse.quote(url)
     
     # ----
     # MINECRAFT
@@ -196,7 +199,7 @@ class APIs:
         await ctx.message.add_reaction('\N{HOURGLASS}')
         try:
             if not str(user).isdigit():
-                data = await APIs.getAPI(self, "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=5F448887F3F06D8E18833E047BBCDB7E&vanityurl=" + user)
+                data = await APIs.getAPI(self, "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=5F448887F3F06D8E18833E047BBCDB7E&vanityurl=" + APIs.url(self, user))
                 user = data["response"]["steamid"]
 
             data = await APIs.getAPI(self, "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=5F448887F3F06D8E18833E047BBCDB7E&steamids=" + user)
@@ -243,19 +246,6 @@ class APIs:
             await ctx.message.add_reaction('\N{NO ENTRY SIGN}')
             print(e)
 
-class APIs2:
-    """APIs2"""
-
-    def __init__(self, bot):
-        self.bot = bot
-
-    async def __local_check(self, ctx):
-        return ctx.message.guild.id != 485076757733572608
-
-    async def getAPI(self, url):
-        r = requests.get(url=url)
-        return(r.json())
-
     # ----
     # CLASSICUBE
     # ----
@@ -288,7 +278,7 @@ class APIs2:
             if 'e' in data["flags"]:
                 flags.append('Blog editor')
             
-            embed = discord.Embed(title='ClassiCube User', colour=0x9873ac)
+            embed = discord.Embed(title='ClassiCube User', colour=0x977dab)
             embed.set_author(name=data["username"],
                 icon_url='https://www.classicube.net/face/'+data["username"]+'.png')
             embed.add_field(name='ID', value=data["id"])
@@ -300,13 +290,12 @@ class APIs2:
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
             await ctx.send(embed=embed, content='')
-            return                
         else:
             data = await APIs.getAPI(self, 'https://www.classicube.net/api/players/')
             players = ''
             for p in data["lastfive"]:
                 players += str(p) + '\n'
-            embed = discord.Embed(title='ClassiCube', colour=0x9873ac)
+            embed = discord.Embed(title='ClassiCube', colour=0x977dab)
             embed.add_field(name='Total Players', value=data["playercount"])
             embed.add_field(name='Last five accounts', value=players)
 
@@ -394,9 +383,41 @@ class APIs2:
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
             await ctx.send(embed=embed, content='')
-    
+
+    @commands.command(name='imdb', aliases=["movie", "movies"])
+    async def IMDbAPI(self, ctx, *, title):
+        """Gets information about movies using the IMDb"""
+        await ctx.message.add_reaction('\N{HOURGLASS}')
+        data = await APIs.getAPI(self, 'http://www.omdbapi.com/?apikey=df81343d&t=' + APIs.url(self, title))
+        if data["Response"] == "False":
+            await ctx.message.clear_reactions()
+            await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
+            await ctx.send(str(data["error"]))
+            return
+
+        embed = discord.Embed(title=data["Title"] + " (" + data["Year"] + ")", colour=0xf5c518, url="https://www.imdb.com/title/" + data["imdbID"])
+        embed.add_field(name="Released", value=data["Released"])
+        if "Production" in data:
+            embed.add_field(name="Produced by", value=data["Production"])
+        embed.add_field(name="Length", value=data["Runtime"])
+        embed.add_field(name="Genres", value=data["Genre"])
+        embed.add_field(name="Plot", value="||"+data["Plot"]+"||")
+        if data["Poster"] != "N/A":
+            embed.set_image(url=data["Poster"])
+
+        if data["Ratings"]:
+            ratings = ""
+            for i in data["Ratings"]:
+                ratings += "**" + i["Source"] + "** - `" + i["Value"] + "`\n"
+
+            embed.add_field(name="Ratings", value=ratings)
+
+        
+
+        embed.timestamp = datetime.utcnow()
+        await ctx.message.clear_reactions()
+        await ctx.send(embed=embed, content='')
 
 
 def setup(bot):
     bot.add_cog(APIs(bot))
-    bot.add_cog(APIs2(bot))
