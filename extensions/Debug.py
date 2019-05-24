@@ -7,7 +7,7 @@ import time
 import re
 import requests
 
-class Debug:
+class Debug(commands.Cog):
     """Debug"""
 
     def __init__(self, bot):
@@ -68,10 +68,10 @@ class Debug:
                         self.printDebug("Webhook created! ID " + str(hook.id))
                     await hook.send(content=newmsg, username=ctx.author.display_name, avatar_url=ctx.author.avatar_url)
                     self.printDebug("Sent fixed message")
-                    await ctx.message.delete()
+                    #await ctx.message.delete()
             else:
                 self.exitCode = self.WARN
-                self.printDebug("Didn't find a emote")
+                self.printDebug("Didn't find an emote")
 
 
 

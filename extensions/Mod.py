@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 
 
-class Mod:
+class Mod(commands.Cog):
     """Mod"""
 
     def __init__(self, bot):

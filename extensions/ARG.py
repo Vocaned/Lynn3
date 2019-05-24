@@ -7,7 +7,7 @@ import base64
 """Commands useful for solving ARGs!"""
 
 
-class ARG:
+class ARG(commands.Cog):
     """ARG"""
 
     def __init__(self, bot):

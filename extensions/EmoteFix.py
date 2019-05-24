@@ -3,7 +3,7 @@ from discord.ext import commands
 import re
 
 
-class EmoteFix:
+class EmoteFix(commands.Cog):
     """EmoteFix"""
 
     def __init__(self, bot):

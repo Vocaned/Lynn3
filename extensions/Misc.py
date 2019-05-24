@@ -10,7 +10,7 @@ import requests
 """Misc commands"""
 
 
-class Misc:
+class Misc(commands.Cog):
     """Misc"""
 
     def __init__(self, bot):
@@ -19,7 +19,7 @@ class Misc:
     async def __local_check(self, ctx):
         return ctx.message.guild.id != 485076757733572608
 
-    @commands.command(name='speedtest')
+    @commands.command()
     @commands.cooldown(60, 60)
     @commands.is_owner()
     async def speedtest(self, ctx):
@@ -34,7 +34,7 @@ class Misc:
         embed.timestamp = datetime.utcnow()
         await message.edit(embed=embed, content="")
     
-    @commands.command(name='match')
+    @commands.command()
     async def match(self, ctx, matchid):
         m = matchid.split("%20")[1]
         requests.get("https://csgo-stats.com/match/" + m)
@@ -44,7 +44,7 @@ class Misc:
         embed.timestamp = datetime.utcnow()
         await ctx.send(embed=embed, content="")
     
-    @commands.command(name='lgbt')
+    @commands.command()
     async def lgbt(self, ctx):
         await ctx.message.delete()
         await ctx.send("<a:lgbt1:559809814943891457> <a:lgbt2:559809821377822720>")

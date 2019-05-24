@@ -5,8 +5,9 @@ from datetime import datetime
 import base64
 import json
 import math
+import urllib.parse
 
-class APIs:
+class APIs(commands.Cog):
     """APIs"""
 
     def __init__(self, bot):

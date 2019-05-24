@@ -13,7 +13,7 @@ http://discordpy.readthedocs.io/en/rewrite/ext/commands/api.html#event-reference
 """
 
 
-class Legacy:
+class Legacy(commands.Cog):
     """Legacy"""
 
     def __init__(self, bot):
