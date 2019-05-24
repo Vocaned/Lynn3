@@ -419,6 +419,25 @@ class APIs(commands.Cog):
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed, content='')
 
+    @commands.command(name='urbandictionary', aliases=["urban", "define"])
+    async def UrbanDictionaryAPI(self, ctx, *, term):
+        """Gets information about movies using the IMDb"""
+        await ctx.message.add_reaction('\N{HOURGLASS}')
+        data = await APIs.getAPI(self, 'http://api.urbandictionary.com/v0/define?term=' + APIs.url(self, term))
+        if not data["list"]:
+            await ctx.message.clear_reactions()
+            await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
+            return
+        data = data["list"][0]
+        embed = discord.Embed(title=data["word"], colour=0x1d2439, url=data["permalink"])
+        embed.add_field(name="Definition", value="```"+data["definition"].replace("\r","")+"```")
+        embed.add_field(name="Example", value="```"+data["example"].replace("\r","")+"```")
+        
+        embed.set_footer(text=str(data["thumbs_up"])+"👍, " + str(data["thumbs_down"]) + "👎 | Submitted")
+        embed.timestamp = datetime.strptime(data["written_on"].split("T")[0], "%Y-%m-%d")
+        await ctx.message.clear_reactions()
+        await ctx.send(embed=embed, content='')
+
 
 def setup(bot):
     bot.add_cog(APIs(bot))
