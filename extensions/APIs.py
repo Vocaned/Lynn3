@@ -15,7 +15,12 @@ class APIs(commands.Cog):
 
     async def getAPI(self, url):
         r = requests.get(url=url)
-        return(r.json())
+        try:
+            r.json()
+        except:
+            return(None)
+        else:
+            return(r.json())
 
     def url(self, url):
         return urllib.parse.quote(url)
@@ -259,9 +264,10 @@ class APIs(commands.Cog):
         await ctx.message.add_reaction('\N{HOURGLASS}')
         if user:
             data = await APIs.getAPI(self, 'https://www.classicube.net/api/player/'+user)
-            if data["error"] != "":
-                data = await APIs.getAPI(self, 'https://www.classicube.net/api/id/'+user)
-                if data["error"] != "":
+            if not data or data["error"] != "":
+                if user.isdigit():
+                    data = await APIs.getAPI(self, 'https://www.classicube.net/api/id/'+user)
+                if not data or data["error"] != "":
                     await ctx.message.clear_reactions()
                     await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
                     await ctx.send('User not found!')
@@ -385,6 +391,10 @@ class APIs(commands.Cog):
             await ctx.message.clear_reactions()
             await ctx.send(embed=embed, content='')
 
+    # ----
+    # IMDb
+    # ----
+
     @commands.command(name='imdb', aliases=["movie", "movies"])
     async def IMDbAPI(self, ctx, *, title):
         """Gets information about movies using the IMDb"""
@@ -418,6 +428,10 @@ class APIs(commands.Cog):
         embed.timestamp = datetime.utcnow()
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed, content='')
+
+    # ----
+    # Urban Dictionary
+    # ----
 
     @commands.command(name='urbandictionary', aliases=["urban", "define"])
     async def UrbanDictionaryAPI(self, ctx, *, term):
