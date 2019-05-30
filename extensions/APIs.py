@@ -452,6 +452,79 @@ class APIs(commands.Cog):
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed, content='')
 
+    # ----
+    # Discord
+    # ----
+    @commands.command(name='invite', aliases=["discord"])
+    async def DiscordAPI(self, ctx, *, invite):
+        """Gets information about discord invites"""
+        await ctx.message.add_reaction('\N{HOURGLASS}')
+        invite = str(invite.split("/")[-1])
+        data = await APIs.getAPI(self, 'https://discordapp.com/api/v6/invite/' +  APIs.url(self, invite) + "?with_counts=true")
+        
+        try:
+            data["guild"]
+        except:
+            await ctx.message.clear_reactions()
+            await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
+            await ctx.send(data["message"])
+            return
+
+        embed = discord.Embed(title="Click here to join the server!", colour=0x7289DA, url="https://discord.gg/" + data["code"])
+        embed.add_field(name="Guild Name", value=str(data["guild"]["name"]))
+        if data["guild"]["description"]:
+            embed.add_field(name="Description", value=str(data["guild"]["description"]))
+        embed.add_field(name="Members", value=str(data["approximate_member_count"]))
+        embed.add_field(name="Online", value=str(data["approximate_presence_count"]))
+        
+        flags = []
+        if 'VERIFIED' in data["guild"]["features"]:
+            flags.append('Verified')
+        if 'LURKABLE' in data["guild"]["features"]:
+            flags.append('Lurking enabled')
+        if 'INVITE_SPLASH' in data["guild"]["features"]:
+            flags.append('Custom invite splash screen')
+        if 'VIP_REGIONS' in data["guild"]["features"]:
+            flags.append('VIP server')
+        if 'FEATURABLE' in data["guild"]["features"]:
+            flags.append('Featured server')
+        if 'DISCOVERABLE' in data["guild"]["features"]:
+            flags.append('In server discovery')
+        if 'NEWS' in data["guild"]["features"]:
+            flags.append('News channel')
+        if 'BANNER' in data["guild"]["features"]:
+            flags.append('Custom banner')
+        if 'VANITY_URL' in data["guild"]["features"]:
+            flags.append('Custom vanity url')
+        if 'ANIMATED_ICON' in data["guild"]["features"]:
+            flags.append('Animated icon')
+        if 'COMMERCE' in data["guild"]["features"]:
+            flags.append('Commerce')
+        if 'MORE_EMOJI' in data["guild"]["features"]:
+            flags.append('More emojis')
+
+
+        if flags:
+            embed.add_field(name="Special features", value="\n".join(flags))
+        
+        try:
+            embed.add_field(name="Invite created by", value=str(data["inviter"]["username"]) + "#" + str(data["inviter"]["discriminator"]) + " (<@" + str(data["inviter"]["id"]) + ">)")
+        except KeyError:
+            pass
+
+        if "Custom banner" in flags and data["guild"]["banner"]:
+            embed.set_image(url="https://cdn.discordapp.com/banners/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["banner"]) + ".webp?size=512")
+       
+        if "Animated icon" in flags and data["guild"]["icon"]:
+            embed.set_thumbnail(url="https://cdn.discordapp.com/icons/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["icon"] + ".gif"))
+        elif data["guild"]["icon"]:
+            embed.set_thumbnail(url="https://cdn.discordapp.com/icons/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["icon"] + ".webp"))
+        
+        embed.set_footer(text="Server ID " + str(data["guild"]["id"]))
+        embed.timestamp = datetime.utcnow()
+        await ctx.message.clear_reactions()
+        await ctx.send(embed=embed, content='')
+
 
 def setup(bot):
     bot.add_cog(APIs(bot))
