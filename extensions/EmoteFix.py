@@ -9,6 +9,7 @@ class EmoteFix(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.Cog.listener()
     async def on_message(self, message):
         replaced = []
         match = re.findall("(?!<):.+?:(?!\\d+?>)", message.content)
