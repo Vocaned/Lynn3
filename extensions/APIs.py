@@ -299,6 +299,7 @@ class APIs(commands.Cog):
             await ctx.send(embed=embed, content='')
         else:
             data = await APIs.getAPI(self, 'https://www.classicube.net/api/players/')
+            onlinecount = 0
             playercount = data["playercount"]
             players = ''
             for p in data["lastfive"]:
@@ -310,15 +311,16 @@ class APIs(commands.Cog):
             for server in sorted(data["servers"], key=lambda k: k["players"], reverse=True):
                 if server["players"] > 0:
                     temp = "[" + str(server["country_abbr"]) + "] [" + str(server["name"]) + "](https://www.classicube.net/server/play/" + str(server["hash"]) + ") | " + str(server["players"]) + "/" + str(server["maxplayers"])
+                    onlinecount += server["players"]
                     if len(servers) + len("\n---\n") + len(temp) > 1024:
                         serverlist.append(servers)
                         servers = ""
                     servers += temp+"\n---\n"
-            if not serverlist:
-                serverlist.append(servers)
+            serverlist.append(servers)
 
             embed = discord.Embed(title='ClassiCube', colour=0x977dab)
-            embed.add_field(name='Total Players', value=playercount)
+            embed.add_field(name='Total Accounts', value=playercount)
+            embed.add_field(name='Accounts Online\n(Inaccurate)', value=str(onlinecount))
             embed.add_field(name='Last five accounts', value=players)
             for i in range(len(serverlist)):
                 embed.add_field(name="("+str(i+1)+"/"+str(len(serverlist))+") Servers with players\nClick the server names to join!", value=serverlist[i])
