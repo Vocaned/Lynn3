@@ -404,7 +404,7 @@ class APIs(commands.Cog):
     async def IMDbAPI(self, ctx, *, title):
         """Gets information about movies using the IMDb"""
         await ctx.message.add_reaction('\N{HOURGLASS}')
-        data = await APIs.getAPI(self, 'http://www.omdbapi.com/?apikey=' + config.api_keys["ombd"] + '&t=' + APIs.url(self, title))
+        data = await APIs.getAPI(self, 'http://www.omdbapi.com/?apikey=' + config.api_keys["omdb"] + '&t=' + APIs.url(self, title))
         if data["Response"] == "False":
             await ctx.message.clear_reactions()
             await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
