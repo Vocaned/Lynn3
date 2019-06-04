@@ -5,6 +5,7 @@ import subprocess
 import json
 import math
 import requests
+import re
 
 
 """Misc commands"""
@@ -49,6 +50,23 @@ class Misc(commands.Cog):
         await ctx.message.delete()
         await ctx.send("<a:lgbt1:559809814943891457> <a:lgbt2:559809821377822720>")
         
+    @commands.command(aliases=["col", "color", "colour"])
+    async def hex(self, ctx, *, col):
+        hexcol = str(col).replace("#", "")
+        if not re.search(r'^(?:[0-9a-fA-F]{3}){1,2}$', hexcol):
+            await ctx.message.clear_reactions()
+            await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
+            return
+
+        embed = discord.Embed(title="#"+hexcol, colour=int(hexcol, 16))
+        r = int(hexcol[:2], 16)
+        rp = round(int(hexcol[:2], 16) / 2.55, 2)
+        g = int(hexcol[2:4], 16)
+        gp = round(int(hexcol[2:4], 16) / 2.55, 2)
+        b = int(hexcol[4:6], 16)
+        bp = round(int(hexcol[4:6], 16) / 2.55, 2)
+        embed.description = f'**Red** = **{str(r)}** (**{str(rp)}%**)\n**Green** = **{str(g)}** (**{str(gp)}%**)\n**Blue** = **{str(b)}** (**{str(bp)}%**)'
+        await ctx.send(embed=embed, content='')
 
 # The setup fucntion below is neccesarry. Remember we give bot.add_cog() the name of the class in this case SimpleCog.
 # When we load the cog, we use the name of the file.
