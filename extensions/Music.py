@@ -132,7 +132,9 @@ class MusicPlayer:
                 async with timeout(300):  # 5 minutes...
                     source = await self.queue.get()
             except asyncio.TimeoutError:
-                return self.destroy(self._guild)
+                if self in self._cog.players:
+                    return self.destroy(self._guild)
+                return
 
             if not isinstance(source, YTDLSource):
                 # Source was probably a stream (not downloaded)
@@ -154,12 +156,6 @@ class MusicPlayer:
             # Make sure the FFmpeg process is cleaned up.
             source.cleanup()
             self.current = None
-
-            try:
-                # We are no longer playing this song...
-                await self.np.delete()
-            except discord.HTTPException:
-                pass
 
     def destroy(self, guild):
         """Disconnect and cleanup the player."""
@@ -184,6 +180,14 @@ class Music(commands.Cog):
             await guild.voice_client.disconnect()
         except AttributeError:
             pass
+
+        try:  
+            for entry in self.players[guild.id].queue._queue:
+                if isinstance(entry, YTDLSource): 
+                    entry.cleanup()
+            self.players[guild.id].queue._queue.clear()
+        except KeyError:
+            pass   
 
         try:
             del self.players[guild.id]
@@ -277,7 +281,7 @@ class Music(commands.Cog):
 
         # If download is False, source will be a dict which will be used later to regather the stream.
         # If download is True, source will be a discord.FFmpegPCMAudio with a VolumeTransformer.
-        source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=False)
+        source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=True)
 
         await player.queue.put(source)
 
@@ -381,7 +385,7 @@ class Music(commands.Cog):
         player.volume = vol / 100
         await embedMsg(ctx, self.warn, f'**`{ctx.author}`**: Set the volume to **{vol}%**')
 
-    @commands.command(name='stop')
+    @commands.command(name='stop', aliases=['dc'])
     async def stop_(self, ctx):
         """Stop the currently playing song and destroy the player.
 
