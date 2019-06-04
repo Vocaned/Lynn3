@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import config
 import requests
 from datetime import datetime
 import base64
@@ -104,9 +105,7 @@ class APIs(commands.Cog):
 
                 skin = await APIs.getMinecraftSkinUrl(self, uuid["id"])
                 embed = discord.Embed(title='Minecraft User', colour=0x82540f)
-                embed.set_author(name=history[-1]["name"], 
-                                icon_url='https://crafatar.com/avatars/' + uuid["id"])
-                embed.set_image(url='https://crafatar.com/renders/body/' + uuid["id"] + '.png')
+                embed.set_author(name=history[-1]["name"], icon_url='https://crafatar.com/avatars/' + uuid["id"])
                 embed.add_field(name='Name history', value='\n'.join(names))
                 embed.add_field(name='UUID', value=uuid["id"])
                 embed.add_field(name='Skin URL', value='[Click me]('+skin["textures"]["SKIN"]["url"]+')')
@@ -134,7 +133,7 @@ class APIs(commands.Cog):
     # ----
 
     async def getApexAPI(self, url):
-        r = requests.get(url=url, headers={"TRN-Api-Key":"4059b1bb-c040-4765-b945-0180e108fc36"})
+        r = requests.get(url=url, headers={"TRN-Api-Key":config.api_keys["tracker"]})
         return(r.json())
 
     @commands.command(name='apex', aliases=['apexlegends', 'apesex'])
@@ -173,45 +172,32 @@ class APIs(commands.Cog):
     # CSGO
     # ----
 
-    users = {
-        # Discord ID        :  Steam ID
-        "177424155371634688": "76561198068918964",
-        "257006753089060864": "76561198380462342",
-        "350701370719862785": "76561198263243813",
-        "287867554045624323": "76561198322549877",
-        "303922742569336832": "76561198358351343",
-        "415050364836904961": "76561198378745415",
-        "380758020843634688": "76561198030030959",
-        "413391798786850836": "76561198812709835",
-        "344550203564621826": "76561198452824423"
-    }
-
     @commands.command(name='csgo', aliases=['cs'])
     async def CSGOAPI(self, ctx, *, user=None):
         """Gets information about CSGO players."""
         if not user:
-            if APIs.users[str(ctx.author.id)]:
-                user = APIs.users[str(ctx.author.id)]
+            if config.steamIDs[str(ctx.author.id)]:
+                user = config.steamIDs[str(ctx.author.id)]
             else:
                 await ctx.send("Please enter an steam id or custom url after the command.")
                 return
         else:
             try:
                 duser = await commands.UserConverter().convert(ctx, user)
-                if APIs.users[str(duser.id)]:
-                    user = APIs.users[str(duser.id)]
+                if config.steamIDs[str(duser.id)]:
+                    user = config.steamIDs[str(duser.id)]
             except:
                 pass
         await ctx.message.add_reaction('\N{HOURGLASS}')
         try:
             if not str(user).isdigit():
-                data = await APIs.getAPI(self, "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=5F448887F3F06D8E18833E047BBCDB7E&vanityurl=" + APIs.url(self, user))
+                data = await APIs.getAPI(self, "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=" + config.api_keys["steam"] + "&vanityurl=" + APIs.url(self, user))
                 user = data["response"]["steamid"]
 
-            data = await APIs.getAPI(self, "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=5F448887F3F06D8E18833E047BBCDB7E&steamids=" + user)
+            data = await APIs.getAPI(self, "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" + config.api_keys["steam"] + "&steamids=" + user)
             name = data["response"]["players"][0]["personaname"]
 
-            data = await APIs.getAPI(self, "http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=730&key=5F448887F3F06D8E18833E047BBCDB7E&steamid=" + user)
+            data = await APIs.getAPI(self, "http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=730&key=" + config.api_keys["steam"] + "&steamid=" + user)
             data = data["playerstats"]
 
             embed = discord.Embed(title='Counter-Strike: Global Offensive', colour=0xadd8e6)
@@ -418,7 +404,7 @@ class APIs(commands.Cog):
     async def IMDbAPI(self, ctx, *, title):
         """Gets information about movies using the IMDb"""
         await ctx.message.add_reaction('\N{HOURGLASS}')
-        data = await APIs.getAPI(self, 'http://www.omdbapi.com/?apikey=df81343d&t=' + APIs.url(self, title))
+        data = await APIs.getAPI(self, 'http://www.omdbapi.com/?apikey=' + config.api_keys["ombd"] + '&t=' + APIs.url(self, title))
         if data["Response"] == "False":
             await ctx.message.clear_reactions()
             await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
