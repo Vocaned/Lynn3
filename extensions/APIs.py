@@ -530,6 +530,26 @@ class APIs(commands.Cog):
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed, content='')
 
+    # ----
+    # OpenWeatherMap
+    # ----
+    @commands.command(name='weather')
+    async def weather(self, ctx, *, city):
+        await ctx.message.add_reaction('\N{HOURGLASS}')
+        data = await APIs.getAPI(self, 'http://api.openweathermap.org/data/2.5/weather?q=' +  APIs.url(self, city) + "&appid=" + config.api_keys["openweathermap"])
+        
+        embed = discord.Embed(title=data["name"] + ", " + data["sys"]["country"], colour=0xffb347)
+        embed.set_thumbnail(url="http://openweathermap.org/img/w/" + data["weather"][0]["icon"] + ".png")
+        embed.description = "**Weather**\n" + str(round(int(data["main"]["temp"]) - 273.15, 2)) + "°C (" + str(round(int(data["main"]["temp"]) * (9/5) - 459.67, 2)) + "°F)\n" \
+            + data["weather"][0]["description"].title() + "\n" \
+            + "Humidity: " + str(data["main"]["humidity"]) + "%\n" \
+            + "Clouds: " + str(data["clouds"]["all"]) + "%\n" \
+            + "Wind: " + str(data["wind"]["speed"]) + " m/s (" + str(round(int(data["wind"]["speed"]) * 2.2369362920544, 2)) + " mph)"
+        embed.set_footer(text="Data provided by OpenWeatherMap")
+        embed.timestamp = datetime.fromtimestamp(data["dt"])
+        await ctx.message.clear_reactions()
+        await ctx.send(embed=embed, content='')        
+
 
 def setup(bot):
     bot.add_cog(APIs(bot))
