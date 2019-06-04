@@ -96,7 +96,7 @@ class APIs(commands.Cog):
                 names = []
                 for i in range(len(history)):
                     names.append(history[i]["name"])
-                    names[i] = names[i].replace('*', '\*').replace('_', '\_').replace('~', '\~')
+                    names[i] = names[i].replace('*', '\\*').replace('_', '\\_').replace('~', '\\~')
                 names.reverse()
                 names[0] += " **[CURRENT]**"
 

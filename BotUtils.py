@@ -6,4 +6,4 @@ async def embedMsg(channel, hex, title="", description=""):
     embed = discord.Embed(title=str(title), colour=hex)
     embed.description = str(description)
     embed.timestamp = datetime.utcnow()
-    await channel.send(embed=embed, content='')
+    return await channel.send(embed=embed, content='')
