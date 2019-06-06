@@ -111,18 +111,20 @@ class APIs(commands.Cog):
                 if not skin:
                     await ctx.send("Ratelimited! Try again in 10 seconds")
                 embed = discord.Embed(title='Minecraft User', colour=0x82540f)
-                embed.set_author(name=history[-1]["name"], icon_url='https://crafatar.com/avatars/' + uuid["id"])
+                embed.set_author(name=history[-1]["name"], icon_url='attachment://head.png')
                 embed.add_field(name='Name history', value='\n'.join(names))
                 embed.add_field(name='UUID', value=uuid["id"])
                 embed.add_field(name='Skin URL', value='[Click me]('+skin["textures"]["SKIN"]["url"]+')')
                 embed.add_field(name='Account created', value=created)
                 embed.set_footer(text='|', icon_url='https://minecraft.net/favicon-96x96.png')
                 await BotUtils.skinRenderer2D(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
+                await BotUtils.headRenderer(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
                 file = discord.File("skins/2d/" + str(uuid["id"]) + ".png", filename="skin.png")
+                file2 = discord.File("skins/head/" + str(uuid["id"]) + ".png", filename="head.png")
                 embed.set_image(url="attachment://skin.png")
                 embed.timestamp = datetime.utcnow()
                 await ctx.message.clear_reactions()
-                await ctx.send(file=file, embed=embed, content="")
+                await ctx.send(files=[file, file2], embed=embed, content="")
             else:
                 sale = await APIs.getMinecraftSales(self)
                 embed = discord.Embed(title='Minecraft', colour=0x82540f)
@@ -280,19 +282,21 @@ class APIs(commands.Cog):
             
             embed = discord.Embed(title='ClassiCube User', colour=0x977dab)
             embed.set_author(name=data["username"],
-                icon_url='https://www.classicube.net/face/'+data["username"]+'.png')
+                icon_url='attachment://head.png')
             embed.add_field(name='ID', value=data["id"])
             embed.add_field(name='Registered on', value=datetime.utcfromtimestamp(data["registered"]).strftime('%c'))
             if flags:
                 embed.add_field(name='Notes', value=', '.join(flags))
             
             embed.set_footer(text='|', icon_url='https://www.classicube.net/static/img/cc-cube-small.png')
+            embed.set_image(url="attachment://skin.png")
             embed.timestamp = datetime.utcnow()
             await BotUtils.skinRenderer2D("https://static.classicube.net/skins/" + str(data["username"]) + ".png", str(data["id"]))
+            await BotUtils.headRenderer("https://static.classicube.net/skins/" + str(data["username"]) + ".png", str(data["id"]))
             file = discord.File("skins/2d/" + str(data["id"]) + ".png", filename="skin.png")
-            embed.set_image(url="attachment://skin.png")
+            file2 = discord.File("skins/head/" + str(data["id"]) + ".png", filename="head.png")
             await ctx.message.clear_reactions()
-            await ctx.send(file=file, embed=embed, content='')
+            await ctx.send(files=[file, file2], embed=embed, content='')
         else:
             data = await APIs.getAPI(self, 'https://www.classicube.net/api/players/')
             onlinecount = 0

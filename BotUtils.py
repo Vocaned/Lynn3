@@ -10,6 +10,22 @@ async def embedMsg(channel, hex, title="", description=""):
     embed.timestamp = datetime.utcnow()
     return await channel.send(embed=embed, content='')
 
+async def headRenderer(url, filename):
+    img = Image.open(requests.get(url, stream=True).raw)
+    p = int(img.width / 64)
+    img2 = Image.new("RGBA", (p*8, p*8), color=000000)
+    headSize = (p*8, p*8, p*16, p*16)
+    head2Size = (p*40, p*8, p*48, p*16)
+    head = img.crop(headSize).convert("RGBA")
+    head2 = img.crop(head2Size).convert("RGBA")
+    cols = head2.getcolors()
+    if cols[0] != (head2.width*head2.height, (0, 0, 0, 255)):
+        head = Image.alpha_composite(head, head2)
+    img2.paste(head, (0, 0))
+
+    img2.save("skins/head/" + str(filename) + ".png")
+    return "skins/head/" + str(filename) + ".png"
+
 async def skinRenderer2D(url, filename):
     """Renders a skin in 2D and returns path to the saved file"""
 
@@ -24,7 +40,9 @@ async def skinRenderer2D(url, filename):
     head2Size = (p*40, p*8, p*48, p*16)
     head = img.crop(headSize).convert("RGBA")
     head2 = img.crop(head2Size).convert("RGBA")
-    head = Image.alpha_composite(head, head2)
+    cols = head2.getcolors()
+    if cols[0] != (head2.width*head2.height, (0, 0, 0, 255)):
+        head = Image.alpha_composite(head, head2)
     # p*(w/2-p*8/2)
     img2.paste(head, (p*4, 0))
 
@@ -33,7 +51,9 @@ async def skinRenderer2D(url, filename):
     if l:
         body2Size = (p*20, p*36, p*28, p*48)
         body2 = img.crop(body2Size).convert("RGBA")
-        body = Image.alpha_composite(body, body2)
+        cols = body2.getcolors()
+        if cols[0] != (body2.width*body2.height, (0, 0, 0, 255)):
+            body = Image.alpha_composite(body, body2)
     img2.paste(body, (p*4, p*8))
 
     if not l:
@@ -55,28 +75,36 @@ async def skinRenderer2D(url, filename):
         rArm2Size = (p*44, p*36, p*48, p*48)
         rArm = img.crop(rArmSize).convert("RGBA")
         rArm2 = img.crop(rArm2Size).convert("RGBA")
-        rArm = Image.alpha_composite(rArm, rArm2)
+        cols = rArm2.getcolors()
+        if cols[0] != (rArm2.width*rArm2.height, (0, 0, 0, 255)):
+            rArm = Image.alpha_composite(rArm, rArm2)
         img2.paste(rArm, (0, p*8))
 
         lArmSize = (p*36, p*52, p*40, p*64)
         lArm2Size = (p*52, p*52, p*56, p*64)
         lArm = img.crop(lArmSize).convert("RGBA")
         lArm2 = img.crop(lArm2Size).convert("RGBA")
-        lArm = Image.alpha_composite(lArm, lArm2)
+        cols = lArm2.getcolors()
+        if cols[0] != (lArm2.width*lArm2.height, (0, 0, 0, 255)):
+            lArm = Image.alpha_composite(lArm, lArm2)
         img2.paste(lArm, (img2.width-p*4, p*8))
         
         rLegSize = (p*4, p*20, p*8, p*32)
         rLeg2Size = (p*4, p*36, p*8, p*48)
         rLeg = img.crop(rLegSize).convert("RGBA")
         rLeg2 = img.crop(rLeg2Size).convert("RGBA")
-        rLeg = Image.alpha_composite(rLeg, rLeg2)
+        cols = rLeg2.getcolors()
+        if cols[0] != (rLeg2.width*rLeg2.height, (0, 0, 0, 255)):
+            rLeg = Image.alpha_composite(rLeg, rLeg2)
         img2.paste(rLeg, (p*4, p*20))
 
         lLegSize = (p*20, p*52, p*24, p*64)
         lLeg2Size = (p*4, p*52, p*8, p*64)
         lLeg = img.crop(lLegSize).convert("RGBA")
         lLeg2 = img.crop(lLeg2Size).convert("RGBA")
-        lLeg = Image.alpha_composite(lLeg, lLeg2)
+        cols = lLeg2.getcolors()
+        if cols[0] != (lLeg2.width*lLeg2.height, (0, 0, 0, 255)):
+            lLeg = Image.alpha_composite(lLeg, lLeg2)
         img2.paste(lLeg, (img2.width-p*8, p*20))
 
     if img2.width < 256:
