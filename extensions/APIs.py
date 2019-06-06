@@ -7,6 +7,7 @@ import base64
 import json
 import math
 import urllib.parse
+import BotUtils
 
 class APIs(commands.Cog):
     """APIs"""
@@ -77,7 +78,10 @@ class APIs(commands.Cog):
     async def getMinecraftSkinUrl(self, uuid):
         r = requests.get(url='https://sessionserver.mojang.com/session/minecraft/profile/' + uuid)
         data = r.json()
-        val = data["properties"][0]["value"]
+        try:
+            val = data["properties"][0]["value"]
+        except:
+            return None
         decoded = base64.b64decode(val)
         return(json.loads(decoded))
 
@@ -104,6 +108,8 @@ class APIs(commands.Cog):
                 created = await APIs.getMinecraftAge(self, user)
 
                 skin = await APIs.getMinecraftSkinUrl(self, uuid["id"])
+                if not skin:
+                    await ctx.send("Ratelimited! Try again in 10 seconds")
                 embed = discord.Embed(title='Minecraft User', colour=0x82540f)
                 embed.set_author(name=history[-1]["name"], icon_url='https://crafatar.com/avatars/' + uuid["id"])
                 embed.add_field(name='Name history', value='\n'.join(names))
@@ -111,9 +117,12 @@ class APIs(commands.Cog):
                 embed.add_field(name='Skin URL', value='[Click me]('+skin["textures"]["SKIN"]["url"]+')')
                 embed.add_field(name='Account created', value=created)
                 embed.set_footer(text='|', icon_url='https://minecraft.net/favicon-96x96.png')
+                await BotUtils.skinRenderer2D(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
+                file = discord.File("skins/2d/" + str(uuid["id"]) + ".png", filename="skin.png")
+                embed.set_image(url="attachment://skin.png")
                 embed.timestamp = datetime.utcnow()
                 await ctx.message.clear_reactions()
-                await ctx.send(embed=embed, content="")
+                await ctx.send(file=file, embed=embed, content="")
             else:
                 sale = await APIs.getMinecraftSales(self)
                 embed = discord.Embed(title='Minecraft', colour=0x82540f)
@@ -279,8 +288,11 @@ class APIs(commands.Cog):
             
             embed.set_footer(text='|', icon_url='https://www.classicube.net/static/img/cc-cube-small.png')
             embed.timestamp = datetime.utcnow()
+            await BotUtils.skinRenderer2D("https://static.classicube.net/skins/" + str(data["username"]) + ".png", str(data["id"]))
+            file = discord.File("skins/2d/" + str(data["id"]) + ".png", filename="skin.png")
+            embed.set_image(url="attachment://skin.png")
             await ctx.message.clear_reactions()
-            await ctx.send(embed=embed, content='')
+            await ctx.send(file=file, embed=embed, content='')
         else:
             data = await APIs.getAPI(self, 'https://www.classicube.net/api/players/')
             onlinecount = 0
