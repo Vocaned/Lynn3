@@ -518,7 +518,9 @@ class APIs(commands.Cog):
         if "Custom banner" in flags and data["guild"]["banner"]:
             embed.set_image(url="https://cdn.discordapp.com/banners/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["banner"]) + ".webp?size=512")
        
-        if "Animated icon" in flags and data["guild"]["icon"]:
+        if "Animated icon" in flags and \
+            data["guild"]["icon"] and \
+            requests.get("https://cdn.discordapp.com/icons/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["icon"] + ".gif")).status_code == 200:
             embed.set_thumbnail(url="https://cdn.discordapp.com/icons/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["icon"] + ".gif"))
         elif data["guild"]["icon"]:
             embed.set_thumbnail(url="https://cdn.discordapp.com/icons/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["icon"] + ".webp"))
