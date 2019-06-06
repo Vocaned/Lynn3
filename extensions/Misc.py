@@ -68,6 +68,12 @@ class Misc(commands.Cog):
         embed.description = f'**Red** = **{str(r)}** (**{str(rp)}%**)\n**Green** = **{str(g)}** (**{str(gp)}%**)\n**Blue** = **{str(b)}** (**{str(bp)}%**)'
         await ctx.send(embed=embed, content='')
 
+    @commands.command()
+    async def ping(self, ctx):
+     embed = discord.Embed(title="Pong!", colour=0xfffdd0)
+     embed.description = str(round(self.bot.latency*1000, 2)) + "ms"
+     await ctx.send(embed=embed, content='')
+
 # The setup fucntion below is neccesarry. Remember we give bot.add_cog() the name of the class in this case SimpleCog.
 # When we load the cog, we use the name of the file.
 def setup(bot):
