@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from datetime import datetime
 import random
-
+import logging
 
 """Games and stuff"""
 
@@ -24,16 +24,16 @@ class Fun(commands.Cog):
 		while bombs > 0:
 			x = random.randint(0, width-1)
 			y = random.randint(0, height-1)
-			print('Adding bomb to: ' + str(x) + ' ' + str(y))
+			logging.debug('Adding bomb to: ' + str(x) + ' ' + str(y))
 			if grid[y][x] != 'x':
 				grid[y][x] = 'x'
 				bomb.append((x, y))
 				bombs-=1
 			else:
-				print('Bomb was already there, trying again...')
+				logging.debug('Bomb was already there, trying again...')
 
 		for loc in bomb:
-			print('Doing ' + str(loc))
+			logging.debug('Doing ' + str(loc))
 			canUp = False
 			canLeft = False
 			canRight = False

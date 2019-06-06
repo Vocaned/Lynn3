@@ -1,6 +1,14 @@
 from discord.ext import commands
+import logging
 token = "[TOKEN]"
 description = "Lynn 3.0_DEV"
+
+logging.basicConfig(format='%(asctime)s | [%(levelname)s] (%(filename)s) - %(message)s',
+                    level=logging.INFO,
+                    handlers=[
+                        logging.FileHandler("logs/bot.log"),
+                        logging.StreamHandler()
+                    ])
 
 def get_prefix(bot, message):
     prefixes = ['%', 'lynn ']

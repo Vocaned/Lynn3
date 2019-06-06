@@ -5,7 +5,7 @@ from BotUtils import embedMsg
 import asyncio
 import itertools
 import sys
-import traceback
+import logging
 from async_timeout import timeout
 from functools import partial
 from youtube_dl import YoutubeDL
@@ -210,9 +210,8 @@ class Music(commands.Cog):
         elif isinstance(error, InvalidVoiceChannel):
             await embedMsg(ctx, self.err, title='Error connecting to Voice Channel.', description='Please make sure you are in a valid channel or provide me with one')
 
-        print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
-        traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
-
+        logging.error('Ignoring exception in command {}:'.format(ctx.command), exc_info=True)
+        
     def get_player(self, ctx):
         """Retrieve the guild player, or generate one."""
         try:

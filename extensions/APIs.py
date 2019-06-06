@@ -166,7 +166,6 @@ class APIs(commands.Cog):
         except Exception as e:
             await ctx.message.clear_reactions()
             await ctx.message.add_reaction(content='\N{NO ENTRY SIGN}')
-            print(e)
 
     # ----
     # CSGO
@@ -236,7 +235,6 @@ class APIs(commands.Cog):
         except Exception as e:
             await ctx.message.clear_reactions()
             await ctx.message.add_reaction('\N{NO ENTRY SIGN}')
-            print(e)
 
     # ----
     # CLASSICUBE

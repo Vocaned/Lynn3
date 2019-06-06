@@ -5,6 +5,7 @@ from os.path import isfile, join
 import sys, traceback
 import config
 import os
+import logging
 
 cogs_dir = 'extensions'
 bot = commands.Bot(command_prefix=config.get_prefix, description=config.description)
@@ -14,11 +15,12 @@ if __name__ == '__main__':
         try:
             bot.load_extension(cogs_dir + '.' + extension)
         except (discord.ClientException, ModuleNotFoundError):
-            print(f'Failed to load extension {extension}.')
-            traceback.print_exc()
+            logging.error(f'Failed to load extension {extension}.', exc_info=True)
 
 @bot.event
 async def on_ready():
-    print(f'Logged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}')
+    logging.info("\n\n\n\n\n\n")
+    logging.info(f'Logged in as: {bot.user.name} - {bot.user.id}')
+    logging.info(f'Discord.py version: {discord.__version__}')
 
 bot.run(config.token, bot=True, reconnect=True)

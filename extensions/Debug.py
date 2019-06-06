@@ -6,6 +6,7 @@ from datetime import datetime
 import time
 import re
 import requests
+import logging
 
 class Debug(commands.Cog):
     """Debug"""
@@ -24,6 +25,7 @@ class Debug(commands.Cog):
     def printDebug(self, text):
         caller = getframeinfo(stack()[1][0])
         self.debugOutput.append("["+str(self.exitCode)+"] (" + str(time.time()-self.startTime) + ") " + str(caller.filename) + ":" + str(caller.lineno) + " - " + str(text))
+        logging.info(str(text))
 
     @commands.command()
     @commands.is_owner()
@@ -68,11 +70,7 @@ class Debug(commands.Cog):
                         self.printDebug("Webhook created! ID " + str(hook.id))
                     await hook.send(content=newmsg, username=ctx.author.display_name, avatar_url=ctx.author.avatar_url)
                     self.printDebug("Sent fixed message")
-                    #await ctx.message.delete()
-            else:
-                self.exitCode = self.WARN
-                self.printDebug("Didn't find an emote")
-
+            #await ctx.message.delete()
 
 
         except Exception as e:
@@ -82,12 +80,14 @@ class Debug(commands.Cog):
         col = 0x00ff00
         if self.exitCode == self.WARN: col = 0xffff00
         if self.exitCode == self.ERROR: col = 0xff0000
-
-        embed = discord.Embed(title='Debug', colour=col)
-        embed.description = "```\n" + "\n-----\n".join(self.debugOutput) + "\n```"
-        embed.timestamp = datetime.utcnow()
-        await ctx.message.clear_reactions()
-        await ctx.send(embed=embed, content='')
+        try:
+            embed = discord.Embed(title='Debug', colour=col)
+            embed.description = "```\n" + "\n-----\n".join(self.debugOutput) + "\n```"
+            embed.timestamp = datetime.utcnow()
+            await ctx.message.clear_reactions()
+            await ctx.send(embed=embed, content='')
+        except Exception as e:
+            await ctx.send(content='```'+str(e)+'```')
 
 def setup(bot):
     bot.add_cog(Debug(bot))
