@@ -9,4 +9,5 @@ juttu.py
 downloads
 frame.jpg
 *_sdl
-skins
+skins/*/*
+!skins/*/default.png
