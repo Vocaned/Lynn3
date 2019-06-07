@@ -287,6 +287,7 @@ class APIs(commands.Cog):
             embed.add_field(name='Registered on', value=datetime.utcfromtimestamp(data["registered"]).strftime('%c'))
             if flags:
                 embed.add_field(name='Notes', value=', '.join(flags))
+            embed.add_field(name='Skin URL', value='[Click me](https://static.classicube.net/skins/' + str(data["username"]) + '.png)')
             
             embed.set_footer(text='|', icon_url='https://www.classicube.net/static/img/cc-cube-small.png')
             embed.set_image(url="attachment://skin.png")
@@ -454,7 +455,7 @@ class APIs(commands.Cog):
 
     @commands.command(name='urbandictionary', aliases=["urban", "define"])
     async def UrbanDictionaryAPI(self, ctx, *, term):
-        """Gets information about movies using the IMDb"""
+        """Gets information about the urban dictionary"""
         await ctx.message.add_reaction('\N{HOURGLASS}')
         data = await APIs.getAPI(self, 'http://api.urbandictionary.com/v0/define?term=' + APIs.url(self, term))
         if not data["list"]:
@@ -551,6 +552,7 @@ class APIs(commands.Cog):
     # ----
     @commands.command(name='weather')
     async def weather(self, ctx, *, city):
+        """Gets information about the weather"""
         await ctx.message.add_reaction('\N{HOURGLASS}')
         data = await APIs.getAPI(self, 'http://api.openweathermap.org/data/2.5/weather?q=' +  APIs.url(self, city) + "&appid=" + config.api_keys["openweathermap"])
         
