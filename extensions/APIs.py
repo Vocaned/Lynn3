@@ -287,15 +287,21 @@ class APIs(commands.Cog):
             embed.add_field(name='Registered on', value=datetime.utcfromtimestamp(data["registered"]).strftime('%c'))
             if flags:
                 embed.add_field(name='Notes', value=', '.join(flags))
-            embed.add_field(name='Skin URL', value='[Click me](https://static.classicube.net/skins/' + str(data["username"]) + '.png)')
             
+            if requests.get('https://static.classicube.net/skins/' + str(data["username"]) + '.png').status_code == 200:
+                embed.add_field(name='Skin URL', value='[Click me](https://static.classicube.net/skins/' + str(data["username"]) + '.png)')
+                await BotUtils.skinRenderer2D("https://static.classicube.net/skins/" + str(data["username"]) + ".png", str(data["id"]))
+                await BotUtils.headRenderer("https://static.classicube.net/skins/" + str(data["username"]) + ".png", str(data["id"]))
+                file = discord.File("skins/2d/" + str(data["id"]) + ".png", filename="skin.png")
+                file2 = discord.File("skins/head/" + str(data["id"]) + ".png", filename="head.png")
+            else:
+                file = discord.File("skins/2d/default.png", filename="skin.png")
+                file2 = discord.File("skins/head/default.png", filename="head.png")
+
             embed.set_footer(text='|', icon_url='https://www.classicube.net/static/img/cc-cube-small.png')
             embed.set_image(url="attachment://skin.png")
             embed.timestamp = datetime.utcnow()
-            await BotUtils.skinRenderer2D("https://static.classicube.net/skins/" + str(data["username"]) + ".png", str(data["id"]))
-            await BotUtils.headRenderer("https://static.classicube.net/skins/" + str(data["username"]) + ".png", str(data["id"]))
-            file = discord.File("skins/2d/" + str(data["id"]) + ".png", filename="skin.png")
-            file2 = discord.File("skins/head/" + str(data["id"]) + ".png", filename="head.png")
+            
             await ctx.message.clear_reactions()
             await ctx.send(files=[file, file2], embed=embed, content='')
         else:
