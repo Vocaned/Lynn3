@@ -11,11 +11,13 @@ class EmoteFix(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        if message.author.bot:
+            return
         replaced = []
-        match = re.findall("(?!<):.+?:(?!\\d+?>)", message.content)
+        shouldSend = False
+        match = re.findall("(?=(:.+?:))", message.content)
+        newmsg = message.content
         if match:
-            shouldSend = False
-            newmsg = message.content
             for emote in match:
                 if not emote in replaced:
                     em = emote.replace(":", "")
@@ -28,15 +30,17 @@ class EmoteFix(commands.Cog):
                             newmsg = newmsg.replace(emote, fullemote)
                             replaced.append(emote)
                             shouldSend = True
-            if shouldSend:
-                hook = None
-                for h in await message.channel.webhooks():
-                    if h.name == "EmoteFix":
-                        hook = h
-                if hook == None:
-                    hook = await message.channel.create_webhook(name="EmoteFix")
-                await hook.send(content=newmsg, username=message.author.display_name, avatar_url=message.author.avatar_url)
-                await message.delete()
+
+        match = re.findall("\\[.+]\\(<?https?://.+\\..+\\)", message.content)
+        if match or shouldSend:
+            hook = None
+            for h in await message.channel.webhooks():
+                if h.name == "EmoteFix":
+                    hook = h
+            if hook == None:
+                hook = await message.channel.create_webhook(name="EmoteFix")
+            await hook.send(content=newmsg, username=message.author.display_name, avatar_url=message.author.avatar_url)
+            await message.delete()
 
 def setup(bot):
     bot.add_cog(EmoteFix(bot))
