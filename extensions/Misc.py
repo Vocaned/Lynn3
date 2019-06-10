@@ -6,7 +6,9 @@ import json
 import math
 import requests
 import re
-
+import dateparser
+import time
+import asyncio
 
 """Misc commands"""
 
@@ -70,9 +72,29 @@ class Misc(commands.Cog):
 
     @commands.command()
     async def ping(self, ctx):
-     embed = discord.Embed(title="Pong!", colour=0xfffdd0)
-     embed.description = str(round(self.bot.latency*1000, 2)) + "ms"
-     await ctx.send(embed=embed, content='')
+        embed = discord.Embed(title="Pong!", colour=0xfffdd0)
+        embed.description = str(round(self.bot.latency*1000, 2)) + "ms"
+        await ctx.send(embed=embed, content='')
+
+    @commands.command(aliases=["remind", "remindme"])
+    async def reminder(self, ctx, *, string):
+        """Split message and time with |"""
+        if len(string.split("|")) > 2:
+            await ctx.send('Too many split chracters ("|")')
+            await ctx.message.add_reaction('\N{NO ENTRY SIGN}')
+            return
+        content = ""
+        embed = discord.Embed(title="Reminder", colour=0x8630bf)
+        embed.description = string.split("|")[0]
+        if len(string.split("|")) == 2:
+            embed.timestamp = dateparser.parse(string.split("|")[1], settings={"TIMEZONE": "UTC"})
+        else:
+            content = 'No timestamp found. If you want to add a time to your reminder, add "|[time here]" after the message. e.g `%remind Go outside|in 15 minutes`'
+        await ctx.message.delete()
+        msg = await ctx.send(embed=embed, content=content)
+        if content:
+            await asyncio.sleep(20)
+            await msg.edit(embed=embed, content='')
 
 # The setup fucntion below is neccesarry. Remember we give bot.add_cog() the name of the class in this case SimpleCog.
 # When we load the cog, we use the name of the file.
