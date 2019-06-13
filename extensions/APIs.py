@@ -67,7 +67,7 @@ class APIs(commands.Cog):
                 if ok and lastfail == a-1:
                     return datetime.utcfromtimestamp(a)
                 else:
-                    return  '???'
+                    return '???'
             else:
                 mid = a + math.floor( ( b - a ) / 2)
                 ok = await APIs.getMinecraftAgeCheck(self, name, mid)
@@ -134,13 +134,20 @@ class APIs(commands.Cog):
                 embed.set_author(name=history[-1]["name"], icon_url='attachment://head.png')
                 embed.add_field(name='Name history', value='\n'.join(names))
                 embed.add_field(name='UUID', value=uuid["id"])
-                embed.add_field(name='Skin URL', value='[Click me]('+skin["textures"]["SKIN"]["url"]+')')
-                embed.add_field(name='Account created', value="On " + created.strftime('%c') + "\n" + self.td_format(datetime.utcnow() - created))
+                if skin["textures"]["SKIN"]["url"]:
+                    embed.add_field(name='Skin URL', value='[Click me]('+skin["textures"]["SKIN"]["url"]+')')
+                    await BotUtils.skinRenderer2D(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
+                    await BotUtils.headRenderer(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
+                    file = discord.File("skins/2d/" + str(uuid["id"]) + ".png", filename="skin.png")
+                    file2 = discord.File("skins/head/" + str(uuid["id"]) + ".png", filename="head.png")
+                else:
+                    file = discord.File("skins/2d/default.png", filename="skin.png")
+                    file2 = discord.File("skins/head/default.png", filename="head.png")
+                if created != "???":
+                    embed.add_field(name='Account created', value="On " + created.strftime('%c') + "\n" + self.td_format(datetime.utcnow() - created))
+                else:
+                    embed.add_field(name='Account created', value="???")
                 embed.set_footer(text='|', icon_url='https://minecraft.net/favicon-96x96.png')
-                await BotUtils.skinRenderer2D(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
-                await BotUtils.headRenderer(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
-                file = discord.File("skins/2d/" + str(uuid["id"]) + ".png", filename="skin.png")
-                file2 = discord.File("skins/head/" + str(uuid["id"]) + ".png", filename="head.png")
                 embed.set_image(url="attachment://skin.png")
                 embed.timestamp = datetime.utcnow()
                 await ctx.message.clear_reactions()
@@ -157,7 +164,7 @@ class APIs(commands.Cog):
                 await ctx.send(embed=embed, content="")
         except Exception:
             await ctx.message.clear_reactions()
-            await ctx.message.add_reaction(content='\N{NO ENTRY SIGN}')
+            await ctx.message.add_reaction('\N{NO ENTRY SIGN}')
 
     # ----
     # Apex Legends
@@ -196,7 +203,7 @@ class APIs(commands.Cog):
             await ctx.send(embed=embed, content="")
         except Exception as e:
             await ctx.message.clear_reactions()
-            await ctx.message.add_reaction(content='\N{NO ENTRY SIGN}')
+            await ctx.message.add_reaction('\N{NO ENTRY SIGN}')
 
     # ----
     # CSGO
