@@ -23,6 +23,9 @@ async def headRenderer(url, filename):
         head = Image.alpha_composite(head, head2)
     img2.paste(head, (0, 0))
 
+    # We do our own resizing because discord interpolates images which makes them blurry
+    if img2.width < 64:
+        img2 = img2.resize((img2.width * 8, img2.height * 8), resample=Image.NEAREST)
     img2.save("skins/head/" + str(filename) + ".png")
     return "skins/head/" + str(filename) + ".png"
 
