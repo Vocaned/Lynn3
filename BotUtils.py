@@ -19,7 +19,7 @@ async def headRenderer(url, filename):
     head = img.crop(headSize).convert("RGBA")
     head2 = img.crop(head2Size).convert("RGBA")
     cols = head2.getcolors()
-    if cols[0] != (head2.width*head2.height, (0, 0, 0, 255)):
+    if not cols or cols[0] != (head2.width*head2.height, (0, 0, 0, 255)):
         head = Image.alpha_composite(head, head2)
     img2.paste(head, (0, 0))
 
@@ -41,7 +41,7 @@ async def skinRenderer2D(url, filename):
     head = img.crop(headSize).convert("RGBA")
     head2 = img.crop(head2Size).convert("RGBA")
     cols = head2.getcolors()
-    if cols[0] != (head2.width*head2.height, (0, 0, 0, 255)):
+    if not cols or cols[0] != (head2.width*head2.height, (0, 0, 0, 255)):
         head = Image.alpha_composite(head, head2)
     # p*(w/2-p*8/2)
     img2.paste(head, (p*4, 0))
@@ -52,7 +52,7 @@ async def skinRenderer2D(url, filename):
         body2Size = (p*20, p*36, p*28, p*48)
         body2 = img.crop(body2Size).convert("RGBA")
         cols = body2.getcolors()
-        if cols[0] != (body2.width*body2.height, (0, 0, 0, 255)):
+        if not cols or cols[0] != (body2.width*body2.height, (0, 0, 0, 255)):
             body = Image.alpha_composite(body, body2)
     img2.paste(body, (p*4, p*8))
 
@@ -76,7 +76,7 @@ async def skinRenderer2D(url, filename):
         rArm = img.crop(rArmSize).convert("RGBA")
         rArm2 = img.crop(rArm2Size).convert("RGBA")
         cols = rArm2.getcolors()
-        if cols[0] != (rArm2.width*rArm2.height, (0, 0, 0, 255)):
+        if not cols or cols[0] != (rArm2.width*rArm2.height, (0, 0, 0, 255)):
             rArm = Image.alpha_composite(rArm, rArm2)
         img2.paste(rArm, (0, p*8))
 
@@ -85,7 +85,7 @@ async def skinRenderer2D(url, filename):
         lArm = img.crop(lArmSize).convert("RGBA")
         lArm2 = img.crop(lArm2Size).convert("RGBA")
         cols = lArm2.getcolors()
-        if cols[0] != (lArm2.width*lArm2.height, (0, 0, 0, 255)):
+        if not cols or cols[0] != (lArm2.width*lArm2.height, (0, 0, 0, 255)):
             lArm = Image.alpha_composite(lArm, lArm2)
         img2.paste(lArm, (img2.width-p*4, p*8))
         
@@ -94,7 +94,7 @@ async def skinRenderer2D(url, filename):
         rLeg = img.crop(rLegSize).convert("RGBA")
         rLeg2 = img.crop(rLeg2Size).convert("RGBA")
         cols = rLeg2.getcolors()
-        if cols[0] != (rLeg2.width*rLeg2.height, (0, 0, 0, 255)):
+        if not cols or cols[0] != (rLeg2.width*rLeg2.height, (0, 0, 0, 255)):
             rLeg = Image.alpha_composite(rLeg, rLeg2)
         img2.paste(rLeg, (p*4, p*20))
 
@@ -103,7 +103,7 @@ async def skinRenderer2D(url, filename):
         lLeg = img.crop(lLegSize).convert("RGBA")
         lLeg2 = img.crop(lLeg2Size).convert("RGBA")
         cols = lLeg2.getcolors()
-        if cols[0] != (lLeg2.width*lLeg2.height, (0, 0, 0, 255)):
+        if not cols or cols[0] != (lLeg2.width*lLeg2.height, (0, 0, 0, 255)):
             lLeg = Image.alpha_composite(lLeg, lLeg2)
         img2.paste(lLeg, (img2.width-p*8, p*20))
 
