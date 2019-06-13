@@ -84,20 +84,21 @@ class Fun(commands.Cog):
 
 	@commands.command(name='minesweeper', aliases=['miinaharava'])
 	async def minesweeper(self, ctx, *, args=None):
-		"""Generates a game of minesweeper."""
+		"""Generates a game of minesweeper.
+		args = `width height bombs (nospoil)`"""
 		await ctx.message.add_reaction('\N{HOURGLASS}')
 		
+		spoil = True
 		if args != None and len(str(args).split(' ')) > 2:
 			width = int(str(args).split(' ')[0])
 			height = int(str(args).split(' ')[1])
 			bombs = int(str(args).split(' ')[2])
-			if str(args).split(' ')[3] == 'nospoil':
+			if 'nospoil' in args:
 				spoil = False
 		else:
 			width = 10
 			height = 10
 			bombs = 15
-			spoil = True
 		output = ''
 		field = Fun.generateMinesweeper(self, width, height, bombs)
 		for row in field:
