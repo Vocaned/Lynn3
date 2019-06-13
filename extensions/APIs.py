@@ -26,6 +26,26 @@ class APIs(commands.Cog):
 
     def url(self, url):
         return urllib.parse.quote(url)
+
+    # thanks stackoverflow love ya
+    def td_format(self, td_object):
+        seconds = int(td_object.total_seconds())
+        periods = [
+            ('year',        60*60*24*365),
+            ('month',       60*60*24*30),
+            ('day',         60*60*24),
+            ('hour',        60*60),
+            ('minute',      60)
+        ]
+
+        strings=[]
+        for period_name, period_seconds in periods:
+            if seconds > period_seconds:
+                period_value , seconds = divmod(seconds, period_seconds)
+                has_s = 's' if period_value > 1 else ''
+                strings.append("%s %s%s" % (period_value, period_name, has_s))
+
+        return ", ".join(strings)
     
     # ----
     # MINECRAFT
@@ -45,7 +65,7 @@ class APIs(commands.Cog):
             if a == b:
                 ok = await APIs.getMinecraftAgeCheck(self, name, a)
                 if ok and lastfail == a-1:
-                    return datetime.utcfromtimestamp(a).strftime('%c')
+                    return datetime.utcfromtimestamp(a)
                 else:
                     return  '???'
             else:
@@ -115,7 +135,7 @@ class APIs(commands.Cog):
                 embed.add_field(name='Name history', value='\n'.join(names))
                 embed.add_field(name='UUID', value=uuid["id"])
                 embed.add_field(name='Skin URL', value='[Click me]('+skin["textures"]["SKIN"]["url"]+')')
-                embed.add_field(name='Account created', value=created)
+                embed.add_field(name='Account created', value="On " + created.strftime('%c') + "\n" + self.td_format(datetime.utcnow() - created))
                 embed.set_footer(text='|', icon_url='https://minecraft.net/favicon-96x96.png')
                 await BotUtils.skinRenderer2D(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
                 await BotUtils.headRenderer(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
@@ -284,7 +304,7 @@ class APIs(commands.Cog):
             embed.set_author(name=data["username"],
                 icon_url='attachment://head.png')
             embed.add_field(name='ID', value=data["id"])
-            embed.add_field(name='Registered on', value=datetime.utcfromtimestamp(data["registered"]).strftime('%c'))
+            embed.add_field(name='Account created', value="On " + datetime.utcfromtimestamp(data["registered"]).strftime('%c') + "\n" + self.td_format(datetime.utcnow() - datetime.utcfromtimestamp(data["registered"])) + " ago")
             if flags:
                 embed.add_field(name='Notes', value=', '.join(flags))
             
