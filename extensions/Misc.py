@@ -6,7 +6,7 @@ import json
 import math
 import requests
 import re
-import dateparser
+from dateparser.search import search_dates
 import time
 import asyncio
 
@@ -78,23 +78,14 @@ class Misc(commands.Cog):
 
     @commands.command(aliases=["remind", "remindme"])
     async def reminder(self, ctx, *, string):
-        """Split message and time with |"""
-        if len(string.split("|")) > 2:
-            await ctx.send('Too many split chracters ("|")')
-            await ctx.message.add_reaction('\N{NO ENTRY SIGN}')
-            return
-        content = ""
+        """Reminder"""       
         embed = discord.Embed(title="Reminder", colour=0x8630bf)
-        embed.description = string.split("|")[0]
-        if len(string.split("|")) == 2:
-            embed.timestamp = dateparser.parse(string.split("|")[1], settings={"TIMEZONE": "UTC"})
-        else:
-            content = 'No timestamp found. If you want to add a time to your reminder, add "|[time here]" after the message. e.g `%remind Go outside|in 15 minutes`'
+        date = search_dates(string, settings={"TIMEZONE": "UTC"})
+        if date and date[-1][1]:
+            embed.timestamp = date[-1][1]
+        embed.description = string
         await ctx.message.delete()
-        msg = await ctx.send(embed=embed, content=content)
-        if content:
-            await asyncio.sleep(20)
-            await msg.edit(embed=embed, content='')
+        await ctx.send(embed=embed, content='')
 
 # The setup fucntion below is neccesarry. Remember we give bot.add_cog() the name of the class in this case SimpleCog.
 # When we load the cog, we use the name of the file.
