@@ -93,7 +93,7 @@ class Admin(commands.Cog):
                 await ctx.send(f'```py\n{traceback.format_exc()}\n```')
             else:
                 await ctx.message.add_reaction('\N{OK HAND SIGN}')
-                await ctx.send('Reloaded `'+str(n)+'` modules in `' + str(round((end-start)*1000, 2)) + '`ms.')
+                await ctx.send('Reloaded `'+str(n)+'` modules in `' + str(round((end-start)*1000, 2)) + 'ms`.')
         else:
             try:
                 self.bot.unload_extension('extensions.'+module)
@@ -103,7 +103,7 @@ class Admin(commands.Cog):
                 await ctx.send(f'```py\n{traceback.format_exc()}\n```')
             else:
                 await ctx.message.add_reaction('\N{OK HAND SIGN}')
-                await ctx.send('Reloaded `'+str(module)+'` in `'+str(round((end-start)*1000, 2))+'`ms.')
+                await ctx.send('Reloaded `'+str(module)+'` in `'+str(round((end-start)*1000, 2))+'ms`.')
 
     @commands.command(pass_context=True, hidden=True, name='eval')
     @commands.is_owner()

@@ -83,7 +83,8 @@ class Misc(commands.Cog):
         date = search_dates(string, settings={"TIMEZONE": "UTC"})
         if date and date[-1][1]:
             embed.timestamp = date[-1][1]
-        embed.description = string
+        embed.description = string.split("|")[0]
+        embed.set_footer(text=str(ctx.message.author.name) + '#' +  str(ctx.message.author.discriminator), icon_url=ctx.message.author.avatar_url)
         await ctx.message.delete()
         await ctx.send(embed=embed, content='')
 
