@@ -306,6 +306,8 @@ class APIs(commands.Cog):
                 flags.append('Forum admin')
             if 'e' in data["flags"]:
                 flags.append('Blog editor')
+            if 'p' in data["flags"]:
+                flags.append('Patreon')
             
             embed = discord.Embed(title='ClassiCube User', colour=0x977dab)
             embed.set_author(name=data["username"],
@@ -570,7 +572,7 @@ class APIs(commands.Cog):
        
         if "Animated icon" in flags and \
             data["guild"]["icon"] and \
-            requests.get("https://cdn.discordapp.com/icons/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["icon"] + ".gif")).status_code == 200:
+            data["guild"]["icon"].startswith("a_"):
             embed.set_thumbnail(url="https://cdn.discordapp.com/icons/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["icon"] + ".gif?size=4096"))
         elif data["guild"]["icon"]:
             embed.set_thumbnail(url="https://cdn.discordapp.com/icons/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["icon"] + ".webp?size=4096"))
