@@ -21,8 +21,9 @@ def get_prefix(bot, message):
 api_keys = {
     "tracker":          "[KEY]",
     "steam":            "[KEY]",
-    "openweathermap":   "[KEY]",
-    "omdb":             "[KEY]"
+    "darksky":          "[KEY]",
+    "omdb":             "[KEY]",
+    "mapbox":           "[KEY]"
 }
 
 steamIDs = {
