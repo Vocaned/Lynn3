@@ -22,7 +22,7 @@ class Legacy(commands.Cog):
     async def __local_check(self, ctx):
         return ctx.message.guild.id != 485076757733572608
 
-    @commands.command(name='repeat', aliases=['copy', 'mimic'])
+    @commands.command(name='echo', aliases=['say'])
     async def do_repeat(self, ctx, *, our_input: str):
         """A simple command which repeats our input.
         In rewrite Context is automatically passed to our commands as the first argument after self."""
