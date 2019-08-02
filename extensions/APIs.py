@@ -435,7 +435,7 @@ class APIs(commands.Cog):
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
             await ctx.send(embed=embed, content='')
-            return                
+            return
         else:
             data = await APIs.getAPI(self, 'https://api.wynncraft.com/public_api.php?action=onlinePlayersSum')
             embed = discord.Embed(title='Wynncraft', colour=0x7bbf32)
@@ -583,25 +583,49 @@ class APIs(commands.Cog):
         await ctx.send(embed=embed, content='')
 
     # ----
-    # OpenWeatherMap
+    # DarkSky
     # ----
     @commands.command(name='weather')
     async def weather(self, ctx, *, city):
-        """Gets information about the weather"""
+        try:
+            """Gets information about the weather"""
+            await ctx.message.add_reaction('\N{HOURGLASS}')
+            #https://api.mapbox.com/geocoding/v5/mapbox.places/joensuu.json?access_token=
+            geocoding = await APIs.getAPI(self, "https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=en&q=" + APIs.url(self, city))
+            data = await APIs.getAPI(self, 'https://api.darksky.net/forecast/' +  config.api_keys["darksky"] + "/" + geocoding[0]["lat"] + "," + geocoding[0]["lon"] + "?exclude=minutely,hourly,daily,alerts,flags&units=si")
+
+            embed = discord.Embed(title=geocoding[0]["display_name"], colour=0xffb347)
+            embed.set_thumbnail(url="https://darksky.net/images/weather-icons/" + data["currently"]["icon"] + ".png")
+            embed.description = "**Weather**\n" + str(round(data["currently"]["temperature"], 2)) + "°C (" + str(round(data["currently"]["temperature"] * (9/5) + 32, 2)) + "°F)\n" \
+                + data["currently"]["summary"] + "\n" \
+                + "Feels Like: " + str(round(data["currently"]["apparentTemperature"], 2)) + "°C (" + str(round(data["currently"]["apparentTemperature"] * (9/5) + 32, 2)) + "°F)\n" \
+                + "Humidity: " + str(round(data["currently"]["humidity"] * 100, 2)) + "%\n" \
+                + "Clouds: " + str(round(data["currently"]["cloudCover"] * 100, 2)) + "%\n" \
+                + "Wind: " + str(data["currently"]["windSpeed"]) + " m/s (" + str(round(int(data["currently"]["windSpeed"]) * 2.2369362920544, 2)) + " mph)"
+            embed.set_footer(text="Powered by Dark Sky and OpenStreetMap")
+            embed.timestamp = datetime.fromtimestamp(data["currently"]["time"])
+            await ctx.message.clear_reactions()
+            await ctx.send(embed=embed, content='')
+        except Exception as e:
+            await ctx.message.clear_reactions()
+            await ctx.message.add_reaction('\N{NO ENTRY SIGN}')
+
+
+    # ---
+    # DISCORD USER
+    # ---
+    @commands.command(name='user')
+    async def discordUser(self, ctx, *, user):
+        """Gets Discord User stats"""
         await ctx.message.add_reaction('\N{HOURGLASS}')
-        data = await APIs.getAPI(self, 'http://api.openweathermap.org/data/2.5/weather?q=' +  APIs.url(self, city) + "&appid=" + config.api_keys["openweathermap"])
+        user = await commands.UserConverter().convert(ctx, user)
         
-        embed = discord.Embed(title=data["name"] + ", " + data["sys"]["country"], colour=0xffb347)
-        embed.set_thumbnail(url="http://openweathermap.org/img/w/" + data["weather"][0]["icon"] + ".png")
-        embed.description = "**Weather**\n" + str(round(int(data["main"]["temp"]) - 273.15, 2)) + "°C (" + str(round(int(data["main"]["temp"]) * (9/5) - 459.67, 2)) + "°F)\n" \
-            + data["weather"][0]["description"].title() + "\n" \
-            + "Humidity: " + str(data["main"]["humidity"]) + "%\n" \
-            + "Clouds: " + str(data["clouds"]["all"]) + "%\n" \
-            + "Wind: " + str(data["wind"]["speed"]) + " m/s (" + str(round(int(data["wind"]["speed"]) * 2.2369362920544, 2)) + " mph)"
-        embed.set_footer(text="Data provided by OpenWeatherMap")
-        embed.timestamp = datetime.fromtimestamp(data["dt"])
+        embed = discord.Embed(title="Discord User " + user.name + "#" + str(user.discriminator), colour=0x7289DA)
+        embed.set_thumbnail(url=str(user.avatar_url))
+        embed.add_field(name="Account created", value="On " + datetime.utcfromtimestamp(user.created_at).strftime('%c') + "\n" + self.td_format(datetime.utcnow() - user.created_at) + " ago")
+        embed.set_footer(text="User ID" + str(user.id))
         await ctx.message.clear_reactions()
-        await ctx.send(embed=embed, content='')        
+        await ctx.send(embed=embed, content='')
 
 
 def setup(bot):
