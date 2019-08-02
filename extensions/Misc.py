@@ -46,7 +46,7 @@ class Misc(commands.Cog):
         embed.description = "https://csgo-stats.com/match/" + m
         embed.timestamp = datetime.utcnow()
         await ctx.send(embed=embed, content="")
-    
+
     @commands.command()
     async def lgbt(self, ctx):
         await ctx.message.delete()
@@ -88,6 +88,19 @@ class Misc(commands.Cog):
         await ctx.message.delete()
         await ctx.send(embed=embed, content='')
 
+    @commands.command(aliases=["id"])
+    async def snowflake(self, ctx, *, snowflake):
+        try:
+            snowflake =int(snowflake)
+            embed = discord.Embed(title="Snowflake " + bin(snowflake)[2:], colour=0x7289DA)
+            embed.description = "**Timestamp**: " + datetime.utcfromtimestamp(((snowflake >> 22) + 1420070400000) / 1000).strftime('%c') \
+                              + "\n**Internal worker ID**: " + str((snowflake & 0x3E0000) >> 17) \
+                              + "\n**Internal process ID**: " + str((snowflake & 0x1F000) >> 12) \
+                              + "\n**Increment**: " + str(snowflake & 0xFFF)
+            await ctx.send(embed=embed, content='')
+        except:
+            await ctx.message.add_reaction('\N{NO ENTRY SIGN}')
+        
 # The setup fucntion below is neccesarry. Remember we give bot.add_cog() the name of the class in this case SimpleCog.
 # When we load the cog, we use the name of the file.
 def setup(bot):
