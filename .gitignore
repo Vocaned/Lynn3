@@ -11,3 +11,4 @@ frame.jpg
 *_sdl
 skins/*/*
 !skins/*/default.png
+CogTemplate.py
