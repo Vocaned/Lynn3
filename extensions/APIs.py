@@ -627,6 +627,62 @@ class APIs(commands.Cog):
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed, content='')
 
+    @commands.command(aliases=["statuspage"])
+    async def status(self, ctx, *, name="None"):
+        pages = [
+            ("discord", "https://status.discordapp.com/index.json"),
+            ("twitter", "https://api.twitterstat.us/index.json"),
+            ("reddit", "https://reddit.statuspage.io/index.json"),
+            ("cloudflare", "https://www.cloudflarestatus.com/index.json")
+        ]
+        await ctx.message.add_reaction('\N{HOURGLASS}')
+        for page in pages:
+            if name.lower() == page[0]:
+                col = 0x00
+                j = await APIs.getAPI(self, page[1])
+                if j["status"]["indicator"] == "none":
+                    col = 0x00ff00
+                elif j["status"]["indicator"] == "minor":
+                    col = 0xffa500
+                elif j["status"]["indicator"] == "major":
+                    col = 0xff0000
+
+                embed = discord.Embed(title="**" + page[0].title() + " Status** - " + j["status"]["description"], colour=col)
+                for comp in j["components"]:
+                    embed.add_field(name=comp["name"], value=comp["status"].replace("_", " ").title())
+                embed.timestamp = datetime.utcnow()
+                
+                await ctx.message.clear_reactions()
+                await ctx.send(embed=embed, content='')
+                
+                for incident in j["incidents"]:
+                    if incident["status"] == "resolved" or incident["status"] == "completed":
+                        continue
+                    firstUpdate = incident["incident_updates"][-1]
+                    if incident["status"] == "scheduled":
+                        col = 0xffa500
+                    else:
+                        col = 0xff0000
+                    
+                    embed = discord.Embed(title="**" + incident["status"].title() + "** - " + incident["name"], color=col)
+                    
+                    embed.add_field(name="Affected components", value="\n".join(c["name"] for c in firstUpdate["affected_components"]))
+
+                    embed.description = firstUpdate["body"]
+
+                    if incident["scheduled_for"]:
+                        embed.timestamp = datetime.strptime(incident["scheduled_for"], "%Y-%m-%dT%H:%M:%S.%fZ")
+                        embed.set_footer(text=incident["impact"].title() + " starts ")
+                    else:
+                        embed.timestamp = datetime.strptime(incident["created_at"], "%Y-%m-%dT%H:%M:%S.%fZ")
+                        embed.set_footer(text=incident["impact"].title() + " started ")
+
+                    await ctx.send(embed=embed, content='')
+                return
+
+        await ctx.message.clear_reactions()
+        await ctx.message.add_reaction('\N{NO ENTRY SIGN}')
+        await ctx.send("Invalid page! Currently supported pages: ```\n" + "\n".join([n.title() for n, a in pages]) + "```")
 
 def setup(bot):
     bot.add_cog(APIs(bot))
