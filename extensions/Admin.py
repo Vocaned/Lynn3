@@ -10,6 +10,7 @@ import copy
 from typing import Union
 import os
 import time
+import subprocess
 
 # to expose to the eval command
 import datetime
@@ -254,6 +255,14 @@ class Admin(commands.Cog):
         new_ctx = await self.bot.get_context(msg)
         new_ctx.db = ctx.db
         await self.bot.invoke(new_ctx)
+
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def git(self, ctx, *, action):
+        if action == "pull":
+            p = subprocess.check_output(["git", "pull", "git@github.com:fam0r/Lynn3.git"], stderr=subprocess.STDOUT, timeout=30)
+            await ctx.send("```" + p.decode("utf-8") + "```")
+        
 
     @commands.command(hidden=True)
     @commands.is_owner()
