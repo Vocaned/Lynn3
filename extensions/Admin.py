@@ -11,6 +11,7 @@ from typing import Union
 import os
 import time
 import subprocess
+import config
 
 # to expose to the eval command
 import datetime
@@ -260,8 +261,8 @@ class Admin(commands.Cog):
     @commands.is_owner()
     async def git(self, ctx, *, action):
         if action == "pull":
-            p = subprocess.check_output(["git", "pull", "git@github.com:fam0r/Lynn3.git"], stderr=subprocess.STDOUT, timeout=30)
-            await ctx.send("```" + p.decode("utf-8") + "```")
+            p = subprocess.check_output(["git", "pull", config.gitURI], stderr=subprocess.STDOUT, timeout=30)
+            await ctx.send("```" + p.decode("utf-8") + "```\nRemember to reload modules!")
         
 
     @commands.command(hidden=True)

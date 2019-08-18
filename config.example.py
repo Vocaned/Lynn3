@@ -2,6 +2,7 @@ from discord.ext import commands
 import logging
 token = "[TOKEN]"
 description = "Lynn 3.0_DEV"
+gitURI = "git@github.com:Fam0r/Lynn3.git"
 
 logging.basicConfig(format='%(asctime)s | [%(levelname)s] (%(filename)s) - %(message)s',
                     level=logging.INFO,
