@@ -3,12 +3,8 @@ config.py
 juttu.py
 *.db
 *.log
-*.gb
-*.sav
 .vscode
 downloads
-frame.jpg
-*_sdl
 skins/*/*
 !skins/*/default.png
 CogTemplate.py
