@@ -274,11 +274,12 @@ class Admin(commands.Cog):
     @commands.command(hidden=True)
     @commands.is_owner()
     async def activity(self, ctx, *, text):
-        if str(text).lower().startswith('streaming'):
+        text = text.lower()
+        if text.startswith('streaming'):
             await self.bot.change_presence(activity=discord.Streaming(name=text[10:], url='https://google.com'))
-        elif str(text).lower().startswith('listening to'):
+        elif text.startswith('listening to'):
             await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=text[13:]))
-        elif str(text).lower().startswith('watching'):
+        elif text.startswith('watching'):
             await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=text[9:]))
         else:
             await self.bot.change_presence(activity=discord.Game(name=text))
