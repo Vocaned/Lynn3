@@ -197,7 +197,7 @@ class APIs(commands.Cog):
             for stat in stats:
                 embed.add_field(name=stat[0], value=stat[1])
 
-            embed.set_footer(text='Missing data because EA.', icon_url='https://cdn.discordapp.com/icons/541484311354933258/b8fc0f55e75911e45fb3348eb510fa6f.webp')
+            embed.set_footer(text='Missing data because EA.', icon_url='https://logodownload.org/wp-content/uploads/2019/02/apex-legends-logo-1.png')
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
             await ctx.send(embed=embed, content="")
