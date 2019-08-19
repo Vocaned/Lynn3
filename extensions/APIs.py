@@ -213,19 +213,8 @@ class APIs(commands.Cog):
     async def CSGOAPI(self, ctx, *, user=None):
         """Gets information about CSGO players."""
         if not user:
-            if config.steamIDs[str(ctx.author.id)]:
-                user = config.steamIDs[str(ctx.author.id)]
-            else:
-                await ctx.send("Please enter an steam id or custom url after the command.")
-                return
-        else:
-            try:
-                duser = await commands.UserConverter().convert(ctx, user)
-                if config.steamIDs[str(duser.id)]:
-                    user = config.steamIDs[str(duser.id)]
-            except:
-                pass
-        await ctx.message.add_reaction('\N{HOURGLASS}')
+            await ctx.send("Please enter an steam id or custom url after the command.")
+            return
         try:
             if not str(user).isdigit():
                 data = await APIs.getAPI(self, "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=" + config.api_keys["steam"] + "&vanityurl=" + APIs.url(self, user))
@@ -532,35 +521,26 @@ class APIs(commands.Cog):
         embed.add_field(name="Members", value=str(data["approximate_member_count"]))
         embed.add_field(name="Online", value=str(data["approximate_presence_count"]))
         
-        flags = []
-        if 'VERIFIED' in data["guild"]["features"]:
-            flags.append('Verified')
-        if 'LURKABLE' in data["guild"]["features"]:
-            flags.append('Lurking enabled')
-        if 'INVITE_SPLASH' in data["guild"]["features"]:
-            flags.append('Custom invite splash screen')
-        if 'VIP_REGIONS' in data["guild"]["features"]:
-            flags.append('VIP server')
-        if 'FEATURABLE' in data["guild"]["features"]:
-            flags.append('Featured server')
-        if 'DISCOVERABLE' in data["guild"]["features"]:
-            flags.append('In server discovery')
-        if 'NEWS' in data["guild"]["features"]:
-            flags.append('News channel')
-        if 'BANNER' in data["guild"]["features"]:
-            flags.append('Custom banner')
-        if 'VANITY_URL' in data["guild"]["features"]:
-            flags.append('Custom vanity url')
-        if 'ANIMATED_ICON' in data["guild"]["features"]:
-            flags.append('Animated icon')
-        if 'COMMERCE' in data["guild"]["features"]:
-            flags.append('Commerce')
-        if 'MORE_EMOJI' in data["guild"]["features"]:
-            flags.append('More emojis')
 
+        flagName = {
+            "VERIFIED": "Verified",
+            "LURKABLE": "Lurking enabled",
+            "INVITE_SPLASH": "Custom invite splash screen",
+            "VIP_REGIONS": "VIP Server",
+            "FEATURABLE": "Featured server",
+            "DISCOVERABLE": "In server discoveries",
+            "NEWS": "News channel",
+            "BANNER": "Custom banner",
+            "VANITY_URL": "Custom vanity url",
+            "ANIMATED_ICON": "Animated icon",
+            "COMMERCE": "Store",
+            "MORE_EMOJI": "More emoji"
+
+        }
+        flags = data["guild"]["features"]
 
         if flags:
-            embed.add_field(name="Special features", value="\n".join(flags))
+            embed.add_field(name="Special features", value="\n".join([flagName[n] for n in flags]))
         
         try:
             embed.add_field(name="Invite created by", value=str(data["inviter"]["username"]) + "#" + str(data["inviter"]["discriminator"]) + " (<@" + str(data["inviter"]["id"]) + ">)")
@@ -672,10 +652,10 @@ class APIs(commands.Cog):
 
                     if incident["scheduled_for"]:
                         embed.timestamp = datetime.strptime(incident["scheduled_for"], "%Y-%m-%dT%H:%M:%S.%fZ")
-                        embed.set_footer(text=incident["impact"].title() + " starts ")
+                        embed.set_footer(text=incident["impact"].title() + " • starts")
                     else:
                         embed.timestamp = datetime.strptime(incident["created_at"], "%Y-%m-%dT%H:%M:%S.%fZ")
-                        embed.set_footer(text=incident["impact"].title() + " started ")
+                        embed.set_footer(text=incident["impact"].title() + " • started")
 
                     await ctx.send(embed=embed, content='')
                 return
