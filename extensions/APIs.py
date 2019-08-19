@@ -547,10 +547,10 @@ class APIs(commands.Cog):
         except KeyError:
             pass
 
-        if "Custom banner" in flags and data["guild"]["banner"]:
+        if "BANNER" in flags and data["guild"]["banner"]:
             embed.set_image(url="https://cdn.discordapp.com/banners/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["banner"]) + ".webp?size=4096")
        
-        if "Animated icon" in flags and \
+        if "ANIMATED_ICON" in flags and \
             data["guild"]["icon"] and \
             data["guild"]["icon"].startswith("a_"):
             embed.set_thumbnail(url="https://cdn.discordapp.com/icons/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["icon"] + ".gif?size=4096"))
