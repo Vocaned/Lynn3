@@ -73,10 +73,8 @@ class APIs(commands.Cog):
                 mid = a + math.floor( ( b - a ) / 2)
                 ok = await APIs.getMinecraftAgeCheck(self, name, mid)
                 if ok:
-                    #print('range: ' + str(a) + '\t<-| \t' + str(b))
                     b = mid
                 else:
-                    #print('range: ' + str(a) + '\t |->\t' + str(b))
                     a = mid+1
                     lastfail = mid
 
@@ -139,11 +137,11 @@ class APIs(commands.Cog):
                     embed.add_field(name='Skin URL', value='[Click me]('+skin["textures"]["SKIN"]["url"]+')')
                     await BotUtils.skinRenderer2D(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
                     await BotUtils.headRenderer(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
-                    file = discord.File("skins/2d/" + str(uuid["id"]) + ".png", filename="skin.png")
-                    file2 = discord.File("skins/head/" + str(uuid["id"]) + ".png", filename="head.png")
+                    skin = discord.File("skins/2d/" + str(uuid["id"]) + ".png", filename="skin.png")
+                    head = discord.File("skins/head/" + str(uuid["id"]) + ".png", filename="head.png")
                 else:
-                    file = discord.File("skins/2d/default.png", filename="skin.png")
-                    file2 = discord.File("skins/head/default.png", filename="head.png")
+                    skin = discord.File("skins/2d/default.png", filename="skin.png")
+                    head = discord.File("skins/head/default.png", filename="head.png")
                 if created != "???":
                     embed.add_field(name='Account created', value="On " + created.strftime('%c') + "\n" + self.td_format(datetime.utcnow() - created))
                 else:
@@ -152,7 +150,7 @@ class APIs(commands.Cog):
                 embed.set_image(url="attachment://skin.png")
                 embed.timestamp = datetime.utcnow()
                 await ctx.message.clear_reactions()
-                await ctx.send(files=[file, file2], embed=embed, content="")
+                await ctx.send(files=[skin, head], embed=embed, content="")
             else:
                 sale = await APIs.getMinecraftSales(self)
                 embed = discord.Embed(title='Minecraft', colour=0x82540f)
@@ -210,23 +208,15 @@ class APIs(commands.Cog):
     # CSGO
     # ----
 
+    def getCSStat(self, data, stat):
+        return [i for i in data["stats"] if i["name"] == "stat"]
+
     @commands.command(name='csgo', aliases=['cs'])
     async def CSGOAPI(self, ctx, *, user=None):
         """Gets information about CSGO players."""
         if not user:
-            if config.steamIDs[str(ctx.author.id)]:
-                user = config.steamIDs[str(ctx.author.id)]
-            else:
-                await ctx.send("Please enter an steam id or custom url after the command.")
-                return
-        else:
-            try:
-                duser = await commands.UserConverter().convert(ctx, user)
-                if config.steamIDs[str(duser.id)]:
-                    user = config.steamIDs[str(duser.id)]
-            except:
-                pass
-        await ctx.message.add_reaction('\N{HOURGLASS}')
+            await ctx.send("Please enter an steam id or custom url after the command.")
+            return
         try:
             if not str(user).isdigit():
                 data = await APIs.getAPI(self, "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=" + config.api_keys["steam"] + "&vanityurl=" + APIs.url(self, user))
@@ -241,31 +231,12 @@ class APIs(commands.Cog):
             embed = discord.Embed(title='Counter-Strike: Global Offensive', colour=0xadd8e6)
             embed.set_author(name=str(name))
 
-            kills = deaths = timep = head = won = played = hit = shot = 0
-            for i in data["stats"]:
-                if i["name"] == "total_kills":
-                    kills= i["value"]
-                if i["name"] == "total_deaths":
-                    deaths = i["value"]
-                if i["name"] == "total_time_played":
-                    timep = i["value"]
-                if i["name"] == "total_kills_headshot":
-                    head = i["value"]
-                if i["name"] == "total_matches_won":
-                    won = i["value"]
-                if i["name"] == "total_matches_played":
-                    played = i["value"]
-                if i["name"] == "total_shots_hit":
-                    hit = i["value"]
-                if i["name"] == "total_shots_fired":
-                    shot = i["value"]
-
-            embed.add_field(name="Kills", value=str(kills))
-            embed.add_field(name="K/D", value=str(round(kills/deaths, 2)))
-            embed.add_field(name="Time Played", value=str(round(timep / 60 / 60, 1)) + "h")
-            embed.add_field(name="Headshot %", value=str(round(head / kills * 100, 1)) + "%")
-            embed.add_field(name="Win %", value=str(round(won / played * 100, 1)) + "%")
-            embed.add_field(name="Accuracy", value=str(round(hit / shot * 100, 1)) + "%")
+            embed.add_field(name="Kills", value=str(APIs.getCSStat(data, "total_kills")))
+            embed.add_field(name="K/D", value=str(round(APIs.getCSStat(data, "total_kills")/APIs.getCSStat(data, "total_deaths"), 2)))
+            embed.add_field(name="Time Played", value=str(round(APIs.getCSStat(data, "total_time_played") / 60 / 60, 1)) + "h")
+            embed.add_field(name="Headshot %", value=str(round(APIs.getCSStat(data, "total_kills_headshot") / APIs.getCSStat(data, "total_kills") * 100, 1)) + "%")
+            embed.add_field(name="Win %", value=str(round(APIs.getCSStat(data, "total_matches_won") / APIs.getCSStat(data, "total_matches_played") * 100, 1)) + "%")
+            embed.add_field(name="Accuracy", value=str(round(APIs.getCSStat(data, "total_shots_hit") / APIs.getCSStat(data, "total_shots_fired") * 100, 1)) + "%")
 
             embed.timestamp = datetime.utcnow()
 
@@ -533,45 +504,36 @@ class APIs(commands.Cog):
         embed.add_field(name="Members", value=str(data["approximate_member_count"]))
         embed.add_field(name="Online", value=str(data["approximate_presence_count"]))
         
-        flags = []
-        if 'VERIFIED' in data["guild"]["features"]:
-            flags.append('Verified')
-        if 'LURKABLE' in data["guild"]["features"]:
-            flags.append('Lurking enabled')
-        if 'INVITE_SPLASH' in data["guild"]["features"]:
-            flags.append('Custom invite splash screen')
-        if 'VIP_REGIONS' in data["guild"]["features"]:
-            flags.append('VIP server')
-        if 'FEATURABLE' in data["guild"]["features"]:
-            flags.append('Featured server')
-        if 'DISCOVERABLE' in data["guild"]["features"]:
-            flags.append('In server discovery')
-        if 'NEWS' in data["guild"]["features"]:
-            flags.append('News channel')
-        if 'BANNER' in data["guild"]["features"]:
-            flags.append('Custom banner')
-        if 'VANITY_URL' in data["guild"]["features"]:
-            flags.append('Custom vanity url')
-        if 'ANIMATED_ICON' in data["guild"]["features"]:
-            flags.append('Animated icon')
-        if 'COMMERCE' in data["guild"]["features"]:
-            flags.append('Commerce')
-        if 'MORE_EMOJI' in data["guild"]["features"]:
-            flags.append('More emojis')
 
+        flagName = {
+            "VERIFIED": "Verified",
+            "LURKABLE": "Lurking enabled",
+            "INVITE_SPLASH": "Custom invite splash screen",
+            "VIP_REGIONS": "VIP Server",
+            "FEATURABLE": "Featured server",
+            "DISCOVERABLE": "In server discoveries",
+            "NEWS": "News channel",
+            "BANNER": "Custom banner",
+            "VANITY_URL": "Custom vanity url",
+            "ANIMATED_ICON": "Animated icon",
+            "COMMERCE": "Store",
+            "MORE_EMOJI": "More emoji"
+        }
+
+        flags = data["guild"]["features"]
 
         if flags:
-            embed.add_field(name="Special features", value="\n".join(flags))
+            embed.add_field(name="Special features", value="\n".join([flagName[n] for n in flags]))
         
         try:
             embed.add_field(name="Invite created by", value=str(data["inviter"]["username"]) + "#" + str(data["inviter"]["discriminator"]) + " (<@" + str(data["inviter"]["id"]) + ">)")
         except KeyError:
             pass
 
-        if "Custom banner" in flags and data["guild"]["banner"]:
+        if "BANNER" in flags and data["guild"]["banner"]:
             embed.set_image(url="https://cdn.discordapp.com/banners/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["banner"]) + ".webp?size=4096")
        
-        if "Animated icon" in flags and \
+        if "ANIMATED_ICON" in flags and \
             data["guild"]["icon"] and \
             data["guild"]["icon"].startswith("a_"):
             embed.set_thumbnail(url="https://cdn.discordapp.com/icons/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["icon"] + ".gif?size=4096"))
@@ -586,12 +548,11 @@ class APIs(commands.Cog):
     # ----
     # DarkSky
     # ----
-    @commands.command(name='weather')
+    @commands.command(name='weather', aliases=["sää"])
     async def weather(self, ctx, *, city):
         try:
             """Gets information about the weather"""
             await ctx.message.add_reaction('\N{HOURGLASS}')
-            #https://api.mapbox.com/geocoding/v5/mapbox.places/joensuu.json?access_token=
             geocoding = await APIs.getAPI(self, "https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=en&q=" + APIs.url(self, city))
             data = await APIs.getAPI(self, 'https://api.darksky.net/forecast/' +  config.api_keys["darksky"] + "/" + geocoding[0]["lat"] + "," + geocoding[0]["lon"] + "?exclude=minutely,hourly,daily,alerts,flags&units=si")
 
@@ -644,7 +605,7 @@ class APIs(commands.Cog):
     # ---
     # DISCORD USER
     # ---
-    @commands.command(name='user')
+    @commands.command(name='user', aliases=["käyttäjä"])
     async def discordUser(self, ctx, *, user):
         """Gets Discord User stats"""
         await ctx.message.add_reaction('\N{HOURGLASS}')
@@ -702,10 +663,10 @@ class APIs(commands.Cog):
 
                     if incident["scheduled_for"]:
                         embed.timestamp = datetime.strptime(incident["scheduled_for"], "%Y-%m-%dT%H:%M:%S.%fZ")
-                        embed.set_footer(text=incident["impact"].title() + " starts ")
+                        embed.set_footer(text=incident["impact"].title() + " • starts")
                     else:
                         embed.timestamp = datetime.strptime(incident["created_at"], "%Y-%m-%dT%H:%M:%S.%fZ")
-                        embed.set_footer(text=incident["impact"].title() + " started ")
+                        embed.set_footer(text=incident["impact"].title() + " • started")
 
                     await ctx.send(embed=embed, content='')
                 return
