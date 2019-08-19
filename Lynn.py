@@ -7,7 +7,7 @@ import config
 import os
 import logging
 
-cogs_dir = 'extensions'
+cogs_dir = config.cogDir
 bot = commands.Bot(command_prefix=config.get_prefix, description=config.description)
 
 if __name__ == '__main__':

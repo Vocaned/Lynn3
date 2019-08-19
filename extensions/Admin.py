@@ -58,7 +58,7 @@ class Admin(commands.Cog):
     async def load(self, ctx, *, module):
         """Loads a module."""
         try:
-            self.bot.load_extension('extensions.'+module)
+            self.bot.load_extension(config.cogDir+".+module)
         except Exception:
             await ctx.send(f'```py\n{traceback.format_exc()}\n```')
         else:
@@ -69,7 +69,7 @@ class Admin(commands.Cog):
     async def unload(self, ctx, *, module):
         """Unloads a module."""
         try:
-            self.bot.unload_extension('extensions.'+module)
+            self.bot.unload_extension(config.cogDir+"."+module)
         except Exception:
             await ctx.send(f'```py\n{traceback.format_exc()}\n```')
         else:
@@ -84,11 +84,11 @@ class Admin(commands.Cog):
         if module == "all":
             try:
                 n = 0
-                for file in os.listdir('extensions/'):
+                for file in os.listdir(config.cogDir+'/'):
                     if str(file).endswith(".py"):
                         file = file[:-3]
-                        self.bot.unload_extension('extensions.'+file)
-                        self.bot.load_extension('extensions.'+file)
+                        self.bot.unload_extension(config.cogDir+"."+file)
+                        self.bot.load_extension(config.cogDir+"."+file)
                         n+=1
                 end = time.time()
             except Exception:
@@ -98,8 +98,8 @@ class Admin(commands.Cog):
                 await ctx.send('Reloaded `'+str(n)+'` modules in `' + str(round((end-start)*1000, 2)) + 'ms`.')
         else:
             try:
-                self.bot.unload_extension('extensions.'+module)
-                self.bot.load_extension('extensions.'+module)
+                self.bot.unload_extension(config.cogDir+"."+module)
+                self.bot.load_extension(config.cogDir+"."+module)
                 end = time.time()
             except Exception:
                 await ctx.send(f'```py\n{traceback.format_exc()}\n```')
