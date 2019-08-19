@@ -230,12 +230,12 @@ class APIs(commands.Cog):
             embed = discord.Embed(title='Counter-Strike: Global Offensive', colour=0xadd8e6)
             embed.set_author(name=str(name))
 
-            embed.add_field(name="Kills", value=str(getCSStat(data, "total_kills")))
-            embed.add_field(name="K/D", value=str(round(getCSStat(data, "total_kills")/getCSStat(data, "total_deaths"), 2)))
-            embed.add_field(name="Time Played", value=str(round(getCSStat(data, "total_time_played") / 60 / 60, 1)) + "h")
-            embed.add_field(name="Headshot %", value=str(round(getCSStat(data, "total_kills_headshot") / getCSStat(data, "total_kills") * 100, 1)) + "%")
-            embed.add_field(name="Win %", value=str(round(getCSStat(data, "total_matches_won") / getCSStat(data, "total_matches_played") * 100, 1)) + "%")
-            embed.add_field(name="Accuracy", value=str(round(getCSStat(data, "total_shots_hit") / getCSStat(data, "total_shots_fired") * 100, 1)) + "%")
+            embed.add_field(name="Kills", value=str(APIs.getCSStat(data, "total_kills")))
+            embed.add_field(name="K/D", value=str(round(APIs.getCSStat(data, "total_kills")/APIs.getCSStat(data, "total_deaths"), 2)))
+            embed.add_field(name="Time Played", value=str(round(APIs.getCSStat(data, "total_time_played") / 60 / 60, 1)) + "h")
+            embed.add_field(name="Headshot %", value=str(round(APIs.getCSStat(data, "total_kills_headshot") / APIs.getCSStat(data, "total_kills") * 100, 1)) + "%")
+            embed.add_field(name="Win %", value=str(round(APIs.getCSStat(data, "total_matches_won") / APIs.getCSStat(data, "total_matches_played") * 100, 1)) + "%")
+            embed.add_field(name="Accuracy", value=str(round(APIs.getCSStat(data, "total_shots_hit") / APIs.getCSStat(data, "total_shots_fired") * 100, 1)) + "%")
 
             embed.timestamp = datetime.utcnow()
 
