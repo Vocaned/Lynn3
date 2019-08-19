@@ -547,7 +547,7 @@ class APIs(commands.Cog):
     # ----
     # DarkSky
     # ----
-    @commands.command(name='weather')
+    @commands.command(name='weather', aliases=["sää"])
     async def weather(self, ctx, *, city):
         try:
             """Gets information about the weather"""
@@ -575,7 +575,7 @@ class APIs(commands.Cog):
     # ---
     # DISCORD USER
     # ---
-    @commands.command(name='user')
+    @commands.command(name='user', aliases=["käyttäjä"])
     async def discordUser(self, ctx, *, user):
         """Gets Discord User stats"""
         await ctx.message.add_reaction('\N{HOURGLASS}')
