@@ -24,9 +24,13 @@ class EmoteFix(commands.Cog):
                     for e in message.guild.emojis:
                         if e.name.lower() == em.lower():
                             prefix = ""
+                            # TODO: Don't do anything if message author has nitro
                             if not e.animated:
+                                # TODO: Blob emotes
                                 continue
-                            fullemote = "<a" + prefix + ":" + str(em) + ":" + str(e.id) + ">"
+                            else:
+                                prefix = "a"
+                            fullemote = "<" + prefix + ":" + str(em) + ":" + str(e.id) + ">"
                             newmsg = newmsg.replace(emote, fullemote)
                             replaced.append(emote)
                             shouldSend = True
