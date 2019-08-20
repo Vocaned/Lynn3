@@ -8,6 +8,7 @@ import json
 import math
 import urllib.parse
 import BotUtils
+from requests_oauthlib import OAuth1
 
 class APIs(commands.Cog):
     """APIs"""
@@ -571,6 +572,35 @@ class APIs(commands.Cog):
             await ctx.message.clear_reactions()
             await ctx.message.add_reaction('\N{NO ENTRY SIGN}')
 
+    # ---
+    # TWITTER
+    # ---
+
+    def twitterVerify(self, url):
+        auth = OAuth1(config.api_keys["twitterConsKey"], config.api_keys["twitterConsSecret"], config.api_keys["twitterAccToken"], config.api_keys["twitterAccSecret"])
+        return requests.get(url, auth=auth).json()
+    
+    @commands.command(name='twitter')
+    async def twitter(self, ctx, *, user):
+        data = self.twitterVerify("https://api.twitter.com/1.1/users/search.json?count=1&q=" + self.url(user))[0]
+        embed = discord.Embed(title=data["name"] + " (@" + data["screen_name"] + ")", url="https://twitter.com/"+data["screen_name"], description=data["description"], color=0x1DA1F2)
+        embed.set_thumbnail(url=data["profile_image_url_https"])
+        embed.add_field(name="Tweets", value=str(data["statuses_count"]))
+        embed.add_field(name="Followers", value=str(data["followers_count"]))
+        embed.add_field(name="Following", value=str(data["friends_count"]))
+        embed.add_field(name="Liked posts", value=str(data["favourites_count"]))
+        if data["location"]:
+            embed.add_field(name="Location", value=data["location"])
+        extra = []
+        if data["verified"]:
+            extra.append("Verified")
+        if data["protected"]:
+            extra.append("Private")
+        if extra:
+            embed.add_field(name="+", value="\n".join(extra))
+        embed.set_footer(icon_url="https://about.twitter.com/etc/designs/about-twitter/public/img/favicon-32x32.png", text="Twitter • Account created")
+        embed.timestamp = datetime.strptime(data["created_at"], "%a %b %d %H:%M:%S %z %Y")
+        await ctx.send(embed=embed)
 
     # ---
     # DISCORD USER

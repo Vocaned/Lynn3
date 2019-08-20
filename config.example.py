@@ -25,7 +25,11 @@ api_keys = {
     "steam":            "[KEY]",
     "darksky":          "[KEY]",
     "omdb":             "[KEY]",
-    "mapbox":           "[KEY]"
+    "mapbox":           "[KEY]",
+    "twitterConsKey":   "[KEY]",
+    "twitterConsSecret":"[KEY]",
+    "twitterAccToken":  "[KEY]",
+    "twitterAccSecret": "[KEY]"
 }
 
 steamIDs = {
