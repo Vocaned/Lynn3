@@ -624,7 +624,9 @@ class APIs(commands.Cog):
             ("discord", "https://status.discordapp.com/index.json"),
             ("twitter", "https://api.twitterstat.us/index.json"),
             ("reddit", "https://reddit.statuspage.io/index.json"),
-            ("cloudflare", "https://www.cloudflarestatus.com/index.json")
+            ("cloudflare", "https://www.cloudflarestatus.com/index.json"),
+            ("dropbox", "https://status.dropbox.com/index.json"),
+            ("github", "https://www.githubstatus.com/index.json"),
         ]
         await ctx.message.add_reaction('\N{HOURGLASS}')
         for page in pages:
