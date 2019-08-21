@@ -464,20 +464,20 @@ class APIs(commands.Cog):
     async def UrbanDictionaryAPI(self, ctx, *, term):
         """Gets information about the urban dictionary"""
         await ctx.message.add_reaction('\N{HOURGLASS}')
-        data = await APIs.getAPI(self, 'http://api.urbandictionary.com/v0/define?term=' + APIs.url(self, term))
-        if not data["list"]:
+        try:
+            data = await APIs.getAPI(self, 'http://api.urbandictionary.com/v0/define?term=' + APIs.url(self, term))
+            data = data["list"][0]
+            embed = discord.Embed(title=data["word"], colour=0x1d2439, url=data["permalink"])
+            embed.add_field(name="Definition", value="```"+data["definition"].replace("\r","")+"```")
+            embed.add_field(name="Example", value="```"+data["example"].replace("\r","")+"```")
+
+            embed.set_footer(text=str(data["thumbs_up"])+"👍, " + str(data["thumbs_down"]) + "👎 | Submitted")
+            embed.timestamp = datetime.strptime(data["written_on"].split("T")[0], "%Y-%m-%d")
+            await ctx.message.clear_reactions()
+            await ctx.send(embed=embed, content='')
+        except:
             await ctx.message.clear_reactions()
             await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
-            return
-        data = data["list"][0]
-        embed = discord.Embed(title=data["word"], colour=0x1d2439, url=data["permalink"])
-        embed.add_field(name="Definition", value="```"+data["definition"].replace("\r","")+"```")
-        embed.add_field(name="Example", value="```"+data["example"].replace("\r","")+"```")
-        
-        embed.set_footer(text=str(data["thumbs_up"])+"👍, " + str(data["thumbs_down"]) + "👎 | Submitted")
-        embed.timestamp = datetime.strptime(data["written_on"].split("T")[0], "%Y-%m-%d")
-        await ctx.message.clear_reactions()
-        await ctx.send(embed=embed, content='')
 
     # ----
     # Discord
@@ -549,7 +549,7 @@ class APIs(commands.Cog):
     # DarkSky
     # ----
     @commands.command(name='weather', aliases=["sää"])
-    async def weather(self, ctx, *, city):
+    async def WeatherAPI(self, ctx, *, city):
         try:
             """Gets information about the weather"""
             await ctx.message.add_reaction('\N{HOURGLASS}')
@@ -568,7 +568,7 @@ class APIs(commands.Cog):
             embed.timestamp = datetime.fromtimestamp(data["currently"]["time"])
             await ctx.message.clear_reactions()
             await ctx.send(embed=embed, content='')
-        except Exception as e:
+        except:
             await ctx.message.clear_reactions()
             await ctx.message.add_reaction('\N{NO ENTRY SIGN}')
 
@@ -581,7 +581,7 @@ class APIs(commands.Cog):
         return requests.get(url, auth=auth).json()
     
     @commands.command(name='twitter')
-    async def twitter(self, ctx, *, user):
+    async def TwitterAPI(self, ctx, *, user):
         data = self.twitterVerify("https://api.twitter.com/1.1/users/search.json?count=1&q=" + self.url(user))[0]
         embed = discord.Embed(title=data["name"] + " (@" + data["screen_name"] + ")", url="https://twitter.com/"+data["screen_name"], description=data["description"], color=0x1DA1F2)
         embed.set_thumbnail(url=data["profile_image_url_https"])
@@ -618,8 +618,8 @@ class APIs(commands.Cog):
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed, content='')
 
-    @commands.command(aliases=["statuspage"])
-    async def status(self, ctx, *, name="None"):
+    @commands.command(name="status", aliases=["statuspage"])
+    async def StatusAPI(self, ctx, *, name="None"):
         pages = [
             ("discord", "https://status.discordapp.com/index.json"),
             ("twitter", "https://api.twitterstat.us/index.json"),
@@ -658,9 +658,7 @@ class APIs(commands.Cog):
                         col = 0xff0000
                     
                     embed = discord.Embed(title="**" + incident["status"].title() + "** - " + incident["name"], color=col)
-                    
                     embed.add_field(name="Affected components", value="\n".join(c["name"] for c in firstUpdate["affected_components"]))
-
                     embed.description = firstUpdate["body"]
 
                     if incident["scheduled_for"]:

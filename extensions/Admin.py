@@ -238,6 +238,7 @@ class Admin(commands.Cog):
                 if fmt is not None:
                     if len(fmt) > 2000:
                         await ctx.send('Content too big to be printed.')
+                        await ctx.send(fmt[:1998])
                     else:
                         await ctx.send(fmt)
             except discord.Forbidden:
@@ -262,7 +263,7 @@ class Admin(commands.Cog):
     async def git(self, ctx, *, action):
         if action == "pull":
             p = subprocess.check_output(["git", "pull", config.gitURI], stderr=subprocess.STDOUT, timeout=30)
-            await ctx.send("```" + p.decode("utf-8") + "```\nRemember to reload modules!")
+            await ctx.send("```" + p.decode("utf-8") + "```Remember to reload modules!")
         
 
     @commands.command(hidden=True)
