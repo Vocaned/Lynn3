@@ -58,7 +58,7 @@ class Admin(commands.Cog):
     async def load(self, ctx, *, module):
         """Loads a module."""
         try:
-            self.bot.load_extension(config.cogDir+".+module)
+            self.bot.load_extension(config.cogDir+"."+module)
         except Exception:
             await ctx.send(f'```py\n{traceback.format_exc()}\n```')
         else:
