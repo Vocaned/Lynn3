@@ -37,11 +37,8 @@ class EmoteFix(commands.Cog):
 
         match = re.findall("\\[.+]\\(<?https?://.+\\..+\\)", message.content)
         if match or shouldSend:
-            hook = None
-            for h in await message.channel.webhooks():
-                if h.name == "EmoteFix":
-                    hook = h
-            if hook == None:
+            hook = [h for h in message.channel.webhooks() if h.name == "EmoteFix"]
+            if not hook:
                 hook = await message.channel.create_webhook(name="EmoteFix")
             await hook.send(content=newmsg, username=message.author.display_name, avatar_url=message.author.avatar_url)
             await message.delete()

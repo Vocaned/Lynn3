@@ -19,9 +19,6 @@ class Misc(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def __local_check(self, ctx):
-        return ctx.message.guild.id != 485076757733572608
-
     @commands.command()
     @commands.cooldown(60, 60)
     @commands.is_owner()
