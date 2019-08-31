@@ -85,9 +85,7 @@ class Admin(commands.Cog):
             await ctx.send("You do not have permission to use this command.")
             return
 
-        # ignore all other exception types, but print them to stderr
-        print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
-
+        print("Ignoring exception in " + str(ctx.command), file=sys.stderr)
         config.error = "\n".join(traceback.format_exception(type(error), error, error.__traceback__))
 
     def cleanup_code(self, content):
