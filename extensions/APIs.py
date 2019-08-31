@@ -577,6 +577,10 @@ class APIs(commands.Cog):
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed, content='')
 
+    # ---
+    # STATUSPAGE
+    # ---
+
     @commands.command(name="status", aliases=["statuspage"])
     async def StatusAPI(self, ctx, *, name="None"):
         pages = [
@@ -611,6 +615,7 @@ class APIs(commands.Cog):
                     if incident["status"] == "resolved" or incident["status"] == "completed":
                         continue
                     firstUpdate = incident["incident_updates"][-1]
+                    lastUpdate = incident["incident_updates"][0]
                     if incident["status"] == "scheduled":
                         col = 0xffa500
                     else:
@@ -619,14 +624,17 @@ class APIs(commands.Cog):
                     embed = discord.Embed(title="**" + incident["status"].title() + "** - " + incident["name"], color=col)
                     if firstUpdate["affected_components"]:
                         embed.add_field(name="Affected components", value="\n".join(c["name"] for c in firstUpdate["affected_components"]))
-                    embed.description = firstUpdate["body"]
+                    if firstUpdate != lastUpdate and len(firstUpdate) + len(lastUpdate) + 5 < 1900:
+                        embed.description = "**" + dateutil.parser.parse(lastUpdate["created_at"]).strftime('%b %d %H:%M:%S %Y UTC%z') + "**: " + lastUpdate["body"] + "\n\n\n**" + dateutil.parser.parse(firstUpdate["created_at"]).strftime('%b %d %H:%M:%S %Y UTC%z') + "**: " + firstUpdate["body"]
+                    else:
+                        embed.description = firstUpdate["body"]
 
                     if incident["scheduled_for"]:
                         embed.timestamp = dateutil.parser.parse(incident["scheduled_for"])
-                        embed.set_footer(text=incident["impact"].title() + " • starts")
+                        embed.set_footer(text=incident["impact"].title() + " • Starts")
                     else:
                         embed.timestamp = dateutil.parser.parse(incident["created_at"])
-                        embed.set_footer(text=incident["impact"].title() + " • started")
+                        embed.set_footer(text=incident["impact"].title() + " • Started")
 
                     await ctx.send(embed=embed, content='')
                 return
