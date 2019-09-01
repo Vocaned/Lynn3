@@ -111,8 +111,6 @@ class Calculator(commands.Cog):
      def __init__(self, bot):
           self.bot = bot
 
-     
-
      @commands.command(name='calculator', aliases=["calc", "math"])
      async def calculator(self, ctx, expression):
           """Calculator""",

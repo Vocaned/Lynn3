@@ -19,7 +19,7 @@ class Misc(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(hidden=True)
     @commands.cooldown(60, 60)
     @commands.is_owner()
     async def speedtest(self, ctx):
@@ -33,16 +33,6 @@ class Misc(commands.Cog):
         embed.description = 'Fam0r is paying for a 100Mb/100Mb connection, but is getting ' + str(down) + 'Mb/' + str(up) + 'Mb! (ping ' + str(ping) + 'ms)'
         embed.timestamp = datetime.utcnow()
         await message.edit(embed=embed, content="")
-    
-    @commands.command()
-    async def match(self, ctx, matchid):
-        m = matchid.split("%20")[1]
-        requests.get("https://csgo-stats.com/match/" + m)
-        await ctx.message.delete()
-        embed = discord.Embed(title='CS:GO Match', colour=0xadd8e6)
-        embed.description = "https://csgo-stats.com/match/" + m
-        embed.timestamp = datetime.utcnow()
-        await ctx.send(embed=embed, content="")
 
     @commands.command()
     async def lgbt(self, ctx):

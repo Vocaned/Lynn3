@@ -12,18 +12,81 @@ import os
 import time
 import subprocess
 import config
+import sys
+import math
 
 # to expose to the eval command
 import datetime
 from collections import Counter
 
 class Admin(commands.Cog):
-    """Admin-only commands that make the bot dynamic."""
+    """Admin-only commands."""
 
     def __init__(self, bot):
         self.bot = bot
         self._last_result = None
         self.sessions = set()
+
+    @commands.Cog.listener()
+    async def on_command_error(self, ctx, error):
+        error = getattr(error, 'original', error)
+
+        if isinstance(error, commands.CommandNotFound):
+            return
+
+        try:
+            await ctx.message.clear_reactions()
+            await ctx.message.add_reaction('\N{NO ENTRY SIGN}')
+        except:
+            pass
+
+        if isinstance(error, commands.BotMissingPermissions):
+            missing = [perm.replace('_', ' ').replace('guild', 'server').title() for perm in error.missing_perms]
+            if len(missing) > 2:
+                fmt = '{}, and {}'.format("**, **".join(missing[:-1]), missing[-1])
+            else:
+                fmt = ' and '.join(missing)
+            _message = 'I need the **{}** permission(s) to run this command.'.format(fmt)
+            await ctx.send(_message)
+            return
+
+        if isinstance(error, commands.DisabledCommand):
+            await ctx.send('This command has been disabled.')
+            return
+
+        if isinstance(error, commands.CommandOnCooldown):
+            await ctx.send("This command is on cooldown, please retry in {}s.".format(math.ceil(error.retry_after)))
+            return
+
+        if isinstance(error, commands.MissingPermissions):
+            missing = [perm.replace('_', ' ').replace('guild', 'server').title() for perm in error.missing_perms]
+            if len(missing) > 2:
+                fmt = '{}, and {}'.format("**, **".join(missing[:-1]), missing[-1])
+            else:
+                fmt = ' and '.join(missing)
+            _message = 'You need the **{}** permission(s) to use this command.'.format(fmt)
+            await ctx.send(_message)
+            return
+
+        if isinstance(error, commands.UserInputError):
+            await ctx.send("Invalid input.")
+            # TODO: Fix
+            # await self.bot.help_command.send_command_help(ctx.command)
+            return
+
+        if isinstance(error, commands.NoPrivateMessage):
+            try:
+                await ctx.author.send('This command cannot be used in direct messages.')
+            except discord.Forbidden:
+                pass
+            return
+
+        if isinstance(error, commands.CheckFailure):
+            await ctx.send("You do not have permission to use this command.")
+            return
+
+        print("Ignoring exception in " + str(ctx.command), file=sys.stderr)
+        config.error = "\n".join(traceback.format_exception(type(error), error, error.__traceback__))
 
     def cleanup_code(self, content):
         """Automatically removes code blocks from the code."""
@@ -46,34 +109,21 @@ class Admin(commands.Cog):
     @commands.is_owner()
     async def modules(self, ctx):
         """Lists all loaded modules"""
-        try:
-            await ctx.send("Loaded modules: ```" + "\n".join(self.bot.extensions) + "```")
-        except Exception:
-            await ctx.send(f'```py\n{traceback.format_exc()}\n```')
-        else:
-            await ctx.message.add_reaction('\N{OK HAND SIGN}')
+        await ctx.send("Loaded modules: ```" + "\n".join(self.bot.extensions) + "```")
 
     @commands.command(hidden=True)
     @commands.is_owner()
     async def load(self, ctx, *, module):
         """Loads a module."""
-        try:
-            self.bot.load_extension(config.cogDir+"."+module)
-        except Exception:
-            await ctx.send(f'```py\n{traceback.format_exc()}\n```')
-        else:
-            await ctx.message.add_reaction('\N{OK HAND SIGN}')
+        self.bot.load_extension(config.cogDir+"."+module)
+        await ctx.message.add_reaction('\N{OK HAND SIGN}')
 
     @commands.command(hidden=True)
     @commands.is_owner()
     async def unload(self, ctx, *, module):
         """Unloads a module."""
-        try:
-            self.bot.unload_extension(config.cogDir+"."+module)
-        except Exception:
-            await ctx.send(f'```py\n{traceback.format_exc()}\n```')
-        else:
-            await ctx.message.add_reaction('\N{OK HAND SIGN}')
+        self.bot.unload_extension(config.cogDir+"."+module)
+        await ctx.message.add_reaction('\N{OK HAND SIGN}')
 
     @commands.command(name='reload', hidden=True)
     @commands.is_owner()
@@ -82,30 +132,18 @@ class Admin(commands.Cog):
         Module can be \"all\""""
         start = time.time()
         if module == "all":
-            try:
-                n = 0
-                for file in os.listdir(config.cogDir+'/'):
-                    if str(file).endswith(".py"):
-                        file = file[:-3]
-                        self.bot.unload_extension(config.cogDir+"."+file)
-                        self.bot.load_extension(config.cogDir+"."+file)
-                        n+=1
-                end = time.time()
-            except Exception:
-                await ctx.send(f'```py\n{traceback.format_exc()}\n```')
-            else:
-                await ctx.message.add_reaction('\N{OK HAND SIGN}')
-                await ctx.send('Reloaded `'+str(n)+'` modules in `' + str(round((end-start)*1000, 2)) + 'ms`.')
+            n = 0
+            for file in os.listdir(config.cogDir+'/'):
+                if str(file).endswith(".py"):
+                    file = file[:-3]
+                    self.bot.reload_extension(config.cogDir+"."+file)
+                    n+=1
+            end = time.time()
+            await ctx.send('Reloaded `'+str(n)+'` modules in `' + str(round((end-start)*1000, 2)) + 'ms`.')
         else:
-            try:
-                self.bot.unload_extension(config.cogDir+"."+module)
-                self.bot.load_extension(config.cogDir+"."+module)
-                end = time.time()
-            except Exception:
-                await ctx.send(f'```py\n{traceback.format_exc()}\n```')
-            else:
-                await ctx.message.add_reaction('\N{OK HAND SIGN}')
-                await ctx.send('Reloaded `'+str(module)+'` in `'+str(round((end-start)*1000, 2))+'ms`.')
+            self.bot.reload_extension(config.cogDir+"."+module)
+            end = time.time()
+            await ctx.send('Reloaded `'+str(module)+'` in `'+str(round((end-start)*1000, 2))+'ms`.')
 
     @commands.command(pass_context=True, hidden=True, name='eval')
     @commands.is_owner()
@@ -271,6 +309,12 @@ class Admin(commands.Cog):
     async def shutdown(self, ctx):
         await ctx.send("Goodbye!")
         await self.bot.close()
+
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def debug(self, ctx):
+        for msg in [config.error[i:i+1990] for i in range(0, len(config.error), 1990)]:
+            await ctx.send("```py\n" + config.error + "\n\n" + msg + "```")
 
     @commands.command(hidden=True)
     @commands.is_owner()
