@@ -512,18 +512,34 @@ class APIs(commands.Cog):
         """Gets information about the weather"""
         await ctx.message.add_reaction("\N{HOURGLASS}")
         geocoding = self.REST("https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=en&q=" + self.escape(city))
-        data = self.REST("https://api.darksky.net/forecast/" +  config.api_keys["darksky"] + "/" + geocoding[0]["lat"] + "," + geocoding[0]["lon"] + "?exclude=minutely,hourly,daily,alerts,flags&units=si")
+        data = self.REST("https://api.darksky.net/forecast/" +  config.api_keys["darksky"] + "/" + geocoding[0]["lat"] + "," + geocoding[0]["lon"] + "?exclude=minutely,hourly,daily,flags&units=si")
         
         embed = discord.Embed(title=geocoding[0]["display_name"], colour=0xffb347)
         embed.set_thumbnail(url="https://darksky.net/images/weather-icons/" + data["currently"]["icon"] + ".png")
-        embed.description = "**Weather**\n" + str(round(data["currently"]["temperature"], 2)) + "°C (" + str(round(data["currently"]["temperature"] * (9/5) + 32, 2)) + "°F)\n" \
+        suffix = ""
+        try:
+            data["alerts"]
+            hasAlerts = True
+        except:
+            hasAlerts = False
+        if hasAlerts:
+            suffix = "\n\n---"
+        embed.add_field(name="Weather", value=str(round(data["currently"]["temperature"], 2)) + "°C (" + str(round(data["currently"]["temperature"] * (9/5) + 32, 2)) + "°F)\n" \
             + data["currently"]["summary"] + "\n" \
             + "Feels Like: " + str(round(data["currently"]["apparentTemperature"], 2)) + "°C (" + str(round(data["currently"]["apparentTemperature"] * (9/5) + 32, 2)) + "°F)\n" \
             + "Humidity: " + str(round(data["currently"]["humidity"] * 100, 2)) + "%\n" \
             + "Clouds: " + str(round(data["currently"]["cloudCover"] * 100, 2)) + "%\n" \
-            + "Wind: " + str(data["currently"]["windSpeed"]) + " m/s (" + str(round(int(data["currently"]["windSpeed"]) * 2.2369362920544, 2)) + " mph)"
+            + "Wind: " + str(data["currently"]["windSpeed"]) + " m/s (" + str(round(int(data["currently"]["windSpeed"]) * 2.2369362920544, 2)) + " mph)" + suffix)
+        if hasAlerts:
+            alerts = []
+            for alert in data["alerts"]:
+                if len(alerts) > 23:
+                    continue
+                if alert["title"] not in alerts:
+                    embed.add_field(name=alert["title"], value=alert["description"][:1024])
+                    alerts.append(alert["title"])
         embed.set_footer(text="Powered by Dark Sky and OpenStreetMap")
-        embed.timestamp = datetime.fromtimestamp(data["currently"]["time"])
+        embed.timestamp = datetime.utcfromtimestamp(data["currently"]["time"])
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed, content="")
 
@@ -562,7 +578,6 @@ class APIs(commands.Cog):
         """Gets Discord User stats"""
         await ctx.message.add_reaction("\N{HOURGLASS}")
         user = await commands.UserConverter().convert(ctx, user)
-        
         embed = discord.Embed(title="Discord User " + user.name + "#" + str(user.discriminator), colour=0x7289DA)
         embed.set_thumbnail(url=str(user.avatar_url))
         embed.add_field(name="Account created", value="On " + user.created_at.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - user.created_at) + " ago")
