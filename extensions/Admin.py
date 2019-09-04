@@ -300,7 +300,9 @@ class Admin(commands.Cog):
     @commands.is_owner()
     async def git(self, ctx, *, action):
         if action == "pull":
+            await ctx.message.add_reaction("\N{HOURGLASS}")
             p = subprocess.check_output(["git", "pull", config.gitURI], stderr=subprocess.STDOUT, timeout=30)
+            await ctx.message.clear_reactions()
             await ctx.send("```" + p.decode("utf-8") + "```Remember to reload modules!")
         
 
