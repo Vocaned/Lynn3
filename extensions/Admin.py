@@ -304,6 +304,8 @@ class Admin(commands.Cog):
             p = subprocess.check_output(["git", "pull", config.gitURI], stderr=subprocess.STDOUT, timeout=30)
             await ctx.message.clear_reactions()
             await ctx.send("```" + p.decode("utf-8") + "```Remember to reload modules!")
+        else:
+            raise commands.UserInputError()
         
 
     @commands.command(hidden=True)
