@@ -73,8 +73,8 @@ class Misc(commands.Cog):
             embed.timestamp = date[-1][1]
         embed.description = string.split("|")[0]
         embed.set_footer(text=str(ctx.message.author.name) + '#' +  str(ctx.message.author.discriminator), icon_url=ctx.message.author.avatar_url)
-        await ctx.message.delete()
         await ctx.message.clear_reactions()
+        await ctx.message.delete()
         await ctx.send(embed=embed, content='')
 
     @commands.command(aliases=["id"])
