@@ -65,7 +65,8 @@ class Misc(commands.Cog):
 
     @commands.command(aliases=["remind", "remindme"])
     async def reminder(self, ctx, *, string):
-        """Reminder"""       
+        """Reminder"""
+        await ctx.message.add_reaction("\N{HOURGLASS}")
         embed = discord.Embed(title="Reminder", colour=0x8630bf)
         date = search_dates(string, settings={"TIMEZONE": "UTC"})
         if date and date[-1][1]:
@@ -73,6 +74,7 @@ class Misc(commands.Cog):
         embed.description = string.split("|")[0]
         embed.set_footer(text=str(ctx.message.author.name) + '#' +  str(ctx.message.author.discriminator), icon_url=ctx.message.author.avatar_url)
         await ctx.message.delete()
+        await ctx.message.clear_reactions()
         await ctx.send(embed=embed, content='')
 
     @commands.command(aliases=["id"])
