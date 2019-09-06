@@ -98,7 +98,7 @@ class APIs(commands.Cog):
         if user:
             uuid = await self.getMinecraftUUID(user)
             if not uuid:
-                await ctx.send(content="User not found!")
+                await ctx.send("User not found!")
                 await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
                 return
             await ctx.message.add_reaction("\N{HOURGLASS}")
@@ -134,7 +134,7 @@ class APIs(commands.Cog):
             embed.set_image(url="attachment://skin.png")
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
-            await ctx.send(files=[skin, head], embed=embed, content="")
+            await ctx.send(files=[skin, head], embed=embed)
         else:
             sale = self.REST("https://api.mojang.com/orders/statistics", method=requests.post, data='{"metricKeys":["item_sold_minecraft","prepaid_card_redeemed_minecraft"]}')
             embed = discord.Embed(title="Minecraft", colour=0x82540f)
@@ -143,7 +143,7 @@ class APIs(commands.Cog):
             embed.set_footer(text="|", icon_url="https://minecraft.net/favicon-96x96.png")
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
-            await ctx.send(embed=embed, content="")
+            await ctx.send(embed=embed)
 
     # ----
     # Apex Legends
@@ -176,7 +176,7 @@ class APIs(commands.Cog):
         embed.set_footer(text="Missing data because EA.", icon_url="https://logodownload.org/wp-content/uploads/2019/02/apex-legends-logo-1.png")
         embed.timestamp = datetime.utcnow()
         await ctx.message.clear_reactions()
-        await ctx.send(embed=embed, content="")
+        await ctx.send(embed=embed)
 
     # ----
     # CSGO
@@ -208,7 +208,7 @@ class APIs(commands.Cog):
         embed.add_field(name="Accuracy", value=str(round(self.getCSStat(data, "total_shots_hit") / self.getCSStat(data, "total_shots_fired") * 100, 1)) + "%")
         embed.timestamp = datetime.utcnow()
         await ctx.message.clear_reactions()
-        await ctx.send(embed=embed, content="")
+        await ctx.send(embed=embed)
 
     # ----
     # CLASSICUBE
@@ -268,7 +268,7 @@ class APIs(commands.Cog):
             embed.timestamp = datetime.utcnow()
 
             await ctx.message.clear_reactions()
-            await ctx.send(files=[file, file2], embed=embed, content="")
+            await ctx.send(files=[file, file2], embed=embed)
         else:
             data = self.REST("https://www.classicube.net/api/players/")
             onlinecount = 0
@@ -300,7 +300,7 @@ class APIs(commands.Cog):
             embed.set_footer(text="|", icon_url="https://www.classicube.net/static/img/cc-cube-small.png")
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
-            await ctx.send(embed=embed, content="")
+            await ctx.send(embed=embed)
     
     # ----
     # Wynncraft
@@ -370,7 +370,7 @@ class APIs(commands.Cog):
             embed.set_footer(text="|", icon_url="https://cdn.wynncraft.com/img/ico/android-icon-192x192.png")
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
-            await ctx.send(embed=embed, content="")
+            await ctx.send(embed=embed)
             return
         else:
             data = self.REST("https://api.wynncraft.com/public_api.php?action=onlinePlayersSum")
@@ -380,7 +380,7 @@ class APIs(commands.Cog):
             embed.set_footer(text="|", icon_url="https://cdn.wynncraft.com/img/ico/android-icon-192x192.png")
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
-            await ctx.send(embed=embed, content="")
+            await ctx.send(embed=embed)
 
     # ----
     # IMDb
@@ -418,7 +418,7 @@ class APIs(commands.Cog):
 
         embed.timestamp = datetime.utcnow()
         await ctx.message.clear_reactions()
-        await ctx.send(embed=embed, content="")
+        await ctx.send(embed=embed)
 
     # ----
     # Urban Dictionary
@@ -436,7 +436,7 @@ class APIs(commands.Cog):
         embed.set_footer(text=str(data["thumbs_up"])+"\N{THUMBS UP SIGN}, " + str(data["thumbs_down"]) + "\N{THUMBS DOWN SIGN} | Submitted")
         embed.timestamp = datetime.strptime(data["written_on"].split("T")[0], "%Y-%m-%d")
         await ctx.message.clear_reactions()
-        await ctx.send(embed=embed, content="")
+        await ctx.send(embed=embed)
 
     # ----
     # Discord
@@ -502,7 +502,7 @@ class APIs(commands.Cog):
         embed.set_footer(text="Server ID " + str(data["guild"]["id"]))
         embed.timestamp = datetime.utcnow()
         await ctx.message.clear_reactions()
-        await ctx.send(embed=embed, content="")
+        await ctx.send(embed=embed)
 
     # ----
     # DarkSky
@@ -541,7 +541,7 @@ class APIs(commands.Cog):
         embed.set_footer(text="Powered by Dark Sky and OpenStreetMap")
         embed.timestamp = datetime.utcfromtimestamp(data["currently"]["time"])
         await ctx.message.clear_reactions()
-        await ctx.send(embed=embed, content="")
+        await ctx.send(embed=embed)
 
     # ---
     # TWITTER
@@ -583,7 +583,7 @@ class APIs(commands.Cog):
         embed.add_field(name="Account created", value="On " + user.created_at.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - user.created_at) + " ago")
         embed.set_footer(text="User ID" + str(user.id))
         await ctx.message.clear_reactions()
-        await ctx.send(embed=embed, content="")
+        await ctx.send(embed=embed)
 
     # ---
     # STATUSPAGE
@@ -620,7 +620,7 @@ class APIs(commands.Cog):
                 embed.set_footer(text="More information at " + page[1])
                 
                 await ctx.message.clear_reactions()
-                await ctx.send(embed=embed, content="")
+                await ctx.send(embed=embed)
                 
                 for incident in j["incidents"]:
                     if incident["status"] == "resolved" or incident["status"] == "completed":
@@ -636,9 +636,9 @@ class APIs(commands.Cog):
                     if firstUpdate["affected_components"]:
                         embed.add_field(name="Affected components", value="\n".join(c["name"] for c in firstUpdate["affected_components"]))
                     if firstUpdate != lastUpdate and len(firstUpdate) + len(lastUpdate) + 5 < 1900:
-                        embed.description = "**" + dateutil.parser.parse(lastUpdate["created_at"]).strftime("%b %d %H:%M:%S %Y UTC%z")
-                                          + "**: " + lastUpdate["body"] + "\n\n\n**"
-                                          + dateutil.parser.parse(firstUpdate["created_at"]).strftime("%b %d %H:%M:%S %Y UTC%z")
+                        embed.description = "**" + dateutil.parser.parse(lastUpdate["created_at"]).strftime("%b %d %H:%M:%S %Y UTC%z") \
+                                          + "**: " + lastUpdate["body"] + "\n\n\n**" \
+                                          + dateutil.parser.parse(firstUpdate["created_at"]).strftime("%b %d %H:%M:%S %Y UTC%z") \
                                           + "**: " + firstUpdate["body"]
                     else:
                         embed.description = firstUpdate["body"]
@@ -650,7 +650,7 @@ class APIs(commands.Cog):
                         embed.timestamp = dateutil.parser.parse(incident["created_at"])
                         embed.set_footer(text=incident["impact"].title() + " • Started")
 
-                    await ctx.send(embed=embed, content="")
+                    await ctx.send(embed=embed)
                 return
 
         await ctx.message.clear_reactions()
