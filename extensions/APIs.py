@@ -592,20 +592,20 @@ class APIs(commands.Cog):
     @commands.command(name="status", aliases=["statuspage"])
     async def StatusAPI(self, ctx, *, name="None"):
         pages = [
-            ("discord", "https://status.discordapp.com/index.json"),
-            ("twitter", "https://api.twitterstat.us/index.json"),
-            ("reddit", "https://reddit.statuspage.io/index.json"),
-            ("cloudflare", "https://www.cloudflarestatus.com/index.json"),
-            ("dropbox", "https://status.dropbox.com/index.json"),
-            ("github", "https://www.githubstatus.com/index.json"),
-            ("medium", "https://medium.statuspage.io/index.json"),
-            ("epicgames", "https://status.epicgames.com/index.json")
+            ("discord", "https://status.discordapp.com"),
+            ("twitter", "https://api.twitterstat.us"),
+            ("reddit", "https://reddit.statuspage.io"),
+            ("cloudflare", "https://www.cloudflarestatus.com"),
+            ("dropbox", "https://status.dropbox.com"),
+            ("github", "https://www.githubstatus.com"),
+            ("medium", "https://medium.statuspage.io"),
+            ("epicgames", "https://status.epicgames.com")
         ]
         await ctx.message.add_reaction("\N{HOURGLASS}")
         for page in pages:
             if name.lower() == page[0]:
                 col = 0x00
-                j = self.REST(page[1])
+                j = self.REST(page[1] + "/index.json")
                 if j["status"]["indicator"] == "none":
                     col = 0x00ff00
                 elif j["status"]["indicator"] == "minor":
@@ -617,6 +617,7 @@ class APIs(commands.Cog):
                 for comp in j["components"]:
                     embed.add_field(name=comp["name"], value=comp["status"].replace("_", " ").title())
                 embed.timestamp = datetime.utcnow()
+                embed.set_footer(text="More information at " + page[1])
                 
                 await ctx.message.clear_reactions()
                 await ctx.send(embed=embed, content="")
