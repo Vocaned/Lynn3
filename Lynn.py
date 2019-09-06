@@ -7,13 +7,12 @@ import config
 import os
 import logging
 
-cogs_dir = config.cogDir
 bot = commands.Bot(command_prefix=config.get_prefix, description=config.description)
 
 if __name__ == '__main__':
-    for extension in [f.replace('.py', '') for f in listdir(cogs_dir) if isfile(join(cogs_dir, f))]:
+    for extension in [f.replace('.py', '') for f in listdir(config.cogDir) if isfile(join(config.cogDir, f))]:
         try:
-            bot.load_extension(cogs_dir + '.' + extension)
+            bot.load_extension(config.cogDir + '.' + extension)
         except (discord.ClientException, ModuleNotFoundError):
             logging.error(f'Failed to load extension {extension}.', exc_info=True)
 

@@ -636,7 +636,10 @@ class APIs(commands.Cog):
                     if firstUpdate["affected_components"]:
                         embed.add_field(name="Affected components", value="\n".join(c["name"] for c in firstUpdate["affected_components"]))
                     if firstUpdate != lastUpdate and len(firstUpdate) + len(lastUpdate) + 5 < 1900:
-                        embed.description = "**" + dateutil.parser.parse(lastUpdate["created_at"]).strftime("%b %d %H:%M:%S %Y UTC%z") + "**: " + lastUpdate["body"] + "\n\n\n**" + dateutil.parser.parse(firstUpdate["created_at"]).strftime("%b %d %H:%M:%S %Y UTC%z") + "**: " + firstUpdate["body"]
+                        embed.description = "**" + dateutil.parser.parse(lastUpdate["created_at"]).strftime("%b %d %H:%M:%S %Y UTC%z")
+                                          + "**: " + lastUpdate["body"] + "\n\n\n**"
+                                          + dateutil.parser.parse(firstUpdate["created_at"]).strftime("%b %d %H:%M:%S %Y UTC%z")
+                                          + "**: " + firstUpdate["body"]
                     else:
                         embed.description = firstUpdate["body"]
 
