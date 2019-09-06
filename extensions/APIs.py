@@ -597,7 +597,8 @@ class APIs(commands.Cog):
             ("reddit", "https://reddit.statuspage.io/index.json"),
             ("cloudflare", "https://www.cloudflarestatus.com/index.json"),
             ("dropbox", "https://status.dropbox.com/index.json"),
-            ("github", "https://www.githubstatus.com/index.json")
+            ("github", "https://www.githubstatus.com/index.json"),
+            ("medium", "https://medium.statuspage.io/index.json")
         ]
         await ctx.message.add_reaction("\N{HOURGLASS}")
         for page in pages:
