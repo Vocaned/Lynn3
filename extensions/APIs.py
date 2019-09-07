@@ -17,6 +17,10 @@ class APIs(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    # ---
+    # FUNCTIONS
+    # ---
+
     def REST(self, url, method=requests.get, headers={}, data={}, auth=None, returns="r.json()"):
         r = method(url=url, headers=headers, data=data, auth=auth)
         try:
@@ -46,11 +50,8 @@ class APIs(commands.Cog):
                 strings.append("%s %s%s" % (period_value, period_name, has_s))
 
         return ", ".join(strings)
-    
-    # ----
-    # MINECRAFT
-    # ----
 
+    
     async def getMinecraftAge(self, name):
         a = 1263146630 # notch sign-up
         b = math.floor(datetime.utcnow().timestamp())
@@ -90,6 +91,14 @@ class APIs(commands.Cog):
             return None
         decoded = base64.b64decode(val)
         return(json.loads(decoded))
+
+    def getCSStat(self, data, stat):
+        return [i for i in data["stats"] if i["name"] == "stat"]
+
+    
+    # ---
+    # GAMES
+    # ---
 
     @commands.command(name="minecraft", aliases=["mc"])
     async def minecraftAPI(self, ctx, *, user=None):
@@ -145,12 +154,7 @@ class APIs(commands.Cog):
             await ctx.message.clear_reactions()
             await ctx.send(embed=embed)
 
-    # ----
-    # Apex Legends
-    # ----
-
     # TODO: FIX for APIv2
-
     @commands.command(name="apex", aliases=["apexlegends", "apesex"])
     async def apexAPI(self, ctx, user, platform="origin"):
         """Gets information about Apex Legends players.
@@ -178,12 +182,6 @@ class APIs(commands.Cog):
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
-    # ----
-    # CSGO
-    # ----
-
-    def getCSStat(self, data, stat):
-        return [i for i in data["stats"] if i["name"] == "stat"]
 
     @commands.command(name="csgo", aliases=["cs"])
     async def CSGOAPI(self, ctx, *, user=None):
@@ -211,9 +209,7 @@ class APIs(commands.Cog):
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
-    # ---
-    # OSU
-    # ---
+
     @commands.command(name="osu")
     async def OsuAPI(self, ctx, *, user):
         """Gets information about osu! players."""
@@ -238,9 +234,6 @@ class APIs(commands.Cog):
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
-    # ----
-    # CLASSICUBE
-    # ----
     
     @commands.command(name="classicube", aliases=["cc"])
     async def classiCubeAPI(self, ctx, *, user=None):
@@ -329,10 +322,7 @@ class APIs(commands.Cog):
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
             await ctx.send(embed=embed)
-    
-    # ----
-    # Wynncraft
-    # ----
+
     
     @commands.command(name="wynncraft", aliases=["wc", "wynn"])
     async def WynncraftAPI(self, ctx, *, user=None):
@@ -410,9 +400,9 @@ class APIs(commands.Cog):
             await ctx.message.clear_reactions()
             await ctx.send(embed=embed)
 
-    # ----
-    # IMDb
-    # ----
+    # ---
+    # WEBSITES
+    # ---
 
     @commands.command(name="imdb", aliases=["movie", "movies"])
     async def IMDbAPI(self, ctx, *, title):
@@ -448,9 +438,6 @@ class APIs(commands.Cog):
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
-    # ----
-    # Urban Dictionary
-    # ----
 
     @commands.command(name="urbandictionary", aliases=["urban", "define"])
     async def UrbanDictionaryAPI(self, ctx, *, term):
@@ -466,9 +453,7 @@ class APIs(commands.Cog):
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
-    # ----
-    # Discord
-    # ----
+
     @commands.command(name="invite", aliases=["discord"])
     async def DiscordAPI(self, ctx, *, invite):
         """Gets information about discord invites"""
@@ -532,9 +517,7 @@ class APIs(commands.Cog):
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
-    # ----
-    # DarkSky
-    # ----
+
     @commands.command(name="weather", aliases=["sää"])
     async def WeatherAPI(self, ctx, *, city):
         """Gets information about the weather"""
@@ -571,12 +554,10 @@ class APIs(commands.Cog):
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
-    # ---
-    # TWITTER
-    # ---
     
     @commands.command(name="twitter")
     async def TwitterAPI(self, ctx, *, user):
+        """Gets information about twitter users."""
         auth = OAuth1(config.api_keys["twitterConsKey"], config.api_keys["twitterConsSecret"], config.api_keys["twitterAccToken"], config.api_keys["twitterAccSecret"])
         data = self.REST("https://api.twitter.com/1.1/users/search.json?count=1&q=" + self.escape(user), auth=auth)[0]
         embed = discord.Embed(title=data["name"] + " (@" + data["screen_name"] + ")", url="https://twitter.com/"+data["screen_name"], description=data["description"], color=0x1DA1F2)
@@ -598,9 +579,7 @@ class APIs(commands.Cog):
         embed.timestamp = datetime.strptime(data["created_at"], "%a %b %d %H:%M:%S %z %Y")
         await ctx.send(embed=embed)
 
-    # ---
-    # DISCORD USER
-    # ---
+
     @commands.command(name="user", aliases=["käyttäjä"])
     async def discordUser(self, ctx, *, user):
         """Gets Discord User stats"""
@@ -613,12 +592,10 @@ class APIs(commands.Cog):
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
-    # ---
-    # STATUSPAGE
-    # ---
 
     @commands.command(name="status", aliases=["statuspage"])
     async def StatusAPI(self, ctx, *, name="None"):
+        """Gets information about status pages."""
         pages = [
             ("discord", "https://status.discordapp.com"),
             ("twitter", "https://api.twitterstat.us"),

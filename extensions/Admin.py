@@ -69,9 +69,9 @@ class Admin(commands.Cog):
             return
 
         if isinstance(error, commands.UserInputError):
-            await ctx.send("Invalid input.")
+            await ctx.send("Invalid input. Usage:")
             # TODO: Fix
-            # await self.bot.help_command.send_command_help(ctx.command)
+            await ctx.send_help(ctx.command)
             return
 
         if isinstance(error, commands.NoPrivateMessage):
