@@ -33,8 +33,3 @@ api_keys = {
     "twitterAccSecret": "[KEY]",
     "osu":              "[KEY]"
 }
-
-steamIDs = {
-        # Discord ID        :  Steam ID
-        "123456789123456789": "123456789123456789",
-}
