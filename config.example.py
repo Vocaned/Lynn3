@@ -30,7 +30,8 @@ api_keys = {
     "twitterConsKey":   "[KEY]",
     "twitterConsSecret":"[KEY]",
     "twitterAccToken":  "[KEY]",
-    "twitterAccSecret": "[KEY]"
+    "twitterAccSecret": "[KEY]",
+    "osu":              "[KEY]"
 }
 
 steamIDs = {

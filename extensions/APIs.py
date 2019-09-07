@@ -191,6 +191,7 @@ class APIs(commands.Cog):
         if not user:
             await ctx.send("Please enter an steam id or custom url after the command.")
             return
+        await ctx.message.add_reaction("\N{HOURGLASS}")
         if not str(user).isdigit():
             data = self.REST("http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=" + config.api_keys["steam"] + "&vanityurl=" + self.escape(user))
             user = data["response"]["steamid"]
@@ -207,6 +208,33 @@ class APIs(commands.Cog):
         embed.add_field(name="Win %", value=str(round(self.getCSStat(data, "total_matches_won") / self.getCSStat(data, "total_matches_played") * 100, 1)) + "%")
         embed.add_field(name="Accuracy", value=str(round(self.getCSStat(data, "total_shots_hit") / self.getCSStat(data, "total_shots_fired") * 100, 1)) + "%")
         embed.timestamp = datetime.utcnow()
+        await ctx.message.clear_reactions()
+        await ctx.send(embed=embed)
+
+    # ---
+    # OSU
+    # ---
+    @commands.command(name="osu")
+    async def OsuAPI(self, ctx, *, user):
+        """Gets information about osu! players."""
+        data = self.REST("https://https://osu.ppy.sh/api/get_user?u=" + self.escape(user) + "&k=" + config.api_keys["osu"])[0]
+        embed = discord.Embed(title="osu! - " + data["username"])
+        embed.add_field(name="Level", value=str(round(int(data["level"]), 2)))
+        embed.add_field(name="Play Count", value=data["playcount"])
+        embed.add_field(name="Playtime", value=str(round(int(data["total_seconds_played"])/60/60, 2)) + "h")
+        embed.add_field(name="Ranked Score", value=data["ranked_score"])
+        embed.add_field(name="Total Score", value=data["total_score"])
+        embed.add_field(name="Ranks", value="Silver SS: " + data["count_rank_ssh"]
+                                            + "\nGold SS: " + data["count_rank_ss"]
+                                            + "\nSilver S: " + data["count_rank_sh"]
+                                            + "\nGold S: " + data["count_rank_s"]
+                                            + "\nA: " + data["count_rank_a"])
+        embed.add_field(name="Hit Accuracy", value=str(round(int(data["hit_accuracy"]), 2)) + "%")
+        embed.add_field(name="PP", value=str(round(int(data["pp_raw"]), 2)))
+        embed.add_field(name="Leaderboards", value="**#" + data["pp_rank"] + "** global"
+                                                  + "\n**#" + data["pp_country_rank"] + "** in " + data["country"])
+        embed.set_footer(text="Account created", icon_url="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/480px-Osu%21Logo_%282015%29.svg.png")
+        embed.timestamp = datetime.strptime(data["join_date"], "%Y-%m-%d %H:%M:%S")
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
