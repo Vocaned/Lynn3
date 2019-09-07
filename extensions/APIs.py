@@ -217,7 +217,7 @@ class APIs(commands.Cog):
     @commands.command(name="osu")
     async def OsuAPI(self, ctx, *, user):
         """Gets information about osu! players."""
-        data = self.REST("https://https://osu.ppy.sh/api/get_user?u=" + self.escape(user) + "&k=" + config.api_keys["osu"])[0]
+        data = self.REST("https://osu.ppy.sh/api/get_user?u=" + self.escape(user) + "&k=" + config.api_keys["osu"])[0]
         embed = discord.Embed(title="osu! - " + data["username"])
         embed.add_field(name="Level", value=str(round(int(data["level"]), 2)))
         embed.add_field(name="Play Count", value=data["playcount"])

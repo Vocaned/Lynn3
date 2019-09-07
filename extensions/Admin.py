@@ -318,7 +318,7 @@ class Admin(commands.Cog):
     @commands.is_owner()
     async def debug(self, ctx):
         for msg in [config.error[i:i+1990] for i in range(0, len(config.error), 1990)]:
-            await ctx.send("```py\n" + config.error + "\n\n" + msg + "```")
+            await ctx.send("```py\n" + msg + "```")
 
     @commands.command(hidden=True)
     @commands.is_owner()
