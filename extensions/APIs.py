@@ -229,7 +229,7 @@ class APIs(commands.Cog):
                                             + "\nSilver S: " + data["count_rank_sh"]
                                             + "\nGold S: " + data["count_rank_s"]
                                             + "\nA: " + data["count_rank_a"])
-        embed.add_field(name="Hit Accuracy", value=str(round(float(data["hit_accuracy"]), 2)) + "%")
+        embed.add_field(name="Hit Accuracy", value=str(round(float(data["accuracy"]), 2)) + "%")
         embed.add_field(name="PP", value=str(round(float(data["pp_raw"]), 2)))
         embed.add_field(name="Leaderboards", value="**#" + data["pp_rank"] + "** global"
                                                   + "\n**#" + data["pp_country_rank"] + "** in " + data["country"])
