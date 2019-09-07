@@ -218,19 +218,19 @@ class APIs(commands.Cog):
     async def OsuAPI(self, ctx, *, user):
         """Gets information about osu! players."""
         data = self.REST("https://osu.ppy.sh/api/get_user?u=" + self.escape(user) + "&k=" + config.api_keys["osu"])[0]
-        embed = discord.Embed(title="osu! - " + data["username"])
+        embed = discord.Embed(title="osu! - " + data["username"], color=0xEA68A3)
         embed.add_field(name="Level", value=str(round(float(data["level"]), 2)))
-        embed.add_field(name="Play Count", value=data["playcount"])
-        embed.add_field(name="Playtime", value=str(round(int(data["total_seconds_played"])/60/60, 2)) + "h")
         embed.add_field(name="Ranked Score", value=data["ranked_score"])
+        embed.add_field(name="Hit Accuracy", value=str(round(float(data["accuracy"]), 2)) + "%")
+        embed.add_field(name="Play Count", value=data["playcount"])
         embed.add_field(name="Total Score", value=data["total_score"])
+        embed.add_field(name="PP", value=str(round(float(data["pp_raw"]), 2)))
+        embed.add_field(name="Playtime", value=str(round(int(data["total_seconds_played"])/60/60, 2)) + "h")
         embed.add_field(name="Ranks", value="Silver SS: " + data["count_rank_ssh"]
                                             + "\nGold SS: " + data["count_rank_ss"]
                                             + "\nSilver S: " + data["count_rank_sh"]
                                             + "\nGold S: " + data["count_rank_s"]
                                             + "\nA: " + data["count_rank_a"])
-        embed.add_field(name="Hit Accuracy", value=str(round(float(data["accuracy"]), 2)) + "%")
-        embed.add_field(name="PP", value=str(round(float(data["pp_raw"]), 2)))
         embed.add_field(name="Leaderboards", value="**#" + data["pp_rank"] + "** global"
                                                   + "\n**#" + data["pp_country_rank"] + "** in " + data["country"])
         embed.set_footer(text="Account created", icon_url="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/480px-Osu%21Logo_%282015%29.svg.png")
