@@ -411,6 +411,39 @@ class APIs(commands.Cog):
     # WEBSITES
     # ---
 
+    @commands.command(name="twitch")
+    async def TwitchAPI(self, ctx, *, user):
+        """Gets information about twitch users"""
+        await ctx.message.add_reaction("\N{HOURGLASS}")
+        token = self.REST("https://id.twitch.tv/oauth2/token?client_id="+config.api_keys["twitchID"]+"&client_secret="+config.api_keys["twitchSecret"]+"&grant_type=client_credentials", method=requests.post)["access_token"]
+        data = self.REST("https://api.twitch.tv/helix/users?login=" + self.escape(user), headers={"Authorization": "Bearer " + token})["data"][0]
+
+        name = data["display_name"]
+        if data["login"] != data["display_name"]:
+            name = data["display_name"] + " (" + data["login"] + ")"
+        
+        embed = discord.Embed(title="Twitch user - " + name, color=0x6441A4, url="https://twitch.tv/" + data["login"])
+
+        embed.set_thumbnail(url=data["profile_image_url"])
+
+        if data["offline_image_url"]:
+            embed.set_image(url=data["offline_image_url"])
+        
+        if data["broadcaster_type"]:
+            utype = data["broadcaster_type"].title()
+            if data["type"]:
+                utype += "\n" + data["type"].title()
+            embed.add_field(name="User Type", value=utype)
+        
+        if data["description"]:
+            embed.add_field(name="Description", value=data["description"])
+        embed.add_field(name="Viewers", value=str(data["view_count"]))
+
+        embed.set_footer(icon_url="https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c540.png", text="User id " + data["id"])
+        await ctx.message.clear_reactions()
+        await ctx.send(embed=embed)
+
+
     @commands.command(name="imdb", aliases=["movie", "movies"])
     async def IMDbAPI(self, ctx, *, title):
         """Gets information about movies using the IMDb"""
