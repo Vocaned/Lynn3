@@ -301,9 +301,14 @@ class Admin(commands.Cog):
     async def git(self, ctx, *, action):
         if action == "pull":
             await ctx.message.add_reaction("\N{HOURGLASS}")
-            p = subprocess.check_output(["git", "pull", config.gitURI], stderr=subprocess.STDOUT, timeout=30)
+            p = subprocess.check_output(["git", "pull", config.gitURI], stderr=subprocess.STDOUT, timeout=30).decode("utf-8")
+            w = p.split()
+            commits = w[w.index("Updating") + 1]
+
+            p2 = subprocess.check_output(["git", "log", "--format=%h-%an\\ %B%n%N", commits], stderr=subprocess.STDOUT, timeout=30)
+            p2 = "\n".join([line for line in p2.decode("utf-8").split('\n') if line.strip() != ''])
             await ctx.message.clear_reactions()
-            await ctx.send("```" + p.decode("utf-8") + "```Remember to reload modules!")
+            await ctx.send("```" + p + "\n" + p2 + "```Remember to reload modules!")
         else:
             raise commands.UserInputError()
         
