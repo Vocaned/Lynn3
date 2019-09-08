@@ -305,7 +305,7 @@ class Admin(commands.Cog):
             w = p.split()
             commits = w[w.index("Updating") + 1]
 
-            p2 = subprocess.check_output(["git", "log", "--format=%h-%an %B%n%N", commits], stderr=subprocess.STDOUT, timeout=30)
+            p2 = subprocess.check_output(["git", "log", "--format=%h - %an %B%n%N", commits], stderr=subprocess.STDOUT, timeout=30)
             p2 = "\n".join([line for line in p2.decode("utf-8").split('\n') if line.strip() != ''])
             await ctx.message.clear_reactions()
             await ctx.send("```" + p + "\n" + p2 + "```Remember to reload modules!")

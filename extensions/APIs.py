@@ -411,6 +411,48 @@ class APIs(commands.Cog):
     # WEBSITES
     # ---
 
+    @commands.command(name="mixer")
+    async def MixerAPI(self, ctx, *, user):
+        """Gets information about mixer users"""
+        await ctx.message.add_reaction("\N{HOURGLASS}")
+        data = self.REST("https://mixer.com/api/v1/channels/" + self.escape(user))
+        
+        s = ""
+        if data["online"]:
+            s = " (Currently Streaming)"
+
+        embed = discord.Embed(title="Mixer user - " + data["token"] + s, color=0x002050, url="https://mixer.com/" + data["token"])
+
+        if data["user"]["avatarUrl"]:
+            embed.set_thumbnail(url=data["user"]["avatarUrl"])
+        
+
+        types = []
+        if data["featured"]:
+            types.append("Featured")
+        if data["interactive"]:
+            types.append("Interactive Stream")
+        if data["vodsEnabled"]:
+            types.append("VODs")
+        if data["suspended"]:
+            types.append("Suspended")
+        if data["partnered"]:
+            types.append("Partnered")
+                
+        if types:
+            embed.add_field(name="Type", value="\n".join(types))
+        
+        
+
+        embed.add_field(name="Followers", value=str(data["numFollowers"]))
+
+        if data["online"]:
+            embed.add_field(name="Current viewers", value=str(data["viewersCurrent"]))
+
+        embed.set_footer(icon_url="http://teambeyond.net/wp-content/uploads/2017/05/Mixer-Logo.png", text="User id " + data["id"])
+        await ctx.message.clear_reactions()
+        await ctx.send(embed=embed)
+
     @commands.command(name="twitch")
     async def TwitchAPI(self, ctx, *, user):
         """Gets information about twitch users"""
