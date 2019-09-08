@@ -265,6 +265,10 @@ class APIs(commands.Cog):
                 flags.append("Blog editor")
             if "p" in data["flags"]:
                 flags.append("Patreon")
+            if "u" in data["flags"]:
+                flags.append("Unverified")
+            if "r" in data["flags"]:
+                flags.append("Recovering account")
             
             embed = discord.Embed(title="ClassiCube User", colour=0x977dab)
             embed.set_author(name=data["username"],
