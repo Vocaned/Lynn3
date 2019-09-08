@@ -449,7 +449,7 @@ class APIs(commands.Cog):
         if data["online"]:
             embed.add_field(name="Current viewers", value=str(data["viewersCurrent"]))
 
-        embed.set_footer(icon_url="http://teambeyond.net/wp-content/uploads/2017/05/Mixer-Logo.png", text="User id " + data["id"])
+        embed.set_footer(icon_url="http://teambeyond.net/wp-content/uploads/2017/05/Mixer-Logo.png", text="User id " + str(data["id"]))
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
