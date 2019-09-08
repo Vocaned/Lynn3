@@ -274,7 +274,10 @@ class APIs(commands.Cog):
             embed.set_author(name=data["username"],
                 icon_url="attachment://head.png")
             embed.add_field(name="ID", value=data["id"])
-            embed.add_field(name="Account created", value="On " + datetime.utcfromtimestamp(data["registered"]).strftime("%c") + "\n" + self.td_format(datetime.utcnow() - datetime.utcfromtimestamp(data["registered"])) + " ago")
+            ago = self.td_format(datetime.utcnow() - datetime.utcfromtimestamp(data["registered"]))
+            if len(ago) == 0:
+                ago = "Under a minute"
+            embed.add_field(name="Account created", value="On " + datetime.utcfromtimestamp(data["registered"]).strftime("%c") + "\n" + ago + " ago")
             if flags:
                 embed.add_field(name="Notes", value=", ".join(flags))
             
