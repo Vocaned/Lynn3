@@ -311,7 +311,7 @@ class Admin(commands.Cog):
             await ctx.send("```" + p + "\n" + p2 + "```Remember to reload modules!")
         else:
             raise commands.UserInputError()
-        
+
 
     @commands.command(hidden=True)
     @commands.is_owner()
