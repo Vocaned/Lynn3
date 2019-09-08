@@ -419,7 +419,7 @@ class APIs(commands.Cog):
         data = self.REST("https://api.twitch.tv/helix/users?login=" + self.escape(user), headers={"Authorization": "Bearer " + token})["data"][0]
 
         name = data["display_name"]
-        if data["login"] != data["display_name"]:
+        if data["login"].lower() != data["display_name"].lower():
             name = data["display_name"] + " (" + data["login"] + ")"
         
         embed = discord.Embed(title="Twitch user - " + name, color=0x6441A4, url="https://twitch.tv/" + data["login"])
