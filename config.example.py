@@ -31,5 +31,7 @@ api_keys = {
     "twitterConsSecret":"[KEY]",
     "twitterAccToken":  "[KEY]",
     "twitterAccSecret": "[KEY]",
-    "osu":              "[KEY]"
+    "osu":              "[KEY]",
+    "twitchID":         "[KEY]",
+    "twitchSecret":     "[KEY]"
 }
