@@ -133,6 +133,9 @@ class APIs(commands.Cog):
                 skin = discord.File("skins/2d/" + str(uuid["id"]) + ".png", filename="skin.png")
                 head = discord.File("skins/head/" + str(uuid["id"]) + ".png", filename="head.png")
             else:
+                # TODO: Try to find a official steve skin in mojang's skin server
+                await BotUtils.skinRenderer2D("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png", "default")
+                await BotUtils.headRenderer("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png", "default")
                 skin = discord.File("skins/2d/default.png", filename="skin.png")
                 head = discord.File("skins/head/default.png", filename="head.png")
             if created:

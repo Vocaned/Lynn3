@@ -1,16 +1,12 @@
-import discord
-from datetime import datetime
-from discord.ext import commands
+import os
 import requests
 from PIL import Image, ImageOps
 
-async def embedMsg(channel, hex, title="", description=""):
-    embed = discord.Embed(title=str(title), colour=hex)
-    embed.description = str(description)
-    embed.timestamp = datetime.utcnow()
-    return await channel.send(embed=embed, content='')
-
 async def headRenderer(url, filename):
+
+    if os.path.isfile("skins/head/" + str(filename) + ".png"):
+        return "skins/head/" + str(filename) + ".png",
+
     img = Image.open(requests.get(url, stream=True).raw)
     p = int(img.width / 64)
     img2 = Image.new("RGBA", (p*8, p*8), color=000000)
@@ -31,6 +27,9 @@ async def headRenderer(url, filename):
 
 async def skinRenderer2D(url, filename):
     """Renders a skin in 2D and returns path to the saved file"""
+
+    if os.path.isfile("skins/2d/" + str(filename) + ".png"):
+        return "skins/2d/" + str(filename) + ".png"
 
     img = Image.open(requests.get(url, stream=True).raw)
     p = int(img.width / 64)
