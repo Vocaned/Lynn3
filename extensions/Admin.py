@@ -309,9 +309,9 @@ class Admin(commands.Cog):
                 p2 = subprocess.check_output(["git", "log", "--format=%h - %an | %B%n%N", commits], stderr=subprocess.STDOUT, timeout=30)
                 p2 = "\n".join([line for line in p2.decode("utf-8").split('\n') if line.strip() != ''])
             except:
-                p2 = "Couldn't get commits. (Local branch already up to date?)"
+                p2 = ""
             await ctx.message.clear_reactions()
-            await ctx.send("```" + p + "\n" + p2 + "```Remember to reload modules!")
+            await ctx.send("```" + p + "\n" + p2 + "\n\nRemember to reload modules!```")
         else:
             raise commands.UserInputError()
 
