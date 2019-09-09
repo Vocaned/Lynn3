@@ -417,39 +417,61 @@ class APIs(commands.Cog):
         await ctx.message.add_reaction("\N{HOURGLASS}")
         data = self.REST("https://mixer.com/api/v1/channels/" + self.escape(user))
         
+        name = data["token"]
+        if data["user"]["username"].lower() != data["token"].lower():
+            name = data["token"] + " (" + data["user"]["username"] + ")"
+
         s = ""
         if data["online"]:
             s = " (Currently Streaming)"
 
-        embed = discord.Embed(title="Mixer user - " + data["token"] + s, color=0x002050, url="https://mixer.com/" + data["token"])
+        embed = discord.Embed(title="Mixer user - " + name + s, color=0x002050, url="https://mixer.com/" + data["token"])
 
         if data["user"]["avatarUrl"]:
             embed.set_thumbnail(url=data["user"]["avatarUrl"])
         
 
         types = []
+        groups = []
+        if data["user"]["verified"]:
+            types.append("Verified")
+        if data["suspended"]:
+            types.append("Suspended")
         if data["featured"]:
             types.append("Featured")
+        if data["partnered"]:
+            types.append("Partnered")
         if data["interactive"]:
             types.append("Interactive Stream")
         if data["vodsEnabled"]:
             types.append("VODs")
-        if data["suspended"]:
-            types.append("Suspended")
-        if data["partnered"]:
-            types.append("Partnered")
+        
+        try:
+            for group in data["user"]["groups"]:
+                groups.append(group["name"])
+        except:
+            pass
+        
                 
         if types:
             embed.add_field(name="Type", value="\n".join(types))
+        if groups:
+            embed.add_field(name="Groups", value="\n".join(groups))
         
-        
+        if data["user"]["bio"]:
+            embed.add_field(name="Bio", value=str(data["user"]["bio"]))
 
         embed.add_field(name="Followers", value=str(data["numFollowers"]))
+        embed.add_field(name="Sparks", value=str(data["user"]["sparks"]))
+
+        if data["thumbnail"]["url"]:
+            embed.set_image(url=data["thumbnail"]["url"])
 
         if data["online"]:
             embed.add_field(name="Current viewers", value=str(data["viewersCurrent"]))
 
-        embed.set_footer(icon_url="http://teambeyond.net/wp-content/uploads/2017/05/Mixer-Logo.png", text="User id " + str(data["id"]))
+        embed.set_footer(icon_url="http://teambeyond.net/wp-content/uploads/2017/05/Mixer-Logo.png", text="LVL " + str(data["user"]["level"]) + " • Account created ")
+        embed.timestamp = datetime.strptime(data["createdAt"], "%Y-%m-%dT%H:%M:%S.%fZ")
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
