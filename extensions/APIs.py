@@ -142,7 +142,7 @@ class APIs(commands.Cog):
                 head = discord.File("skins/head/" + str(uuid["id"]) + ".png", filename="head.png")
 
             if created:
-                embed.add_field(name="Account created", value="On " + created.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - created))
+                embed.add_field(name="Account created", value="On " + created.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - created) + " ago")
             else:
                 embed.add_field(name="Account created", value="???")
             embed.set_footer(text="|", icon_url="https://minecraft.net/favicon-96x96.png")

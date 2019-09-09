@@ -5,6 +5,5 @@ juttu.py
 *.log
 .vscode
 downloads
-skins/*/*
-!skins/*/default.png
+skins
 Lynn.code-workspace
