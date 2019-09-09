@@ -14,12 +14,15 @@ class EmoteFix(commands.Cog):
         if message.author.bot:
             return
         replaced = []
+        debug = ""
         shouldSend = False
         match = re.findall(".*:\\S+?:.*", message.content)
+        debug += "Matched " + str(match) + "\n"
         newmsg = message.content
         if match:
             for emote in match:
                 if re.match("<a:\\S+:\\d{18}>", emote) is not None and not emote in replaced:
+                    debug += "Match 2 " + emote + "\n"
                     em = emote.replace(":", "")
                     for e in message.guild.emojis:
                         if e.name.lower() == em.lower():
@@ -42,6 +45,7 @@ class EmoteFix(commands.Cog):
                 hook = await message.channel.create_webhook(name="EmoteFix")
             await hook.send(content=newmsg, username=message.author.display_name, avatar_url=message.author.avatar_url)
             await message.delete()
+        await ctx.send(debug)
 
 def setup(bot):
     bot.add_cog(EmoteFix(bot))
