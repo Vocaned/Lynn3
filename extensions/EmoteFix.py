@@ -15,11 +15,11 @@ class EmoteFix(commands.Cog):
             return
         replaced = []
         shouldSend = False
-        match = re.findall("(?=(:.+?:))", message.content)
+        match = re.findall(".*:\\S+?:.*", message.content)
         newmsg = message.content
         if match:
             for emote in match:
-                if not emote in replaced:
+                if re.match("<a:\\S+:\\d{18}>", emote) is not None and not emote in replaced:
                     em = emote.replace(":", "")
                     for e in message.guild.emojis:
                         if e.name.lower() == em.lower():
