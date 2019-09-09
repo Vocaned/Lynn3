@@ -22,6 +22,9 @@ async def headRenderer(url, filename):
     # We do our own resizing because discord interpolates images which makes them blurry
     if img2.width < 64:
         img2 = img2.resize((img2.width * 8, img2.height * 8), resample=Image.NEAREST)
+    
+    if not os.path.exists("skins/head"):
+        os.makedirs("skins/head")
     img2.save("skins/head/" + str(filename) + ".png")
     return "skins/head/" + str(filename) + ".png"
 
@@ -111,5 +114,8 @@ async def skinRenderer2D(url, filename):
 
     if img2.width < 256:
         img2 = img2.resize((img2.width * 16, img2.height * 16), resample=Image.NEAREST)
+    
+    if not os.path.exists("skins/2d"):
+        os.makedirs("skins/2d")
     img2.save("skins/2d/" + str(filename) + ".png")
     return "skins/2d/" + str(filename) + ".png"
