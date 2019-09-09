@@ -43,9 +43,8 @@ class EmoteFix(commands.Cog):
             hook = [h for h in await message.channel.webhooks() if h.name == "EmoteFix"][0]
             if not hook:
                 hook = await message.channel.create_webhook(name="EmoteFix")
-            await hook.send(content=newmsg, username=message.author.display_name, avatar_url=message.author.avatar_url)
+            await hook.send(content=debug, username=message.author.display_name, avatar_url=message.author.avatar_url)
             await message.delete()
-        await ctx.send(debug)
 
 def setup(bot):
     bot.add_cog(EmoteFix(bot))
