@@ -454,9 +454,9 @@ class APIs(commands.Cog):
         
                 
         if types:
-            embed.add_field(name="Type", value="\n".join(types))
+            embed.add_field(name="Account type", value="\n".join(types))
         if groups:
-            embed.add_field(name="Groups", value="\n".join(groups))
+            embed.add_field(name="Account groups", value="\n".join(groups))
         
         if data["user"]["bio"]:
             embed.add_field(name="Bio", value=str(data["user"]["bio"]))
@@ -725,11 +725,10 @@ class APIs(commands.Cog):
                 elif j["status"]["indicator"] == "major":
                     col = 0xff0000
 
-                embed = discord.Embed(title="**" + page[0].title() + " Status** - " + j["status"]["description"], colour=col)
+                embed = discord.Embed(title="**" + page[0].title() + " Status** - " + j["status"]["description"], colour=col, url=page[1])
                 for comp in j["components"]:
                     embed.add_field(name=comp["name"], value=comp["status"].replace("_", " ").title())
                 embed.timestamp = datetime.utcnow()
-                embed.set_footer(text="More information at " + page[1])
                 
                 await ctx.message.clear_reactions()
                 await ctx.send(embed=embed)
