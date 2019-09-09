@@ -7,6 +7,4 @@ juttu.py
 downloads
 skins/*/*
 !skins/*/default.png
-CogTemplate.py
 Lynn.code-workspace
-Debug.py
