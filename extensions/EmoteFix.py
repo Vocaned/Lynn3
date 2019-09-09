@@ -15,7 +15,7 @@ class EmoteFix(commands.Cog):
             return
         replaced = []
         debug = ""
-        shouldSend = False
+        shouldSend = True
         match = re.findall(".*:\\S+?:.*", message.content)
         debug += "Matched " + str(match) + "\n"
         newmsg = message.content
