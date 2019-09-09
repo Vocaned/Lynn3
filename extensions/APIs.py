@@ -130,16 +130,16 @@ class APIs(commands.Cog):
                 skin["textures"]["SKIN"]["url"]
             except:
                 # TODO: Try to find a official steve skin in mojang's skin server
-                await BotUtils.skinRenderer2D("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png", "default")
-                await BotUtils.headRenderer("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png", "default")
-                skin = discord.File("skins/2d/default.png", filename="skin.png")
-                head = discord.File("skins/head/default.png", filename="head.png")
+                await BotUtils.skinRenderer2D("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
+                await BotUtils.headRenderer("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
+                skinFile = discord.File("skins/2d/Steve_skin.png", filename="skin.png")
+                headFile = discord.File("skins/head/Steve_skin.png", filename="head.png")
             else:
                 embed.add_field(name="Skin URL", value="[Click me]("+skin["textures"]["SKIN"]["url"]+")")
-                await BotUtils.skinRenderer2D(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
-                await BotUtils.headRenderer(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
-                skin = discord.File("skins/2d/" + str(uuid["id"]) + ".png", filename="skin.png")
-                head = discord.File("skins/head/" + str(uuid["id"]) + ".png", filename="head.png")
+                await BotUtils.skinRenderer2D(skin["textures"]["SKIN"]["url"])
+                await BotUtils.headRenderer(skin["textures"]["SKIN"]["url"])
+                skinFile = discord.File("skins/2d/" + skin["textures"]["SKIN"]["url"].split("/")[-1] + ".png", filename="skin.png")
+                headFile = discord.File("skins/head/" + skin["textures"]["SKIN"]["url"].split("/")[-1] + ".png", filename="head.png")
 
             if created:
                 embed.add_field(name="Account created", value="On " + created.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - created) + " ago")
@@ -149,7 +149,7 @@ class APIs(commands.Cog):
             embed.set_image(url="attachment://skin.png")
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
-            await ctx.send(files=[skin, head], embed=embed)
+            await ctx.send(files=[skinFile, headFile], embed=embed)
         else:
             sale = self.REST("https://api.mojang.com/orders/statistics", method=requests.post, data='{"metricKeys":["item_sold_minecraft","prepaid_card_redeemed_minecraft"]}')
             embed = discord.Embed(title="Minecraft", colour=0x82540f)
@@ -289,13 +289,15 @@ class APIs(commands.Cog):
             
             if self.REST("https://static.classicube.net/skins/" + str(data["username"]) + ".png", returns="r.status_code == 200"):
                 embed.add_field(name="Skin URL", value="[Click me](https://static.classicube.net/skins/" + str(data["username"]) + ".png)")
-                await BotUtils.skinRenderer2D("https://static.classicube.net/skins/" + str(data["username"]) + ".png", str(data["id"]))
-                await BotUtils.headRenderer("https://static.classicube.net/skins/" + str(data["username"]) + ".png", str(data["id"]))
-                file = discord.File("skins/2d/" + str(data["id"]) + ".png", filename="skin.png")
-                file2 = discord.File("skins/head/" + str(data["id"]) + ".png", filename="head.png")
+                await BotUtils.skinRenderer2D("https://static.classicube.net/skins/" + str(data["username"]) + ".png", fromFile=False)
+                await BotUtils.headRenderer("https://static.classicube.net/skins/" + str(data["username"]) + ".png", fromFile=False)
+                file = discord.File("skins/2d/" + str(data["username"]) + ".png", filename="skin.png")
+                file2 = discord.File("skins/head/" + str(data["username"]) + ".png", filename="head.png")
             else:
-                file = discord.File("skins/2d/default.png", filename="skin.png")
-                file2 = discord.File("skins/head/default.png", filename="head.png")
+                await BotUtils.skinRenderer2D("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
+                await BotUtils.headRenderer("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
+                file = discord.File("skins/2d/Steve_skin.png", filename="skin.png")
+                file2 = discord.File("skins/head/Steve_skin.png", filename="head.png")
 
             embed.set_footer(text="|", icon_url="https://www.classicube.net/static/img/cc-cube-small.png")
             embed.set_image(url="attachment://skin.png")

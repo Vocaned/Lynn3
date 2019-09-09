@@ -2,10 +2,11 @@ import os
 import requests
 from PIL import Image, ImageOps
 
-async def headRenderer(url, filename):
-
-    if os.path.isfile("skins/head/" + str(filename) + ".png"):
-        return "skins/head/" + str(filename) + ".png",
+async def headRenderer(url, fromFile=True):
+    filename = url.split("/")[-1].replace(".png", "")
+    if fromFile:
+        if os.path.isfile("skins/head/" + str(filename) + ".png"):
+            return "skins/head/" + str(filename) + ".png",
 
     img = Image.open(requests.get(url, stream=True).raw)
     p = int(img.width / 64)
@@ -28,11 +29,13 @@ async def headRenderer(url, filename):
     img2.save("skins/head/" + str(filename) + ".png")
     return "skins/head/" + str(filename) + ".png"
 
-async def skinRenderer2D(url, filename):
+async def skinRenderer2D(url, fromFile=True):
     """Renders a skin in 2D and returns path to the saved file"""
-
-    if os.path.isfile("skins/2d/" + str(filename) + ".png"):
-        return "skins/2d/" + str(filename) + ".png"
+    
+    filename = url.split("/")[-1].replace(".png", "")
+    if fromFile:
+        if os.path.isfile("skins/2d/" + str(filename) + ".png"):
+            return "skins/2d/" + str(filename) + ".png"
 
     img = Image.open(requests.get(url, stream=True).raw)
     p = int(img.width / 64)
