@@ -126,18 +126,21 @@ class APIs(commands.Cog):
             embed.set_author(name=history[-1]["name"], icon_url="attachment://head.png")
             embed.add_field(name="Name history", value="\n".join(names))
             embed.add_field(name="UUID", value=uuid["id"])
-            if skin["textures"]["SKIN"]["url"]:
-                embed.add_field(name="Skin URL", value="[Click me]("+skin["textures"]["SKIN"]["url"]+")")
-                await BotUtils.skinRenderer2D(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
-                await BotUtils.headRenderer(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
-                skin = discord.File("skins/2d/" + str(uuid["id"]) + ".png", filename="skin.png")
-                head = discord.File("skins/head/" + str(uuid["id"]) + ".png", filename="head.png")
-            else:
+            try:
+                skin["textures"]["SKIN"]["url"]
+            except:
                 # TODO: Try to find a official steve skin in mojang's skin server
                 await BotUtils.skinRenderer2D("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png", "default")
                 await BotUtils.headRenderer("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png", "default")
                 skin = discord.File("skins/2d/default.png", filename="skin.png")
                 head = discord.File("skins/head/default.png", filename="head.png")
+            else:
+                embed.add_field(name="Skin URL", value="[Click me]("+skin["textures"]["SKIN"]["url"]+")")
+                await BotUtils.skinRenderer2D(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
+                await BotUtils.headRenderer(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
+                skin = discord.File("skins/2d/" + str(uuid["id"]) + ".png", filename="skin.png")
+                head = discord.File("skins/head/" + str(uuid["id"]) + ".png", filename="head.png")
+
             if created:
                 embed.add_field(name="Account created", value="On " + created.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - created))
             else:
