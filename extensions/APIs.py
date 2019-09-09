@@ -664,7 +664,7 @@ class APIs(commands.Cog):
 
     @commands.command(name="user", aliases=["käyttäjä"])
     async def discordUser(self, ctx, *, user):
-        """Gets Discord User stats"""
+        """Gets information about discord users."""
         await ctx.message.add_reaction("\N{HOURGLASS}")
         user = await commands.UserConverter().convert(ctx, user)
         embed = discord.Embed(title="Discord User " + user.name + "#" + str(user.discriminator), colour=0x7289DA)
