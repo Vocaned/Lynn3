@@ -307,7 +307,7 @@ class Admin(commands.Cog):
                 commits = w[w.index("Updating") + 1]
 
                 p2 = subprocess.check_output(["git", "log", "--format=%h - %an | %B%n%N", commits], stderr=subprocess.STDOUT, timeout=30)
-                p2 = "\n".join([line for line in p2.decode("utf-8").split('\n') if line.strip() != '']) + "\nRemember to reload modules!"
+                p2 = "\n".join([line for line in p2.decode("utf-8").split('\n') if line.strip() != '']) + "\n\nRemember to reload modules!"
             except:
                 p2 = ""
             await ctx.message.clear_reactions()

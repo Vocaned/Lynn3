@@ -464,8 +464,11 @@ class APIs(commands.Cog):
         embed.add_field(name="Followers", value=str(data["numFollowers"]))
         embed.add_field(name="Sparks", value=str(data["user"]["sparks"]))
 
-        if data["thumbnail"]["url"]:
-            embed.set_image(url=data["thumbnail"]["url"])
+        try:
+            if data["thumbnail"]["url"]:
+                embed.set_image(url=data["thumbnail"]["url"])
+        except:
+            pass
 
         if data["online"]:
             embed.add_field(name="Current viewers", value=str(data["viewersCurrent"]))
