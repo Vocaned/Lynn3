@@ -14,16 +14,12 @@ class EmoteFix(commands.Cog):
         if message.author.bot:
             return
         replaced = []
-        debug = ""
-        shouldSend = True
-        match = re.findall(".*:\\S+?:.*", message.content)
-        debug += "Matched `" + str(match) + "`\n"
+        shouldSend = False
         newmsg = message.content
         if match:
             for emote in match:
-                if re.match("<a:\\S+:\\d{18}>", emote) is not None and not emote in replaced:
+                if re.match("<a:\\S+:\\d{18}>", emote) is None and not emote in replaced:
                     em = emote.replace(":", "")
-                    debug += "Match 2 `" + em + "`\n"
                     for e in message.guild.emojis:
                         if e.name.lower() == em.lower():
                             prefix = ""
