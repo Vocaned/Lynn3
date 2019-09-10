@@ -2,7 +2,7 @@ __pycache__
 config.py
 juttu.py
 *.db
-*.log
+logs
 .vscode
 downloads
 skins

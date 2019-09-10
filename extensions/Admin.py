@@ -14,8 +14,6 @@ import subprocess
 import config
 import sys
 import math
-
-# to expose to the eval command
 import datetime
 from collections import Counter
 
@@ -70,7 +68,6 @@ class Admin(commands.Cog):
 
         if isinstance(error, commands.UserInputError):
             await ctx.send("Invalid input. Usage:")
-            # TODO: Fix
             await ctx.send_help(ctx.command)
             return
 
@@ -306,7 +303,7 @@ class Admin(commands.Cog):
             try:
                 commits = w[w.index("Updating") + 1]
 
-                p2 = subprocess.check_output(["git", "log", "--format=%h - %an | %B%n%N", commits], stderr=subprocess.STDOUT, timeout=30)
+                p2 = subprocess.check_output(["git", "log", "--format=%h %an | %B%n%N", commits], stderr=subprocess.STDOUT, timeout=30)
                 p2 = "\n".join([line for line in p2.decode("utf-8").split('\n') if line.strip() != '']) + "\n\nRemember to reload modules!"
             except:
                 p2 = ""

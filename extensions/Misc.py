@@ -19,26 +19,6 @@ class Misc(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(hidden=True)
-    @commands.cooldown(60, 60)
-    @commands.is_owner()
-    async def speedtest(self, ctx):
-        """Speedtest"""
-        message = await ctx.send('\N{HOURGLASS}')
-        output = json.loads(subprocess.check_output(['speedtest', '--json']))
-        down = '{0:.2f}'.format(int(output["download"]) / 1000000)
-        up = '{0:.2f}'.format(int(output["upload"]) / 1000000)
-        ping = '{0:.2f}'.format(output["ping"])
-        embed = discord.Embed(title='Speedtest', colour=0x551a8b)
-        embed.description = 'Fam0r is paying for a 100Mb/100Mb connection, but is getting ' + str(down) + 'Mb/' + str(up) + 'Mb! (ping ' + str(ping) + 'ms)'
-        embed.timestamp = datetime.utcnow()
-        await message.edit(embed=embed, content="")
-
-    @commands.command()
-    async def lgbt(self, ctx):
-        await ctx.message.delete()
-        await ctx.send("<a:lgbt1:559809814943891457> <a:lgbt2:559809821377822720>")
-        
     @commands.command(aliases=["col", "color", "colour"])
     async def hex(self, ctx, *, col):
         hexcol = str(col).replace("#", "")

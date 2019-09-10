@@ -55,22 +55,20 @@ class APIs(commands.Cog):
     async def getMinecraftAge(self, name):
         a = 1263146630 # notch sign-up
         b = math.floor(datetime.utcnow().timestamp())
-        lastfail = 0
+        last = 0
         for i in range(30):
             if a == b:
-                ok = self.REST("https://api.mojang.com/users/profiles/minecraft/" + name + "?at=" + str(a), returns="r.status_code == 200")
-                if ok and lastfail == a-1:
+                if last == a-1 and self.REST("https://api.mojang.com/users/profiles/minecraft/" + name + "?at=" + str(a), returns="r.status_code == 200"):
                     return datetime.utcfromtimestamp(a)
                 else:
                     return False
             else:
                 mid = a + math.floor((b - a) / 2)
-                ok = self.REST("https://api.mojang.com/users/profiles/minecraft/" + name + "?at=" + str(mid), returns="r.status_code == 200")
-                if ok:
+                if self.REST("https://api.mojang.com/users/profiles/minecraft/" + name + "?at=" + str(mid), returns="r.status_code == 200"):
                     b = mid
                 else:
                     a = mid+1
-                    lastfail = mid
+                    last = mid
 
     
     async def getMinecraftUUID(self, name):
@@ -330,8 +328,11 @@ class APIs(commands.Cog):
             embed.add_field(name="Total Accounts", value=playercount)
             embed.add_field(name="Accounts Online\n(Inaccurate)", value=str(onlinecount))
             embed.add_field(name="Last five accounts", value=players)
-            for i in range(len(serverlist)):
-                embed.add_field(name="("+str(i+1)+"/"+str(len(serverlist))+") Servers with players\nClick the server names to join!", value=serverlist[i])
+            if len(serverlist) == 1:
+                embed.add_field(name="Servers with players\nClick the server names to join!", value=serverlist[0])
+            else:
+                for i in range(len(serverlist)):
+                    embed.add_field(name="("+str(i+1)+"/"+str(len(serverlist))+") Servers with players\nClick the server names to join!", value=serverlist[i])
 
             embed.set_footer(text="|", icon_url="https://www.classicube.net/static/img/cc-cube-small.png")
             embed.timestamp = datetime.utcnow()
@@ -546,8 +547,6 @@ class APIs(commands.Cog):
                 ratings += "**" + i["Source"] + "** - `" + i["Value"] + "`\n"
 
             embed.add_field(name="Ratings", value=ratings)
-
-        
 
         embed.timestamp = datetime.utcnow()
         await ctx.message.clear_reactions()

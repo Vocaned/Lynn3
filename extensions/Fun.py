@@ -13,9 +13,6 @@ class Fun(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 
-	#async def __local_check(self, ctx):
-		#return ctx.message.guild.id != 485076757733572608
-
 	def generateMinesweeper(self, width, height, bombs):
 		grid = []
 		bomb = []
@@ -24,16 +21,12 @@ class Fun(commands.Cog):
 		while bombs > 0:
 			x = random.randint(0, width-1)
 			y = random.randint(0, height-1)
-			logging.debug('Adding bomb to: ' + str(x) + ' ' + str(y))
 			if grid[y][x] != 'x':
 				grid[y][x] = 'x'
 				bomb.append((x, y))
 				bombs-=1
-			else:
-				logging.debug('Bomb was already there, trying again...')
 
 		for loc in bomb:
-			logging.debug('Doing ' + str(loc))
 			canUp = False
 			canLeft = False
 			canRight = False
@@ -48,35 +41,27 @@ class Fun(commands.Cog):
 				canRight = True
 				
 			if canUp:
-				# up
 				if grid[loc[1]-1][loc[0]] != 'x':
 					grid[loc[1]-1][loc[0]]+=1
 			if canUp and canLeft:
-				# up-left
 				if grid[loc[1]-1][loc[0]-1] != 'x':
 					grid[loc[1]-1][loc[0]-1]+=1
 			if canUp and canRight:
-				# up-right
 				if grid[loc[1]-1][loc[0]+1] != 'x':
 					grid[loc[1]-1][loc[0]+1]+=1
 			if canDown:
-				# down
 				if grid[loc[1]+1][loc[0]] != 'x':
 					grid[loc[1]+1][loc[0]]+=1
 			if canDown and canLeft:
-				# down-left
 				if grid[loc[1]+1][loc[0]-1] != 'x':
 					grid[loc[1]+1][loc[0]-1]+=1
 			if canDown and canRight:
-				# down-right
 				if grid[loc[1]+1][loc[0]+1] != 'x':
 					grid[loc[1]+1][loc[0]+1]+=1
 			if canLeft:
-				# left
 				if grid[loc[1]][loc[0]-1] != 'x':
 					grid[loc[1]][loc[0]-1]+=1
 			if canRight:
-				# right
 				if grid[loc[1]][loc[0]+1] != 'x':
 					grid[loc[1]][loc[0]+1]+=1
 			
@@ -123,7 +108,7 @@ class Fun(commands.Cog):
 				elif c == 8:
 					output += '\U00000038\U000020E3'
 				elif str(c) == 'x':
-					output += '\N{bomb}'
+					output += '\N{BOMB}'
 				if spoil: output += '||'
 			output += '\n'
 		embed = discord.Embed(title='Minesweeper', colour=0xFFA500)
