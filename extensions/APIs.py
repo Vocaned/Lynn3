@@ -9,6 +9,8 @@ import math
 import urllib.parse
 import BotUtils
 from requests_oauthlib import OAuth1
+
+# TODO: Drop dateutil completely
 import dateutil
 
 class APIs(commands.Cog):
@@ -491,6 +493,7 @@ class APIs(commands.Cog):
     async def TwitchAPI(self, ctx, *, user):
         """Gets information about twitch users"""
         await ctx.message.add_reaction("\N{HOURGLASS}")
+        # TODO: Cache tokens
         token = self.REST("https://id.twitch.tv/oauth2/token?client_id="+config.api_keys["twitchID"]+"&client_secret="+config.api_keys["twitchSecret"]+"&grant_type=client_credentials", method=requests.post)["access_token"]
         data = self.REST("https://api.twitch.tv/helix/users?login=" + self.escape(user), headers={"Authorization": "Bearer " + token})["data"][0]
 
