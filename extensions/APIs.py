@@ -528,11 +528,6 @@ class APIs(commands.Cog):
         """Gets information about movies using the IMDb"""
         await ctx.message.add_reaction("\N{HOURGLASS}")
         data = self.REST("http://www.omdbapi.com/?apikey=" + config.api_keys["omdb"] + "&t=" + self.escape(title))
-        if data["Response"] == "False":
-            await ctx.message.clear_reactions()
-            await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
-            await ctx.send(str(data["error"]))
-            return
 
         embed = discord.Embed(title=data["Title"] + " (" + data["Year"] + ")", colour=0xf5c518, url="https://www.imdb.com/title/" + data["imdbID"])
         embed.add_field(name="Released", value=data["Released"])
@@ -548,7 +543,6 @@ class APIs(commands.Cog):
             ratings = ""
             for i in data["Ratings"]:
                 ratings += "**" + i["Source"] + "** - `" + i["Value"] + "`\n"
-
             embed.add_field(name="Ratings", value=ratings)
 
         embed.timestamp = datetime.utcnow()
@@ -581,10 +575,8 @@ class APIs(commands.Cog):
         try:
             data["guild"]
         except:
-            await ctx.message.clear_reactions()
-            await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
             await ctx.send(data["message"])
-            return
+            raise Exception()
 
         embed = discord.Embed(title="Click here to join the server!", colour=0x7289DA, url="https://discord.gg/" + data["code"])
         embed.add_field(name="Guild Name", value=str(data["guild"]["name"]))

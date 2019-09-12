@@ -56,14 +56,13 @@ async def skinRenderer2D(url, fromFile=True):
 
     img = Image.open(requests.get(url, stream=True).raw)
     p = int(img.width / 64)
-    w = int(p*16)
     x64 = img.width == img.height
-
-    img2 = Image.new("RGBA", (w, w*2), color=000000)
+    img2 = Image.new("RGBA", (p*16, p*32), color=000000)
 
     # Head
     makeDualBodyPart(img, img2, p, (8, 8, 16, 16), (40, 8, 48, 16), 4, 0)
 
+    # Body
     bodySize = (p*20, p*20, p*28, p*32)
     body = img.crop(bodySize).convert("RGBA")
     if x64:
