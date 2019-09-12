@@ -23,7 +23,7 @@ async def headRenderer(url, fromFile=True):
     # We do our own resizing because discord interpolates images which makes them blurry
     if img2.width < 64:
         img2 = img2.resize((img2.width * 8, img2.height * 8), resample=Image.NEAREST)
-    
+
     if not os.path.exists("skins/head"):
         os.makedirs("skins/head")
     img2.save("skins/head/" + str(filename) + ".png")
@@ -31,7 +31,7 @@ async def headRenderer(url, fromFile=True):
 
 async def skinRenderer2D(url, fromFile=True):
     """Renders a skin in 2D and returns path to the saved file"""
-    
+
     filename = url.split("/")[-1].replace(".png", "")
     if fromFile:
         if os.path.isfile("skins/2d/" + str(filename) + ".png"):
@@ -71,7 +71,7 @@ async def skinRenderer2D(url, fromFile=True):
         img2.paste(arm, (0, p*8))
         arm = ImageOps.mirror(arm)
         img2.paste(arm, (img2.width-p*4, p*8))
-        
+
         legSize = (p*4, p*20, p*8, p*32)
         leg = img.crop(legSize)
         img2.paste(leg, (p*4, p*20))
@@ -96,7 +96,7 @@ async def skinRenderer2D(url, fromFile=True):
         if not cols or cols[0] != (lArm2.width*lArm2.height, (0, 0, 0, 255)):
             lArm = Image.alpha_composite(lArm, lArm2)
         img2.paste(lArm, (img2.width-p*4, p*8))
-        
+
         rLegSize = (p*4, p*20, p*8, p*32)
         rLeg2Size = (p*4, p*36, p*8, p*48)
         rLeg = img.crop(rLegSize).convert("RGBA")
@@ -117,7 +117,7 @@ async def skinRenderer2D(url, fromFile=True):
 
     if img2.width < 256:
         img2 = img2.resize((img2.width * 16, img2.height * 16), resample=Image.NEAREST)
-    
+
     if not os.path.exists("skins/2d"):
         os.makedirs("skins/2d")
     img2.save("skins/2d/" + str(filename) + ".png")

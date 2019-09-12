@@ -39,7 +39,7 @@ class Fun(commands.Cog):
 				canLeft = True
 			if loc[0] < width-1:
 				canRight = True
-				
+
 			if canUp:
 				if grid[loc[1]-1][loc[0]] != 'x':
 					grid[loc[1]-1][loc[0]]+=1
@@ -64,7 +64,7 @@ class Fun(commands.Cog):
 			if canRight:
 				if grid[loc[1]][loc[0]+1] != 'x':
 					grid[loc[1]][loc[0]+1]+=1
-			
+
 		return grid
 
 	@commands.command(name='minesweeper', aliases=['miinaharava'])
@@ -72,7 +72,7 @@ class Fun(commands.Cog):
 		"""Generates a game of minesweeper.
 		args = `width height bombs (nospoil)`"""
 		await ctx.message.add_reaction('\N{HOURGLASS}')
-		
+
 		spoil = True
 		if args != None and len(str(args).split(' ')) > 2:
 			width = int(str(args).split(' ')[0])
@@ -119,4 +119,4 @@ class Fun(commands.Cog):
 		await ctx.send(embed=embed, content="")
 
 def setup(bot):
-	bot.add_cog(Fun(bot)) 
+	bot.add_cog(Fun(bot))
