@@ -221,6 +221,7 @@ class APIs(commands.Cog):
         """Gets information about osu! players."""
         data = self.REST("https://osu.ppy.sh/api/get_user?u=" + self.escape(user) + "&k=" + config.api_keys["osu"])[0]
         embed = discord.Embed(title="osu! - " + data["username"], color=0xEA68A3)
+        embed.set_thumbnail(url="https://a.ppy.sh/" + data["user_id"])
         embed.add_field(name="Level", value=str(round(float(data["level"]), 2)))
         embed.add_field(name="Ranked Score", value=data["ranked_score"])
         embed.add_field(name="Hit Accuracy", value=str(round(float(data["accuracy"]), 2)) + "%")
