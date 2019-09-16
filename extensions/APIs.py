@@ -391,11 +391,14 @@ class APIs(commands.Cog):
             classes.reverse()
 
             skin = await self.getMinecraftSkinUrl(data["uuid"])
-            if skin["textures"]["SKIN"]["url"]:
-                await BotUtils.headRenderer(skin["textures"]["SKIN"]["url"], str(data["uuid"]))
-                head = discord.File("skins/head/" + str(data["uuid"]) + ".png", filename="head.png")
+            try:
+                skin["textures"]["SKIN"]["url"]
+            except:
+                await BotUtils.headRenderer("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
+                headFile = discord.File("skins/head/Steve_skin.png", filename="head.png")
             else:
-                head = discord.File("skins/head/default.png", filename="head.png")
+                await BotUtils.headRenderer(skin["textures"]["SKIN"]["url"])
+                headFile = discord.File("skins/head/" + skin["textures"]["SKIN"]["url"].split("/")[-1] + ".png", filename="head.png")
 
             embed = discord.Embed(title="Wynncraft Player", colour=0x7bbf32)
             embed.set_author(name=data["username"],
@@ -414,7 +417,7 @@ class APIs(commands.Cog):
             embed.set_footer(text="|", icon_url="https://cdn.wynncraft.com/img/ico/android-icon-192x192.png")
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
-            await ctx.send(files=[head], embed=embed)
+            await ctx.send(files=[headFile], embed=embed)
             return
         else:
             data = self.REST("https://api.wynncraft.com/public_api.php?action=onlinePlayersSum")
