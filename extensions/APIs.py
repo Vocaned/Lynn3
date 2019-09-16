@@ -386,7 +386,7 @@ class APIs(commands.Cog):
 
             classes = []
             for s in data["classes"]:
-                classes.append("**" + "".join([i for i in s["name"].title() if not i.isdigit()]) + ":** Level " + str(round(s["level"])))
+                classes.append("**" + "".join([i for i in s["name"].title()]) + ":** Level " + str(s["level"]))
             classes.sort(key=lambda x:float(x.split(" ")[-1]))
             classes.reverse()
 
@@ -409,7 +409,7 @@ class APIs(commands.Cog):
             embed.add_field(name="First joined on", value=data["meta"]["firstJoin"].replace("T", ", ").split(".")[0])
             embed.add_field(name="Last joined on", value=data["meta"]["lastJoin"].replace("T", ", ").split(".")[0])
             if data["meta"]["location"]["online"]:
-                embed.add_field(name="Currently in", value=data["meta"]["location"]["server"])
+                embed.add_field(name="Currently online in", value=data["meta"]["location"]["server"])
 
             embed.add_field(name="Global stats", value="\n".join(stats))
             embed.add_field(name="Classes", value="\n".join(classes))
