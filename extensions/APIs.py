@@ -407,8 +407,8 @@ class APIs(commands.Cog):
             embed.add_field(name="Guild", value=str(data["guild"]["name"]))
             embed.add_field(name="Playtime", value=str(round(data["meta"]["playtime"]/12, 2))+"h")
             # TODO: Parse better, add "ago"
-            created = datetime.strptime(data["meta"]["firstJoin"], "%Y-%m-%dT%H:%M:%S")
-            last = datetime.strptime(data["meta"]["lastJoin"], "%Y-%m-%dT%H:%M:%S")
+            created = datetime.strptime(data["meta"]["firstJoin"], "%Y-%m-%dT%H:%M:%S.%fZ")
+            last = datetime.strptime(data["meta"]["lastJoin"], "%Y-%m-%dT%H:%M:%S.%fZ")
             embed.add_field(name="First joined on", value="On " + created.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - created) + " ago")
             embed.add_field(name="Last joined on", value="On " + last.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - last) + " ago")
             if data["meta"]["location"]["online"]:
