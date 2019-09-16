@@ -378,9 +378,16 @@ class APIs(commands.Cog):
             classes.sort(key=lambda x:float(x.split(" ")[-1]))
             classes.reverse()
 
+            skin = await self.getMinecraftSkinUrl(data["uuid"])
+            if skin["textures"]["SKIN"]["url"]:
+                await BotUtils.headRenderer(skin["textures"]["SKIN"]["url"], str(data["uuid"]))
+                head = discord.File("skins/head/" + str(data["uuid"]) + ".png", filename="head.png")
+            else:
+                head = discord.File("skins/head/default.png", filename="head.png")
+
             embed = discord.Embed(title="Wynncraft Player", colour=0x7bbf32)
             embed.set_author(name=data["username"],
-                    icon_url="https://crafatar.com/avatars/"+data["uuid"])
+                    icon_url="attachment://head.png")
             embed.add_field(name="Rank", value=rank)
             embed.add_field(name="Guild", value=str(data["guild"]["name"]))
             embed.add_field(name="Playtime", value=str(round(data["meta"]["playtime"]/12, 2))+"h")
@@ -395,7 +402,7 @@ class APIs(commands.Cog):
             embed.set_footer(text="|", icon_url="https://cdn.wynncraft.com/img/ico/android-icon-192x192.png")
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
-            await ctx.send(embed=embed)
+            await ctx.send(files=[head], embed=embed)
             return
         else:
             data = self.REST("https://api.wynncraft.com/public_api.php?action=onlinePlayersSum")
