@@ -406,8 +406,11 @@ class APIs(commands.Cog):
             embed.add_field(name="Rank", value=rank)
             embed.add_field(name="Guild", value=str(data["guild"]["name"]))
             embed.add_field(name="Playtime", value=str(round(data["meta"]["playtime"]/12, 2))+"h")
-            embed.add_field(name="First joined on", value=data["meta"]["firstJoin"].replace("T", ", ").split(".")[0])
-            embed.add_field(name="Last joined on", value=data["meta"]["lastJoin"].replace("T", ", ").split(".")[0])
+            # TODO: Parse better, add "ago"
+            created = datetime.strptime(data["meta"]["firstJoin"], "%Y-%m-%dT%H:%M:%S")
+            last = datetime.strptime(data["meta"]["lastJoin"], "%Y-%m-%dT%H:%M:%S")
+            embed.add_field(name="First joined on", value="On " + created.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - created) + " ago")
+            embed.add_field(name="Last joined on", value="On " + last.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - last) + " ago")
             if data["meta"]["location"]["online"]:
                 embed.add_field(name="Currently online in", value=data["meta"]["location"]["server"])
 
