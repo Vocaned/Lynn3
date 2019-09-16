@@ -390,7 +390,7 @@ class APIs(commands.Cog):
             classes.sort(key=lambda x:float(x.split(" ")[-1]))
             classes.reverse()
 
-            skin = await self.getMinecraftSkinUrl(data["uuid"])
+            skin = await self.getMinecraftSkinUrl(data["uuid"].replace("-", ""))
             try:
                 skin["textures"]["SKIN"]["url"]
             except:
