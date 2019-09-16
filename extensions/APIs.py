@@ -9,6 +9,8 @@ import math
 import urllib.parse
 import BotUtils
 from requests_oauthlib import OAuth1
+
+# TODO: Drop dateutil completely
 import dateutil
 
 class APIs(commands.Cog):
@@ -26,7 +28,7 @@ class APIs(commands.Cog):
         try:
             return eval(returns)
         except:
-            return None     
+            return None
 
     def escape(self, url):
         return urllib.parse.quote(url)
@@ -51,38 +53,36 @@ class APIs(commands.Cog):
 
         return ", ".join(strings)
 
-    
+
     async def getMinecraftAge(self, name):
         a = 1263146630 # notch sign-up
         b = math.floor(datetime.utcnow().timestamp())
-        lastfail = 0
+        last = 0
         for i in range(30):
             if a == b:
-                ok = self.REST("https://api.mojang.com/users/profiles/minecraft/" + name + "?at=" + str(a), returns="r.status_code == 200")
-                if ok and lastfail == a-1:
+                if last == a-1 and self.REST("https://api.mojang.com/users/profiles/minecraft/" + name + "?at=" + str(a), returns="r.status_code == 200"):
                     return datetime.utcfromtimestamp(a)
                 else:
                     return False
             else:
                 mid = a + math.floor((b - a) / 2)
-                ok = self.REST("https://api.mojang.com/users/profiles/minecraft/" + name + "?at=" + str(mid), returns="r.status_code == 200")
-                if ok:
+                if self.REST("https://api.mojang.com/users/profiles/minecraft/" + name + "?at=" + str(mid), returns="r.status_code == 200"):
                     b = mid
                 else:
                     a = mid+1
-                    lastfail = mid
+                    last = mid
 
-    
+
     async def getMinecraftUUID(self, name):
         r = self.REST("https://api.mojang.com/users/profiles/minecraft/" + name)
         if r:
             return r
-        
+
         r = self.REST("https://api.mojang.com/users/profiles/minecraft/" + name + "?at=0")
         if r:
             return r
         return None
-    
+
     async def getMinecraftSkinUrl(self, uuid):
         data = self.REST("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid)
         try:
@@ -95,7 +95,7 @@ class APIs(commands.Cog):
     def getCSStat(self, data, stat):
         return [i for i in data["stats"] if i["name"] == "stat"]
 
-    
+
     # ---
     # GAMES
     # ---
@@ -126,24 +126,30 @@ class APIs(commands.Cog):
             embed.set_author(name=history[-1]["name"], icon_url="attachment://head.png")
             embed.add_field(name="Name history", value="\n".join(names))
             embed.add_field(name="UUID", value=uuid["id"])
-            if skin["textures"]["SKIN"]["url"]:
-                embed.add_field(name="Skin URL", value="[Click me]("+skin["textures"]["SKIN"]["url"]+")")
-                await BotUtils.skinRenderer2D(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
-                await BotUtils.headRenderer(skin["textures"]["SKIN"]["url"], str(uuid["id"]))
-                skin = discord.File("skins/2d/" + str(uuid["id"]) + ".png", filename="skin.png")
-                head = discord.File("skins/head/" + str(uuid["id"]) + ".png", filename="head.png")
+            try:
+                skin["textures"]["SKIN"]["url"]
+            except:
+                # TODO: Try to find a official steve skin in mojang's skin server
+                await BotUtils.skinRenderer2D("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
+                await BotUtils.headRenderer("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
+                skinFile = discord.File("skins/2d/Steve_skin.png", filename="skin.png")
+                headFile = discord.File("skins/head/Steve_skin.png", filename="head.png")
             else:
-                skin = discord.File("skins/2d/default.png", filename="skin.png")
-                head = discord.File("skins/head/default.png", filename="head.png")
+                embed.add_field(name="Skin URL", value="[Click me]("+skin["textures"]["SKIN"]["url"]+")")
+                await BotUtils.skinRenderer2D(skin["textures"]["SKIN"]["url"])
+                await BotUtils.headRenderer(skin["textures"]["SKIN"]["url"])
+                skinFile = discord.File("skins/2d/" + skin["textures"]["SKIN"]["url"].split("/")[-1] + ".png", filename="skin.png")
+                headFile = discord.File("skins/head/" + skin["textures"]["SKIN"]["url"].split("/")[-1] + ".png", filename="head.png")
+
             if created:
-                embed.add_field(name="Account created", value="On " + created.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - created))
+                embed.add_field(name="Account created", value="On " + created.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - created) + " ago")
             else:
                 embed.add_field(name="Account created", value="???")
             embed.set_footer(text="|", icon_url="https://minecraft.net/favicon-96x96.png")
             embed.set_image(url="attachment://skin.png")
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
-            await ctx.send(files=[skin, head], embed=embed)
+            await ctx.send(files=[skinFile, headFile], embed=embed)
         else:
             sale = self.REST("https://api.mojang.com/orders/statistics", method=requests.post, data='{"metricKeys":["item_sold_minecraft","prepaid_card_redeemed_minecraft"]}')
             embed = discord.Embed(title="Minecraft", colour=0x82540f)
@@ -215,6 +221,7 @@ class APIs(commands.Cog):
         """Gets information about osu! players."""
         data = self.REST("https://osu.ppy.sh/api/get_user?u=" + self.escape(user) + "&k=" + config.api_keys["osu"])[0]
         embed = discord.Embed(title="osu! - " + data["username"], color=0xEA68A3)
+        embed.set_thumbnail(url="https://a.ppy.sh/" + data["user_id"])
         embed.add_field(name="Level", value=str(round(float(data["level"]), 2)))
         embed.add_field(name="Ranked Score", value=data["ranked_score"])
         embed.add_field(name="Hit Accuracy", value=str(round(float(data["accuracy"]), 2)) + "%")
@@ -234,7 +241,7 @@ class APIs(commands.Cog):
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
-    
+
     @commands.command(name="classicube", aliases=["cc"])
     async def classiCubeAPI(self, ctx, *, user=None):
         """Gets information about ClassiCube, or searches players.
@@ -269,7 +276,7 @@ class APIs(commands.Cog):
                 flags.append("Unverified")
             if "r" in data["flags"]:
                 flags.append("Recovering account")
-            
+
             embed = discord.Embed(title="ClassiCube User", colour=0x977dab)
             embed.set_author(name=data["username"],
                 icon_url="attachment://head.png")
@@ -280,16 +287,18 @@ class APIs(commands.Cog):
             embed.add_field(name="Account created", value="On " + datetime.utcfromtimestamp(data["registered"]).strftime("%c") + "\n" + ago + " ago")
             if flags:
                 embed.add_field(name="Notes", value=", ".join(flags))
-            
+
             if self.REST("https://static.classicube.net/skins/" + str(data["username"]) + ".png", returns="r.status_code == 200"):
                 embed.add_field(name="Skin URL", value="[Click me](https://static.classicube.net/skins/" + str(data["username"]) + ".png)")
-                await BotUtils.skinRenderer2D("https://static.classicube.net/skins/" + str(data["username"]) + ".png", str(data["id"]))
-                await BotUtils.headRenderer("https://static.classicube.net/skins/" + str(data["username"]) + ".png", str(data["id"]))
-                file = discord.File("skins/2d/" + str(data["id"]) + ".png", filename="skin.png")
-                file2 = discord.File("skins/head/" + str(data["id"]) + ".png", filename="head.png")
+                await BotUtils.skinRenderer2D("https://static.classicube.net/skins/" + str(data["username"]) + ".png", fromFile=False)
+                await BotUtils.headRenderer("https://static.classicube.net/skins/" + str(data["username"]) + ".png", fromFile=False)
+                file = discord.File("skins/2d/" + str(data["username"]) + ".png", filename="skin.png")
+                file2 = discord.File("skins/head/" + str(data["username"]) + ".png", filename="head.png")
             else:
-                file = discord.File("skins/2d/default.png", filename="skin.png")
-                file2 = discord.File("skins/head/default.png", filename="head.png")
+                await BotUtils.skinRenderer2D("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
+                await BotUtils.headRenderer("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
+                file = discord.File("skins/2d/Steve_skin.png", filename="skin.png")
+                file2 = discord.File("skins/head/Steve_skin.png", filename="head.png")
 
             embed.set_footer(text="|", icon_url="https://www.classicube.net/static/img/cc-cube-small.png")
             embed.set_image(url="attachment://skin.png")
@@ -304,7 +313,7 @@ class APIs(commands.Cog):
             players = ""
             for p in data["lastfive"]:
                 players += str(p) + "\n"
-            
+
             data = self.REST("https://www.classicube.net/api/servers/")
             serverlist = []
             servers = ""
@@ -322,15 +331,18 @@ class APIs(commands.Cog):
             embed.add_field(name="Total Accounts", value=playercount)
             embed.add_field(name="Accounts Online\n(Inaccurate)", value=str(onlinecount))
             embed.add_field(name="Last five accounts", value=players)
-            for i in range(len(serverlist)):
-                embed.add_field(name="("+str(i+1)+"/"+str(len(serverlist))+") Servers with players\nClick the server names to join!", value=serverlist[i])
+            if len(serverlist) == 1:
+                embed.add_field(name="Servers with players\nClick the server names to join!", value=serverlist[0])
+            else:
+                for i in range(len(serverlist)):
+                    embed.add_field(name="("+str(i+1)+"/"+str(len(serverlist))+") Servers with players\nClick the server names to join!", value=serverlist[i])
 
             embed.set_footer(text="|", icon_url="https://www.classicube.net/static/img/cc-cube-small.png")
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
             await ctx.send(embed=embed)
 
-    
+
     @commands.command(name="wynncraft", aliases=["wc", "wynn"])
     async def WynncraftAPI(self, ctx, *, user=None):
         """Gets information about Wynncraft, or searches players.
@@ -395,10 +407,10 @@ class APIs(commands.Cog):
             embed.add_field(name="Last joined on", value=data["meta"]["lastJoin"].replace("T", ", ").split(".")[0])
             if data["meta"]["location"]["online"]:
                 embed.add_field(name="Currently in", value=data["meta"]["location"]["server"])
-            
+
             embed.add_field(name="Global stats", value="\n".join(stats))
             embed.add_field(name="Classes", value="\n".join(classes))
-            
+
             embed.set_footer(text="|", icon_url="https://cdn.wynncraft.com/img/ico/android-icon-192x192.png")
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
@@ -423,40 +435,65 @@ class APIs(commands.Cog):
         """Gets information about mixer users"""
         await ctx.message.add_reaction("\N{HOURGLASS}")
         data = self.REST("https://mixer.com/api/v1/channels/" + self.escape(user))
-        
+
+        name = data["token"]
+        if data["user"]["username"].lower() != data["token"].lower():
+            name = data["token"] + " (" + data["user"]["username"] + ")"
+
         s = ""
         if data["online"]:
             s = " (Currently Streaming)"
 
-        embed = discord.Embed(title="Mixer user - " + data["token"] + s, color=0x002050, url="https://mixer.com/" + data["token"])
+        embed = discord.Embed(title="Mixer user - " + name + s, color=0x002050, url="https://mixer.com/" + data["token"])
 
         if data["user"]["avatarUrl"]:
             embed.set_thumbnail(url=data["user"]["avatarUrl"])
-        
+
 
         types = []
+        groups = []
+        if data["user"]["verified"]:
+            types.append("Verified")
+        if data["suspended"]:
+            types.append("Suspended")
         if data["featured"]:
             types.append("Featured")
+        if data["partnered"]:
+            types.append("Partnered")
         if data["interactive"]:
             types.append("Interactive Stream")
         if data["vodsEnabled"]:
             types.append("VODs")
-        if data["suspended"]:
-            types.append("Suspended")
-        if data["partnered"]:
-            types.append("Partnered")
-                
+
+        try:
+            for group in data["user"]["groups"]:
+                groups.append(group["name"])
+        except:
+            pass
+
+
         if types:
-            embed.add_field(name="Type", value="\n".join(types))
-        
-        
+            embed.add_field(name="Account type", value="\n".join(types))
+        if groups:
+            embed.add_field(name="Account groups", value="\n".join(groups))
+
+        if data["user"]["bio"]:
+            embed.add_field(name="Bio", value=str(data["user"]["bio"]))
 
         embed.add_field(name="Followers", value=str(data["numFollowers"]))
+        embed.add_field(name="Sparks", value=str(data["user"]["sparks"]))
+
+        try:
+            if data["thumbnail"]["url"]:
+                embed.set_image(url=data["thumbnail"]["url"])
+        except:
+            pass
 
         if data["online"]:
             embed.add_field(name="Current viewers", value=str(data["viewersCurrent"]))
 
-        embed.set_footer(icon_url="http://teambeyond.net/wp-content/uploads/2017/05/Mixer-Logo.png", text="User id " + str(data["id"]))
+        embed.set_footer(icon_url="http://teambeyond.net/wp-content/uploads/2017/05/Mixer-Logo.png", text="LVL " + str(data["user"]["level"]) + " • Account created ")
+        embed.timestamp = datetime.strptime(data["createdAt"], "%Y-%m-%dT%H:%M:%S.%fZ")
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
@@ -464,26 +501,27 @@ class APIs(commands.Cog):
     async def TwitchAPI(self, ctx, *, user):
         """Gets information about twitch users"""
         await ctx.message.add_reaction("\N{HOURGLASS}")
+        # TODO: Cache tokens
         token = self.REST("https://id.twitch.tv/oauth2/token?client_id="+config.api_keys["twitchID"]+"&client_secret="+config.api_keys["twitchSecret"]+"&grant_type=client_credentials", method=requests.post)["access_token"]
         data = self.REST("https://api.twitch.tv/helix/users?login=" + self.escape(user), headers={"Authorization": "Bearer " + token})["data"][0]
 
         name = data["display_name"]
         if data["login"].lower() != data["display_name"].lower():
             name = data["display_name"] + " (" + data["login"] + ")"
-        
+
         embed = discord.Embed(title="Twitch user - " + name, color=0x6441A4, url="https://twitch.tv/" + data["login"])
 
         embed.set_thumbnail(url=data["profile_image_url"])
 
         if data["offline_image_url"]:
             embed.set_image(url=data["offline_image_url"])
-        
+
         if data["broadcaster_type"]:
             utype = data["broadcaster_type"].title()
             if data["type"]:
                 utype += "\n" + data["type"].title()
             embed.add_field(name="User Type", value=utype)
-        
+
         if data["description"]:
             embed.add_field(name="Description", value=data["description"])
         embed.add_field(name="Viewers", value=str(data["view_count"]))
@@ -498,11 +536,6 @@ class APIs(commands.Cog):
         """Gets information about movies using the IMDb"""
         await ctx.message.add_reaction("\N{HOURGLASS}")
         data = self.REST("http://www.omdbapi.com/?apikey=" + config.api_keys["omdb"] + "&t=" + self.escape(title))
-        if data["Response"] == "False":
-            await ctx.message.clear_reactions()
-            await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
-            await ctx.send(str(data["error"]))
-            return
 
         embed = discord.Embed(title=data["Title"] + " (" + data["Year"] + ")", colour=0xf5c518, url="https://www.imdb.com/title/" + data["imdbID"])
         embed.add_field(name="Released", value=data["Released"])
@@ -518,10 +551,7 @@ class APIs(commands.Cog):
             ratings = ""
             for i in data["Ratings"]:
                 ratings += "**" + i["Source"] + "** - `" + i["Value"] + "`\n"
-
             embed.add_field(name="Ratings", value=ratings)
-
-        
 
         embed.timestamp = datetime.utcnow()
         await ctx.message.clear_reactions()
@@ -549,14 +579,12 @@ class APIs(commands.Cog):
         await ctx.message.add_reaction("\N{HOURGLASS}")
         invite = str(invite.split("/")[-1])
         data = self.REST("https://discordapp.com/api/v6/invite/" +  self.escape(invite) + "?with_counts=true")
-        
+
         try:
             data["guild"]
         except:
-            await ctx.message.clear_reactions()
-            await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
             await ctx.send(data["message"])
-            return
+            raise Exception()
 
         embed = discord.Embed(title="Click here to join the server!", colour=0x7289DA, url="https://discord.gg/" + data["code"])
         embed.add_field(name="Guild Name", value=str(data["guild"]["name"]))
@@ -564,7 +592,7 @@ class APIs(commands.Cog):
             embed.add_field(name="Description", value=str(data["guild"]["description"]))
         embed.add_field(name="Members", value=str(data["approximate_member_count"]))
         embed.add_field(name="Online", value=str(data["approximate_presence_count"]))
-        
+
 
         flagName = {
             "VERIFIED": "Verified",
@@ -585,7 +613,7 @@ class APIs(commands.Cog):
 
         if flags:
             embed.add_field(name="Special features", value="\n".join([flagName[n] for n in flags]))
-        
+
         try:
             embed.add_field(name="Invite created by", value=str(data["inviter"]["username"]) + "#" + str(data["inviter"]["discriminator"]) + " (<@" + str(data["inviter"]["id"]) + ">)")
         except KeyError:
@@ -593,14 +621,14 @@ class APIs(commands.Cog):
 
         if "BANNER" in flags and data["guild"]["banner"]:
             embed.set_image(url="https://cdn.discordapp.com/banners/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["banner"]) + ".webp?size=4096")
-       
+
         if "ANIMATED_ICON" in flags and \
             data["guild"]["icon"] and \
             data["guild"]["icon"].startswith("a_"):
             embed.set_thumbnail(url="https://cdn.discordapp.com/icons/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["icon"] + ".gif?size=4096"))
         elif data["guild"]["icon"]:
             embed.set_thumbnail(url="https://cdn.discordapp.com/icons/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["icon"] + ".webp?size=4096"))
-        
+
         embed.set_footer(text="Server ID " + str(data["guild"]["id"]))
         embed.timestamp = datetime.utcnow()
         await ctx.message.clear_reactions()
@@ -613,7 +641,7 @@ class APIs(commands.Cog):
         await ctx.message.add_reaction("\N{HOURGLASS}")
         geocoding = self.REST("https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=en&q=" + self.escape(city))
         data = self.REST("https://api.darksky.net/forecast/" +  config.api_keys["darksky"] + "/" + geocoding[0]["lat"] + "," + geocoding[0]["lon"] + "?exclude=minutely,hourly,daily,flags&units=si")
-        
+
         embed = discord.Embed(title=geocoding[0]["display_name"], colour=0xffb347)
         embed.set_thumbnail(url="https://darksky.net/images/weather-icons/" + data["currently"]["icon"] + ".png")
         suffix = ""
@@ -643,7 +671,7 @@ class APIs(commands.Cog):
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
-    
+
     @commands.command(name="twitter")
     async def TwitterAPI(self, ctx, *, user):
         """Gets information about twitter users."""
@@ -671,7 +699,7 @@ class APIs(commands.Cog):
 
     @commands.command(name="user", aliases=["käyttäjä"])
     async def discordUser(self, ctx, *, user):
-        """Gets Discord User stats"""
+        """Gets information about discord users."""
         await ctx.message.add_reaction("\N{HOURGLASS}")
         user = await commands.UserConverter().convert(ctx, user)
         embed = discord.Embed(title="Discord User " + user.name + "#" + str(user.discriminator), colour=0x7289DA)
@@ -707,15 +735,14 @@ class APIs(commands.Cog):
                 elif j["status"]["indicator"] == "major":
                     col = 0xff0000
 
-                embed = discord.Embed(title="**" + page[0].title() + " Status** - " + j["status"]["description"], colour=col)
+                embed = discord.Embed(title="**" + page[0].title() + " Status** - " + j["status"]["description"], colour=col, url=page[1])
                 for comp in j["components"]:
                     embed.add_field(name=comp["name"], value=comp["status"].replace("_", " ").title())
                 embed.timestamp = datetime.utcnow()
-                embed.set_footer(text="More information at " + page[1])
-                
+
                 await ctx.message.clear_reactions()
                 await ctx.send(embed=embed)
-                
+
                 for incident in j["incidents"]:
                     if incident["status"] == "resolved" or incident["status"] == "completed":
                         continue
@@ -725,7 +752,7 @@ class APIs(commands.Cog):
                         col = 0xffa500
                     else:
                         col = 0xff0000
-                    
+
                     embed = discord.Embed(title="**" + incident["status"].title() + "** - " + incident["name"], color=col)
                     if firstUpdate["affected_components"]:
                         embed.add_field(name="Affected components", value="\n".join(c["name"] for c in firstUpdate["affected_components"]))

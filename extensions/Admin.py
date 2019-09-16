@@ -14,9 +14,8 @@ import subprocess
 import config
 import sys
 import math
-
-# to expose to the eval command
 import datetime
+from Lynn import errors
 from collections import Counter
 
 class Admin(commands.Cog):
@@ -29,6 +28,7 @@ class Admin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
+        global errors
         error = getattr(error, 'original', error)
 
         if isinstance(error, commands.CommandNotFound):
@@ -70,7 +70,6 @@ class Admin(commands.Cog):
 
         if isinstance(error, commands.UserInputError):
             await ctx.send("Invalid input. Usage:")
-            # TODO: Fix
             await ctx.send_help(ctx.command)
             return
 
@@ -86,7 +85,7 @@ class Admin(commands.Cog):
             return
 
         print("Ignoring exception in " + str(ctx.command), file=sys.stderr)
-        config.error = "\n".join(traceback.format_exception(type(error), error, error.__traceback__))
+        errors = "\n".join(traceback.format_exception(type(error), error, error.__traceback__))
 
     def cleanup_code(self, content):
         """Automatically removes code blocks from the code."""
@@ -303,12 +302,15 @@ class Admin(commands.Cog):
             await ctx.message.add_reaction("\N{HOURGLASS}")
             p = subprocess.check_output(["git", "pull", config.gitURI], stderr=subprocess.STDOUT, timeout=30).decode("utf-8")
             w = p.split()
-            commits = w[w.index("Updating") + 1]
+            try:
+                commits = w[w.index("Updating") + 1]
 
-            p2 = subprocess.check_output(["git", "log", "--format=%h - %an | %B%n%N", commits], stderr=subprocess.STDOUT, timeout=30)
-            p2 = "\n".join([line for line in p2.decode("utf-8").split('\n') if line.strip() != ''])
+                p2 = subprocess.check_output(["git", "log", "--format=%h %an | %B%n%N", commits], stderr=subprocess.STDOUT, timeout=30)
+                p2 = "\n".join([line for line in p2.decode("utf-8").split('\n') if line.strip() != '']) + "\n\nRemember to reload modules!"
+            except:
+                p2 = ""
             await ctx.message.clear_reactions()
-            await ctx.send("```" + p + "\n" + p2 + "```Remember to reload modules!")
+            await ctx.send("```" + p + "\n" + p2 + "```")
         else:
             raise commands.UserInputError()
 
@@ -322,22 +324,32 @@ class Admin(commands.Cog):
     @commands.command(hidden=True)
     @commands.is_owner()
     async def debug(self, ctx):
-        for msg in [config.error[i:i+1990] for i in range(0, len(config.error), 1990)]:
+        global errors
+        for msg in [errors[i:i+1990] for i in range(0, len(errors), 1990)]:
             await ctx.send("```py\n" + msg + "```")
 
     @commands.command(hidden=True)
     @commands.is_owner()
-    async def activity(self, ctx, *, text):
-        text = text.lower()
-        if text.startswith('streaming'):
-            await self.bot.change_presence(activity=discord.Streaming(name=text[10:], url='https://google.com'))
-        elif text.startswith('listening to'):
-            await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=text[13:]))
-        elif text.startswith('watching'):
-            await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=text[9:]))
+    async def activity(self, ctx, *, text=""):
+        if text:
+            text = text.lower()
+            if text.startswith('streaming'):
+                await self.bot.change_presence(activity=discord.Streaming(name=text[10:], url='https://google.com'))
+            elif text.startswith('listening to'):
+                await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=text[13:]))
+            elif text.startswith('watching'):
+                await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=text[9:]))
+            elif text == "online":
+                await self.bot.change_presence(status="online")
+            elif text == "idle":
+                await self.bot.change_presence(status="idle")
+            elif text == "dnd":
+                await self.bot.change_presence(status="dnd")
+            else:
+                await self.bot.change_presence(activity=discord.Game(name=text))
+            await ctx.message.add_reaction('\N{OK HAND SIGN}')
         else:
-            await self.bot.change_presence(activity=discord.Game(name=text))
-        await ctx.message.add_reaction('\N{OK HAND SIGN}')
+            await self.bot.change_presence(activity=None, status="online")
 
 def setup(bot):
     bot.add_cog(Admin(bot))
