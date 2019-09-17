@@ -145,7 +145,7 @@ class APIs(commands.Cog):
                 embed.add_field(name="Account created", value="On " + created.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - created) + " ago")
             else:
                 embed.add_field(name="Account created", value="???")
-            embed.set_footer(text="|", icon_url="https://minecraft.net/favicon-96x96.png")
+            embed.set_footer(text="\U00002063", icon_url="https://minecraft.net/favicon-96x96.png")
             embed.set_image(url="attachment://skin.png")
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
@@ -155,7 +155,7 @@ class APIs(commands.Cog):
             embed = discord.Embed(title="Minecraft", colour=0x82540f)
             embed.add_field(name="Sold total", value=sale["total"])
             embed.add_field(name="Sold in the last 24h", value=sale["last24h"])
-            embed.set_footer(text="|", icon_url="https://minecraft.net/favicon-96x96.png")
+            embed.set_footer(text="\U00002063", icon_url="https://minecraft.net/favicon-96x96.png")
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
             await ctx.send(embed=embed)
@@ -300,7 +300,7 @@ class APIs(commands.Cog):
                 file = discord.File("skins/2d/Steve_skin.png", filename="skin.png")
                 file2 = discord.File("skins/head/Steve_skin.png", filename="head.png")
 
-            embed.set_footer(text="|", icon_url="https://www.classicube.net/static/img/cc-cube-small.png")
+            embed.set_footer(text="\U00002063", icon_url="https://www.classicube.net/static/img/cc-cube-small.png")
             embed.set_image(url="attachment://skin.png")
             embed.timestamp = datetime.utcnow()
 
@@ -334,7 +334,7 @@ class APIs(commands.Cog):
             for i in range(len(serverlist)):
                 embed.add_field(name=("("+str(i+1)+"/" + str(len(serverlist))+")" if len(serverlist) != 1 else "") + "Servers with players\nClick the server names to join!", value=serverlist[i])
 
-            embed.set_footer(text="|", icon_url="https://www.classicube.net/static/img/cc-cube-small.png")
+            embed.set_footer(text="\U00002063", icon_url="https://www.classicube.net/static/img/cc-cube-small.png")
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
             await ctx.send(embed=embed)
@@ -414,7 +414,7 @@ class APIs(commands.Cog):
             embed.add_field(name="Global stats", value="\n".join(stats))
             embed.add_field(name="Classes", value="\n".join(classes))
 
-            embed.set_footer(text="|", icon_url="https://cdn.wynncraft.com/img/ico/android-icon-192x192.png")
+            embed.set_footer(text="\U00002063", icon_url="https://cdn.wynncraft.com/img/ico/android-icon-192x192.png")
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
             await ctx.send(files=[headFile], embed=embed)
@@ -424,7 +424,7 @@ class APIs(commands.Cog):
             embed = discord.Embed(title="Wynncraft", colour=0x7bbf32)
             embed.add_field(name="Players Online", value=data["players_online"])
 
-            embed.set_footer(text="|", icon_url="https://cdn.wynncraft.com/img/ico/android-icon-192x192.png")
+            embed.set_footer(text="\U00002063", icon_url="https://cdn.wynncraft.com/img/ico/android-icon-192x192.png")
             embed.timestamp = datetime.utcnow()
             await ctx.message.clear_reactions()
             await ctx.send(embed=embed)
