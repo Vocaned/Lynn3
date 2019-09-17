@@ -331,11 +331,8 @@ class APIs(commands.Cog):
             embed.add_field(name="Total Accounts", value=playercount)
             embed.add_field(name="Accounts Online\n(Inaccurate)", value=str(onlinecount))
             embed.add_field(name="Last five accounts", value=players)
-            if len(serverlist) == 1:
-                embed.add_field(name="Servers with players\nClick the server names to join!", value=serverlist[0])
-            else:
-                for i in range(len(serverlist)):
-                    embed.add_field(name="("+str(i+1)+"/"+str(len(serverlist))+") Servers with players\nClick the server names to join!", value=serverlist[i])
+            for i in range(len(serverlist)):
+                embed.add_field(name=("("+str(i+1)+"/" + str(len(serverlist))+")" if len(serverlist != 1) else "") + "Servers with players\nClick the server names to join!", value=serverlist[i])
 
             embed.set_footer(text="|", icon_url="https://www.classicube.net/static/img/cc-cube-small.png")
             embed.timestamp = datetime.utcnow()
@@ -387,6 +384,7 @@ class APIs(commands.Cog):
             classes = []
             for s in data["classes"]:
                 classes.append("**" + "".join([i for i in s["name"].title()]) + ":** Level " + str(s["level"]))
+            # Why is this a float? Did the api return floats before? Too scared to change
             classes.sort(key=lambda x:float(x.split(" ")[-1]))
             classes.reverse()
 
@@ -406,7 +404,6 @@ class APIs(commands.Cog):
             embed.add_field(name="Rank", value=rank)
             embed.add_field(name="Guild", value=str(data["guild"]["name"]))
             embed.add_field(name="Playtime", value=str(round(data["meta"]["playtime"]/12, 2))+"h")
-            # TODO: Parse better, add "ago"
             created = datetime.strptime(data["meta"]["firstJoin"], "%Y-%m-%dT%H:%M:%S.%fZ")
             last = datetime.strptime(data["meta"]["lastJoin"], "%Y-%m-%dT%H:%M:%S.%fZ")
             embed.add_field(name="First joined on", value="On " + created.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - created) + " ago")
@@ -650,21 +647,7 @@ class APIs(commands.Cog):
 
         embed = discord.Embed(title=geocoding[0]["display_name"], colour=0xffb347)
         embed.set_thumbnail(url="https://darksky.net/images/weather-icons/" + data["currently"]["icon"] + ".png")
-        suffix = ""
         try:
-            data["alerts"]
-            hasAlerts = True
-        except:
-            hasAlerts = False
-        if hasAlerts:
-            suffix = "\n\n---"
-        embed.add_field(name="Weather", value=str(round(data["currently"]["temperature"], 2)) + "°C (" + str(round(data["currently"]["temperature"] * (9/5) + 32, 2)) + "°F)\n" \
-            + data["currently"]["summary"] + "\n" \
-            + "Feels Like: " + str(round(data["currently"]["apparentTemperature"], 2)) + "°C (" + str(round(data["currently"]["apparentTemperature"] * (9/5) + 32, 2)) + "°F)\n" \
-            + "Humidity: " + str(round(data["currently"]["humidity"] * 100, 2)) + "%\n" \
-            + "Clouds: " + str(round(data["currently"]["cloudCover"] * 100, 2)) + "%\n" \
-            + "Wind: " + str(data["currently"]["windSpeed"]) + " m/s (" + str(round(int(data["currently"]["windSpeed"]) * 2.2369362920544, 2)) + " mph)" + suffix)
-        if hasAlerts:
             alerts = []
             for alert in data["alerts"]:
                 if len(alerts) > 23:
@@ -672,6 +655,15 @@ class APIs(commands.Cog):
                 if alert["title"] not in alerts:
                     embed.add_field(name=alert["title"], value=alert["description"][:1024])
                     alerts.append(alert["title"])
+            suffix = "\n\n---"
+        except:
+            suffix = ""            
+        embed.add_field(name="Weather", value=str(round(data["currently"]["temperature"], 2)) + "°C (" + str(round(data["currently"]["temperature"] * (9/5) + 32, 2)) + "°F)\n" \
+            + data["currently"]["summary"] + "\n" \
+            + "Feels Like: " + str(round(data["currently"]["apparentTemperature"], 2)) + "°C (" + str(round(data["currently"]["apparentTemperature"] * (9/5) + 32, 2)) + "°F)\n" \
+            + "Humidity: " + str(round(data["currently"]["humidity"] * 100, 2)) + "%\n" \
+            + "Clouds: " + str(round(data["currently"]["cloudCover"] * 100, 2)) + "%\n" \
+            + "Wind: " + str(data["currently"]["windSpeed"]) + " m/s (" + str(round(int(data["currently"]["windSpeed"]) * 2.2369362920544, 2)) + " mph)" + suffix)
         embed.set_footer(text="Powered by Dark Sky and OpenStreetMap")
         embed.timestamp = datetime.utcfromtimestamp(data["currently"]["time"])
         await ctx.message.clear_reactions()
@@ -703,7 +695,7 @@ class APIs(commands.Cog):
         await ctx.send(embed=embed)
 
 
-    @commands.command(name="user", aliases=["käyttäjä"])
+    @commands.command(name="user")
     async def discordUser(self, ctx, *, user):
         """Gets information about discord users."""
         await ctx.message.add_reaction("\N{HOURGLASS}")
