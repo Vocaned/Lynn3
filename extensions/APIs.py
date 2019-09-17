@@ -332,7 +332,7 @@ class APIs(commands.Cog):
             embed.add_field(name="Accounts Online\n(Inaccurate)", value=str(onlinecount))
             embed.add_field(name="Last five accounts", value=players)
             for i in range(len(serverlist)):
-                embed.add_field(name=("("+str(i+1)+"/" + str(len(serverlist))+")" if len(serverlist != 1) else "") + "Servers with players\nClick the server names to join!", value=serverlist[i])
+                embed.add_field(name=("("+str(i+1)+"/" + str(len(serverlist))+")" if len(serverlist) != 1 else "") + "Servers with players\nClick the server names to join!", value=serverlist[i])
 
             embed.set_footer(text="|", icon_url="https://www.classicube.net/static/img/cc-cube-small.png")
             embed.timestamp = datetime.utcnow()
