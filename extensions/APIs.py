@@ -657,7 +657,7 @@ class APIs(commands.Cog):
                     alerts.append(alert["title"])
             suffix = "\n\n---"
         except:
-            suffix = ""            
+            suffix = ""
         embed.add_field(name="Weather", value=str(round(data["currently"]["temperature"], 2)) + "°C (" + str(round(data["currently"]["temperature"] * (9/5) + 32, 2)) + "°F)\n" \
             + data["currently"]["summary"] + "\n" \
             + "Feels Like: " + str(round(data["currently"]["apparentTemperature"], 2)) + "°C (" + str(round(data["currently"]["apparentTemperature"] * (9/5) + 32, 2)) + "°F)\n" \
@@ -667,8 +667,8 @@ class APIs(commands.Cog):
         embed.set_footer(text="Powered by Dark Sky and OpenStreetMap")
         embed.timestamp = datetime.utcfromtimestamp(data["currently"]["time"])
 
-        lon = int((int(geocoding[0]["lon"]) + 180) / 360 * 2**9)
-        lat = int((1 - math.asinh(math.tan(math.radians(int(geocoding[0]["lat"])))) / math.pi) / 2 * 2**9)
+        lon = int((int(geocoding[0]["lon"]) + 180) / 360 * 512)
+        lat = int((1 - math.asinh(math.tan(math.radians(int(geocoding[0]["lat"])))) / math.pi) / 2 * 512)
 
         tile = "https://a.tile.openstreetmap.org/9/" + lon + "/" + lat + ".png"
         embed.set_image(url=tile)
