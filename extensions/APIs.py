@@ -667,8 +667,8 @@ class APIs(commands.Cog):
         embed.set_footer(text="Powered by Dark Sky and OpenStreetMap")
         embed.timestamp = datetime.utcfromtimestamp(data["currently"]["time"])
 
-        lon = str((float(geocoding[0]["lon"]) + 180) / 360 * 512)
-        lat = str((1 - math.asinh(math.tan(math.radians(float(geocoding[0]["lat"])))) / math.pi) / 2 * 512)
+        lon = str(round((float(geocoding[0]["lon"]) + 180) / 360 * 512))
+        lat = str(round((1 - math.asinh(math.tan(math.radians(float(geocoding[0]["lat"])))) / math.pi) / 2 * 512))
 
         tile = "https://a.tile.openstreetmap.org/9/" + lon + "/" + lat + ".png"
         embed.set_image(url=tile)
