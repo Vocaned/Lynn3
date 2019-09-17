@@ -666,12 +666,6 @@ class APIs(commands.Cog):
             + "Wind: " + str(data["currently"]["windSpeed"]) + " m/s (" + str(round(int(data["currently"]["windSpeed"]) * 2.2369362920544, 2)) + " mph)" + suffix)
         embed.set_footer(text="Powered by Dark Sky and OpenStreetMap")
         embed.timestamp = datetime.utcfromtimestamp(data["currently"]["time"])
-
-        lon = str(round((float(geocoding[0]["lon"]) + 180) / 360 * 512))
-        lat = str(round((1 - math.asinh(math.tan(math.radians(float(geocoding[0]["lat"])))) / math.pi) / 2 * 512))
-
-        tile = "https://a.tile.openstreetmap.org/9/" + lon + "/" + lat + ".png"
-        embed.set_image(url=tile)
         await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
