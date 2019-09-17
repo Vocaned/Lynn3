@@ -61,7 +61,6 @@ async def skinRenderer2D(url, fromFile=True):
 
     # Head
     makeDualBodyPart(img, img2, p, (8, 8, 16, 16), (40, 8, 48, 16), 4, 0)
-
     # Body
     bodySize = (p*20, p*20, p*28, p*32)
     body = img.crop(bodySize).convert("RGBA")
@@ -76,24 +75,18 @@ async def skinRenderer2D(url, fromFile=True):
 
     if not x64:
         # 64x32 format
-
         # Arms
         makeBodyPart(img, img2, p, (44, 20, 48, 32), 0, 8, 4, 8)
-
         # Legs
         makeBodyPart(img, img2, p, (4, 20, 8, 32), 4, 20, 8, 20)
     else:
         # 64x64 format
-
         # Right arm
         makeDualBodyPart(img, img2, p, (44, 20, 48, 32), (44, 36, 48, 48), 0, 8)
-
         # Left arm
         makeDualBodyPart(img, img2, p, (36, 52, 40, 64), (52, 52, 56, 64), 4, 8, l=True)
-
         # Right leg
         makeDualBodyPart(img, img2, p, (4, 20, 8, 32), (4, 36, 8, 48), 4, 20)
-
         # Left leg
         makeDualBodyPart(img, img2, p, (20, 52, 24, 64), (4, 52, 8, 64), 8, 20, l=True)
 

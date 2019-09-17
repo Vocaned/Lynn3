@@ -89,11 +89,9 @@ class Admin(commands.Cog):
 
     def cleanup_code(self, content):
         """Automatically removes code blocks from the code."""
-        # remove ```py\n```
         if content.startswith('```') and content.endswith('```'):
             return '\n'.join(content.split('\n')[1:-1])
 
-        # remove `foo`
         return content.strip('` \n')
 
     async def __local_check(self, ctx):
@@ -314,13 +312,6 @@ class Admin(commands.Cog):
         else:
             raise commands.UserInputError()
 
-
-    @commands.command(hidden=True)
-    @commands.is_owner()
-    async def shutdown(self, ctx):
-        await ctx.send("Goodbye!")
-        await self.bot.close()
-
     @commands.command(hidden=True)
     @commands.is_owner()
     async def debug(self, ctx):
@@ -351,5 +342,10 @@ class Admin(commands.Cog):
         else:
             await self.bot.change_presence(activity=None, status="online")
 
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def shutdown(self, ctx):
+        await ctx.send("Goodbye!")
+        await self.bot.close()
 def setup(bot):
     bot.add_cog(Admin(bot))

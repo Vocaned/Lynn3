@@ -65,6 +65,7 @@ class Misc(commands.Cog):
                           + "\n**Internal worker ID**: " + str((snowflake & 0x3E0000) >> 17) \
                           + "\n**Internal process ID**: " + str((snowflake & 0x1F000) >> 12) \
                           + "\n**Increment**: " + str(snowflake & 0xFFF)
+        embed.timestamp = ((snowflake >> 22) + 1420070400000) / 1000
         await ctx.send(embed=embed, content='')
 
 def setup(bot):

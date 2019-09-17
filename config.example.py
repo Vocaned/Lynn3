@@ -1,5 +1,6 @@
 from discord.ext import commands
 import logging
+from datetime import datetime
 token = "[TOKEN]"
 description = "Lynn 3.0_DEV"
 gitURI = "git@github.com:Fam0r/Lynn3.git"
@@ -8,7 +9,7 @@ cogDir = "extensions"
 logging.basicConfig(format='%(asctime)s | [%(levelname)s] (%(filename)s) - %(message)s',
                     level=logging.INFO,
                     handlers=[
-                        logging.FileHandler("logs/bot.log"),
+                        logging.FileHandler("logs/"+datetime.now().strftime('%Y-%m-%d')+".log"),
                         logging.StreamHandler()
                     ])
 
