@@ -7,4 +7,4 @@ General purpose discord bot, mostly used for connecting to other APIs around the
 # Requirements:
 * Python 3.something
 * Git (CLI)
-* Some libraries idk
+* `pip install -r requirements.txt`
