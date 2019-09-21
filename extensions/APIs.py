@@ -609,7 +609,8 @@ class APIs(commands.Cog):
             "VANITY_URL": "Custom vanity url",
             "ANIMATED_ICON": "Animated icon",
             "COMMERCE": "Store",
-            "MORE_EMOJI": "More emoji"
+            "MORE_EMOJI": "More emoji",
+            "PUBLIC": "Public server"
         }
 
         flags = data["guild"]["features"]
