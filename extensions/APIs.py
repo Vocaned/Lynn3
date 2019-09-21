@@ -599,6 +599,7 @@ class APIs(commands.Cog):
 
         flagName = {
             "VERIFIED": "Verified",
+            "LURKABLE": "Lurking enabled",
             "INVITE_SPLASH": "Custom invite splash screen",
             "VIP_REGIONS": "VIP Server",
             "FEATURABLE": "Featured server",
