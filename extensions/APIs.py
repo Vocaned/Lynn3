@@ -599,7 +599,6 @@ class APIs(commands.Cog):
 
         flagName = {
             "VERIFIED": "Verified",
-            "LURKABLE": "Lurking enabled",
             "INVITE_SPLASH": "Custom invite splash screen",
             "VIP_REGIONS": "VIP Server",
             "FEATURABLE": "Featured server",
@@ -610,7 +609,7 @@ class APIs(commands.Cog):
             "ANIMATED_ICON": "Animated icon",
             "COMMERCE": "Store",
             "MORE_EMOJI": "More emoji",
-            "PUBLIC": "Public server"
+            "PUBLIC": "Public server (Lurkable)"
         }
 
         flags = data["guild"]["features"]
