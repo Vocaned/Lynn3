@@ -636,7 +636,7 @@ class APIs(commands.Cog):
         await ctx.send(embed=embed)
 
 
-    @commands.command(name="weather", aliases=["sää"])
+    @commands.command(name="weather")
     async def WeatherAPI(self, ctx, *, city):
         """Gets information about the weather"""
         await ctx.message.add_reaction("\N{HOURGLASS}")
@@ -717,7 +717,8 @@ class APIs(commands.Cog):
             ("dropbox", "https://status.dropbox.com"),
             ("github", "https://www.githubstatus.com"),
             ("medium", "https://medium.statuspage.io"),
-            ("epicgames", "https://status.epicgames.com")
+            ("epicgames", "https://status.epicgames.com"),
+            ("glitch", "https://status.glitch.com")
         ]
         await ctx.message.add_reaction("\N{HOURGLASS}")
         for page in pages:
