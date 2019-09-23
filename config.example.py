@@ -33,3 +33,15 @@ api_keys = {
     "twitchID":         "[KEY]",
     "twitchSecret":     "[KEY]"
 }
+
+statusPages = [
+    ("discord", "https://status.discordapp.com"),
+    ("twitter", "https://api.twitterstat.us"),
+    ("reddit", "https://reddit.statuspage.io"),
+    ("cloudflare", "https://www.cloudflarestatus.com"),
+    ("dropbox", "https://status.dropbox.com"),
+    ("github", "https://www.githubstatus.com"),
+    ("medium", "https://medium.statuspage.io"),
+    ("epicgames", "https://status.epicgames.com"),
+    ("glitch", "https://status.glitch.com")
+]

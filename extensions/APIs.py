@@ -709,19 +709,8 @@ class APIs(commands.Cog):
     @commands.command(name="status", aliases=["statuspage"])
     async def StatusAPI(self, ctx, *, name="None"):
         """Gets information about status pages."""
-        pages = [
-            ("discord", "https://status.discordapp.com"),
-            ("twitter", "https://api.twitterstat.us"),
-            ("reddit", "https://reddit.statuspage.io"),
-            ("cloudflare", "https://www.cloudflarestatus.com"),
-            ("dropbox", "https://status.dropbox.com"),
-            ("github", "https://www.githubstatus.com"),
-            ("medium", "https://medium.statuspage.io"),
-            ("epicgames", "https://status.epicgames.com"),
-            ("glitch", "https://status.glitch.com")
-        ]
         await ctx.message.add_reaction("\N{HOURGLASS}")
-        for page in pages:
+        for page in config.statusPages:
             if name.lower() == page[0]:
                 col = 0x00
                 j = self.REST(page[1] + "/index.json")
@@ -773,7 +762,7 @@ class APIs(commands.Cog):
 
         await ctx.message.clear_reactions()
         await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
-        await ctx.send("Invalid page! Currently supported pages: ```\n" + "\n".join([n.title() for n, a in pages]) + "```")
+        await ctx.send("Invalid page! Currently supported pages: ```\n" + "\n".join([n.title() for n, a in config.statusPages]) + "```")
 
 def setup(bot):
     bot.add_cog(APIs(bot))
