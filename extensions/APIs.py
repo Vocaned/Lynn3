@@ -259,23 +259,17 @@ class APIs(commands.Cog):
                     await ctx.send("User not found!")
                     return
 
-            flags = []
-            if "b" in data["flags"]:
-                flags.append("Banned from forums")
-            if "d" in data["flags"]:
-                flags.append("Developer")
-            if "m" in data["flags"]:
-                flags.append("Forum moderator")
-            if "a" in data["flags"]:
-                flags.append("Forum admin")
-            if "e" in data["flags"]:
-                flags.append("Blog editor")
-            if "p" in data["flags"]:
-                flags.append("Patreon")
-            if "u" in data["flags"]:
-                flags.append("Unverified")
-            if "r" in data["flags"]:
-                flags.append("Recovering account")
+            flagName = {
+                "b": "Banned from forums",
+                "d": "Developer",
+                "m": "Forum moderator",
+                "a": "Forum admin",
+                "e": "Blog editor",
+                "p": "Patron",
+                "u": "Unverified",
+                "r": "Recovering account"
+            }
+            flags = data["flags"]
 
             embed = discord.Embed(title="ClassiCube User", colour=0x977dab)
             embed.set_author(name=data["username"],
@@ -286,7 +280,7 @@ class APIs(commands.Cog):
                 ago = "Under a minute"
             embed.add_field(name="Account created", value="On " + datetime.utcfromtimestamp(data["registered"]).strftime("%c") + "\n" + ago + " ago")
             if flags:
-                embed.add_field(name="Notes", value=", ".join(flags))
+                embed.add_field(name="Notes", value=", ".join([flagName[n] for n in flags]))
 
             if self.REST("https://static.classicube.net/skins/" + str(data["username"]) + ".png", returns="r.status_code == 200"):
                 embed.add_field(name="Skin URL", value="[Click me](https://static.classicube.net/skins/" + str(data["username"]) + ".png)")
