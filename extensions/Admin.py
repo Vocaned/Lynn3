@@ -284,7 +284,7 @@ class Admin(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.is_owner()
-    async def sudo(self, ctx, who: Union[discord.Member, discord.User], *command):
+    async def su(self, ctx, who: Union[discord.Member, discord.User], *command):
         """Run a command as another user."""
         msg = copy.copy(ctx.message)
         msg.author = who
