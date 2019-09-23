@@ -444,27 +444,22 @@ class APIs(commands.Cog):
             embed.set_thumbnail(url=data["user"]["avatarUrl"])
 
 
-        types = []
+        typeNames = {
+            "Verified": data["user"]["verified"],
+            "Suspended": data["suspended"],
+            "Featured": data["featured"],
+            "Partnered": data["partnered"],
+            "Interactive Stream": data["interactive"],
+            "VODs": data["vodsEnabled"]
+        }
+        types = [c for c in typeNames if typeNames[c]]
         groups = []
-        if data["user"]["verified"]:
-            types.append("Verified")
-        if data["suspended"]:
-            types.append("Suspended")
-        if data["featured"]:
-            types.append("Featured")
-        if data["partnered"]:
-            types.append("Partnered")
-        if data["interactive"]:
-            types.append("Interactive Stream")
-        if data["vodsEnabled"]:
-            types.append("VODs")
 
         try:
             for group in data["user"]["groups"]:
                 groups.append(group["name"])
         except:
             pass
-
 
         if types:
             embed.add_field(name="Account type", value="\n".join(types))
