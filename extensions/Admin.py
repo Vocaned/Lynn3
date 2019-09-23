@@ -284,13 +284,12 @@ class Admin(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.is_owner()
-    async def sudo(self, ctx, who: Union[discord.Member, discord.User], *, command: str):
+    async def sudo(self, ctx, who: Union[discord.Member, discord.User], *command):
         """Run a command as another user."""
         msg = copy.copy(ctx.message)
         msg.author = who
-        msg.content = ctx.prefix + command
+        msg.content = ctx.prefix + " ".join(command)
         new_ctx = await self.bot.get_context(msg)
-        new_ctx.db = ctx.db
         await self.bot.invoke(new_ctx)
 
     @commands.command(hidden=True)
