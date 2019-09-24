@@ -75,7 +75,6 @@ class NumericStringParser(object):
                    "cos": math.cos,
                    "tan": math.tan,
                    "exp": math.exp,
-                   "log": lambda a: float(math.log(float(a.split()[1]), float(a.split()[0]))),
                    "abs": abs,
                    "trunc": lambda a: int(a),
                    "round": round,

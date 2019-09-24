@@ -16,7 +16,6 @@ import sys
 import math
 import datetime
 from Lynn import errors
-from collections import Counter
 
 class Admin(commands.Cog):
     """Admin-only commands."""
