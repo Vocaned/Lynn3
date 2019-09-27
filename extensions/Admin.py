@@ -7,7 +7,6 @@ import textwrap
 from contextlib import redirect_stdout
 import io
 import copy
-from typing import Union
 import os
 import time
 import subprocess
@@ -285,7 +284,7 @@ class Admin(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.is_owner()
-    async def su(self, ctx, who: Union[discord.Member, discord.User], *command):
+    async def su(self, ctx, who: discord.User, *command):
         """Run a command as another user."""
         msg = copy.copy(ctx.message)
         msg.author = who
