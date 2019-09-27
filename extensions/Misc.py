@@ -4,7 +4,6 @@ from datetime import datetime
 import subprocess
 import json
 import math
-import requests
 import re
 import time
 import asyncio

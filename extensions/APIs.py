@@ -21,7 +21,7 @@ class APIs(commands.Cog):
     # ---
 
     # Kinda hacky, sorry. I'll probably have no idea how this works in a couple of months. Anyways just don't touch it thanks
-    async def REST(self, url, method="s.get", headers=None, data=None, auth=None, returns="r.json(content_type=None)"):
+    async def REST(self, url, method="s.get", headers=None, data=None, auth=None, returns="await r.json(content_type=None)"):
         args = [headers, data, auth]
         for n in range(len(args)):
             if args[n]:
@@ -30,7 +30,10 @@ class APIs(commands.Cog):
         async with aiohttp.ClientSession() as s:
             async with eval(func) as r:
                 try:
-                    return await eval(returns)
+                    if returns.split(" ")[0] == "await":
+                        return await eval(" ".join(returns.split(" ")[1:]))
+                    else:
+                        return eval(returns)
                 except:
                     return None
 
@@ -131,14 +134,14 @@ class APIs(commands.Cog):
                 skin["textures"]["SKIN"]["url"]
             except:
                 # TODO: Try to find a official steve skin in mojang's skin server
-                await self.bot.loop.run_in_executor(None, BotUtils.skinRenderer2D, "https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
-                await self.bot.loop.run_in_executor(None, BotUtils.headRenderer, "https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
+                await BotUtils.skinRenderer2D("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
+                await BotUtils.headRenderer("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
                 skinFile = discord.File("skins/2d/Steve_skin.png", filename="skin.png")
                 headFile = discord.File("skins/head/Steve_skin.png", filename="head.png")
             else:
                 embed.add_field(name="Skin URL", value="[Click me]("+skin["textures"]["SKIN"]["url"]+")")
-                await self.bot.loop.run_in_executor(None, BotUtils.skinRenderer2D, skin["textures"]["SKIN"]["url"])
-                await self.bot.loop.run_in_executor(None, BotUtils.headRenderer, skin["textures"]["SKIN"]["url"])
+                await BotUtils.skinRenderer2D(skin["textures"]["SKIN"]["url"])
+                await BotUtils.headRenderer(skin["textures"]["SKIN"]["url"])
                 skinFile = discord.File("skins/2d/" + skin["textures"]["SKIN"]["url"].split("/")[-1] + ".png", filename="skin.png")
                 headFile = discord.File("skins/head/" + skin["textures"]["SKIN"]["url"].split("/")[-1] + ".png", filename="head.png")
 
@@ -268,15 +271,15 @@ class APIs(commands.Cog):
             if flags:
                 embed.add_field(name="Notes", value=", ".join([flagName[n] for n in flags]))
 
-            if self.REST("https://static.classicube.net/skins/" + str(data["username"]) + ".png", returns="r.status_code == 200"):
+            if await self.REST("https://static.classicube.net/skins/" + str(data["username"]) + ".png", returns="r.status == 200"):
                 embed.add_field(name="Skin URL", value="[Click me](https://static.classicube.net/skins/" + str(data["username"]) + ".png)")
-                await self.bot.loop.run_in_executor(None, lambda: BotUtils.skinRenderer2D("https://static.classicube.net/skins/" + str(data["username"]) + ".png", fromFile=False))
-                await self.bot.loop.run_in_executor(None, lambda: BotUtils.headRenderer("https://static.classicube.net/skins/" + str(data["username"]) + ".png", fromFile=False))
+                await BotUtils.skinRenderer2D("https://static.classicube.net/skins/" + str(data["username"]) + ".png", fromFile=False)
+                await BotUtils.headRenderer("https://static.classicube.net/skins/" + str(data["username"]) + ".png", fromFile=False)
                 file = discord.File("skins/2d/" + str(data["username"]) + ".png", filename="skin.png")
                 file2 = discord.File("skins/head/" + str(data["username"]) + ".png", filename="head.png")
             else:
-                await self.bot.loop.run_in_executor(None, BotUtils.skinRenderer2D, "https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
-                await self.bot.loop.run_in_executor(None, BotUtils.headRenderer, "https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
+                await BotUtils.skinRenderer2D("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
+                await BotUtils.headRenderer("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
                 file = discord.File("skins/2d/Steve_skin.png", filename="skin.png")
                 file2 = discord.File("skins/head/Steve_skin.png", filename="head.png")
 
