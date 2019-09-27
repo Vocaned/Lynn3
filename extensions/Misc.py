@@ -61,6 +61,16 @@ class Misc(commands.Cog):
         await ctx.message.delete()
         await ctx.send(embed=embed, content='')
 
+    @commands.command(name="user")
+    async def discordUser(self, ctx, *, user):
+        """Gets information about discord users."""
+        user = await commands.UserConverter().convert(ctx, user)
+        embed = discord.Embed(title="Discord User " + user.name + "#" + str(user.discriminator), colour=0x7289DA)
+        embed.set_thumbnail(url=str(user.avatar_url))
+        embed.add_field(name="Account created", value="On " + user.created_at.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - user.created_at) + " ago")
+        embed.set_footer(text="User ID" + str(user.id))
+        await ctx.send(embed=embed)
+
     @commands.command(aliases=["id"])
     async def snowflake(self, ctx, *, snowflake):
         snowflake =int(snowflake)

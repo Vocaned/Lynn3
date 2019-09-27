@@ -26,6 +26,9 @@ if __name__ == '__main__':
         if ctx.valid:
             await message.add_reaction("\N{HOURGLASS}")
             await bot.process_commands(message)
-            await message.remove_reaction("\N{HOURGLASS}", bot.user)
+            try:
+                await message.remove_reaction("\N{HOURGLASS}", bot.user)
+            except:
+                pass
 
     bot.run(config.token, bot=True, reconnect=True)

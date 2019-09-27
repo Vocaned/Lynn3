@@ -23,7 +23,7 @@ def makeDualBodyPart(img, img2, p, s1, s2, o1, o2, l=False):
         img2.paste(part1, (p*o1, p*o2))
 
 
-async def headRenderer(url, fromFile=True):
+def headRenderer(url, fromFile=True):
     filename = url.split("/")[-1].replace(".png", "")
     if fromFile and os.path.isfile("skins/head/" + str(filename) + ".png"):
         return "skins/head/" + str(filename) + ".png",
@@ -44,7 +44,7 @@ async def headRenderer(url, fromFile=True):
     img2.save("skins/head/" + str(filename) + ".png")
     return "skins/head/" + str(filename) + ".png"
 
-async def skinRenderer2D(url, fromFile=True):
+def skinRenderer2D(url, fromFile=True):
     """Renders a skin in 2D and returns path to the saved file"""
 
     filename = url.split("/")[-1].replace(".png", "")
