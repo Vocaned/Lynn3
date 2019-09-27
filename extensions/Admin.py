@@ -33,11 +33,7 @@ class Admin(commands.Cog):
         if isinstance(error, commands.CommandNotFound):
             return
 
-        try:
-            await ctx.message.clear_reactions()
-            await ctx.message.add_reaction('\N{NO ENTRY SIGN}')
-        except:
-            pass
+        await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
 
         if isinstance(error, commands.BotMissingPermissions):
             missing = [perm.replace('_', ' ').replace('guild', 'server').title() for perm in error.missing_perms]
@@ -81,6 +77,10 @@ class Admin(commands.Cog):
 
         if isinstance(error, commands.CheckFailure):
             await ctx.send("You do not have permission to use this command.")
+            return
+
+        if hasattr(error, "args") and len(error.args) != 0:
+            await ctx.send(", ".join(error.args))
             return
 
         print("Ignoring exception in " + str(ctx.command), file=sys.stderr)

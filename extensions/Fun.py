@@ -71,8 +71,6 @@ class Fun(commands.Cog):
 	async def minesweeper(self, ctx, *, args=None):
 		"""Generates a game of minesweeper.
 		args = `width height bombs (nospoil)`"""
-		await ctx.message.add_reaction('\N{HOURGLASS}')
-
 		spoil = True
 		if args != None and len(str(args).split(' ')) > 2:
 			width = int(str(args).split(' ')[0])
@@ -114,8 +112,6 @@ class Fun(commands.Cog):
 		embed = discord.Embed(title='Minesweeper', colour=0xFFA500)
 		embed.description = output
 		embed.timestamp = datetime.utcnow()
-		await ctx.message.clear_reactions()
-		await ctx.message.add_reaction("\N{OK HAND SIGN}")
 		await ctx.send(embed=embed, content="")
 
 def setup(bot):

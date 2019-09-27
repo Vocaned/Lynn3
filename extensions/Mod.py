@@ -13,7 +13,7 @@ class Mod(commands.Cog):
     async def purge(self, ctx, amount: int=None):
         """Purge an amount of messages in a channel"""
         if amount>500 or amount<0:
-            return await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
+            raise commands.CommandError(message="Invalid amount")
         await ctx.message.delete()
         await ctx.message.channel.purge(limit=amount)
         await ctx.send(f'Sucesfully deleted **{int(amount)}** messages!', delete_after=5)

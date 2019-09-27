@@ -107,10 +107,7 @@ class APIs(commands.Cog):
         if user:
             uuid = await self.getMinecraftUUID(user)
             if not uuid:
-                await ctx.send("User not found!")
-                await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
-                return
-            await ctx.message.add_reaction("\N{HOURGLASS}")
+                raise commands.CommandError(message="User not found!")
             history = self.REST("https://api.mojang.com/user/profiles/" + uuid["id"] + "/names")
             names = []
             for i in range(len(history)):
@@ -121,7 +118,7 @@ class APIs(commands.Cog):
             created = await self.getMinecraftAge(user)
             skin = await self.getMinecraftSkinUrl(uuid["id"])
             if not skin:
-                await ctx.send("Ratelimited! Try again in 10 seconds")
+                raise commands.CommandOnCooldown(commands.BucketType.default, 10)
             embed = discord.Embed(title="Minecraft User", colour=0x82540f)
             embed.set_author(name=history[-1]["name"], icon_url="attachment://head.png")
             embed.add_field(name="Name history", value="\n".join(names))
@@ -148,7 +145,6 @@ class APIs(commands.Cog):
             embed.set_footer(text="\U00002063", icon_url="https://minecraft.net/favicon-96x96.png")
             embed.set_image(url="attachment://skin.png")
             embed.timestamp = datetime.utcnow()
-            await ctx.message.clear_reactions()
             await ctx.send(files=[skinFile, headFile], embed=embed)
         else:
             sale = self.REST("https://api.mojang.com/orders/statistics", method=requests.post, data='{"metricKeys":["item_sold_minecraft","prepaid_card_redeemed_minecraft"]}')
@@ -157,7 +153,6 @@ class APIs(commands.Cog):
             embed.add_field(name="Sold in the last 24h", value=sale["last24h"])
             embed.set_footer(text="\U00002063", icon_url="https://minecraft.net/favicon-96x96.png")
             embed.timestamp = datetime.utcnow()
-            await ctx.message.clear_reactions()
             await ctx.send(embed=embed)
 
     # TODO: FIX for APIv2
@@ -166,14 +161,11 @@ class APIs(commands.Cog):
         """Gets information about Apex Legends players.
            Only PC information for now."""
         if platform != "origin" and platform != "xbl" and platform != "psn":
-            await ctx.send("Possible platform: origin, xbl, psn")
-            return
-        await ctx.message.add_reaction("\N{HOURGLASS}")
+            raise commands.CommandError(message="Possible platform: origin, xbl, psn")
         data = self.REST("https://public-api.tracker.gg/v2/apex/standard/profile/" + platform + "/" + user, headers={"TRN-Api-Key":config.apiKeys["tracker"]})
         stats = []
         for stat in data["data"]["segments"]:
             print(stat)
-            # TODO
             for value in stat["stats"]["metadata"]["name"] :
                 print(value)
                 val = str(value["value"])
@@ -185,17 +177,12 @@ class APIs(commands.Cog):
             embed.add_field(name=stat[0], value=stat[1])
         embed.set_footer(text="Missing data because EA.", icon_url="https://logodownload.org/wp-content/uploads/2019/02/apex-legends-logo-1.png")
         embed.timestamp = datetime.utcnow()
-        await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
 
     @commands.command(name="csgo", aliases=["cs"])
-    async def CSGOAPI(self, ctx, *, user=None):
+    async def CSGOAPI(self, ctx, *, user):
         """Gets information about CSGO players."""
-        if not user:
-            await ctx.send("Please enter an steam id or custom url after the command.")
-            return
-        await ctx.message.add_reaction("\N{HOURGLASS}")
         if not str(user).isdigit():
             data = self.REST("http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=" + config.apiKeys["steam"] + "&vanityurl=" + self.escape(user))
             user = data["response"]["steamid"]
@@ -212,7 +199,6 @@ class APIs(commands.Cog):
         embed.add_field(name="Win %", value=str(round(self.getCSStat(data, "total_matches_won") / self.getCSStat(data, "total_matches_played") * 100, 1)) + "%")
         embed.add_field(name="Accuracy", value=str(round(self.getCSStat(data, "total_shots_hit") / self.getCSStat(data, "total_shots_fired") * 100, 1)) + "%")
         embed.timestamp = datetime.utcnow()
-        await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
 
@@ -238,7 +224,6 @@ class APIs(commands.Cog):
                                                   + "\n**#" + data["pp_country_rank"] + "** in " + data["country"])
         embed.set_footer(text="Account created", icon_url="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/480px-Osu%21Logo_%282015%29.svg.png")
         embed.timestamp = datetime.strptime(data["join_date"], "%Y-%m-%d %H:%M:%S")
-        await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
 
@@ -246,18 +231,14 @@ class APIs(commands.Cog):
     async def classiCubeAPI(self, ctx, *, user=None):
         """Gets information about ClassiCube, or searches players.
         user = ID or name
-        Leave as blank for general statistics"""
-        await ctx.message.add_reaction("\N{HOURGLASS}")
+        Leave blank for general statistics"""
         if user:
             data = self.REST("https://www.classicube.net/api/player/"+self.escape(user))
             if not data or data["error"] != "":
                 if user.isdigit():
                     data = self.REST("https://www.classicube.net/api/id/"+self.escape(user))
                 if not data or data["error"] != "":
-                    await ctx.message.clear_reactions()
-                    await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
-                    await ctx.send("User not found!")
-                    return
+                    raise commands.CommandError(message="User not found!")
 
             flagName = {
                 "b": "Banned from forums",
@@ -297,8 +278,6 @@ class APIs(commands.Cog):
             embed.set_footer(text="\U00002063", icon_url="https://www.classicube.net/static/img/cc-cube-small.png")
             embed.set_image(url="attachment://skin.png")
             embed.timestamp = datetime.utcnow()
-
-            await ctx.message.clear_reactions()
             await ctx.send(files=[file, file2], embed=embed)
         else:
             data = self.REST("https://www.classicube.net/api/players/")
@@ -327,23 +306,18 @@ class APIs(commands.Cog):
 
             embed.set_footer(text="\U00002063", icon_url="https://www.classicube.net/static/img/cc-cube-small.png")
             embed.timestamp = datetime.utcnow()
-            await ctx.message.clear_reactions()
             await ctx.send(embed=embed)
 
 
     @commands.command(name="wynncraft", aliases=["wc", "wynn"])
     async def WynncraftAPI(self, ctx, *, user=None):
         """Gets information about Wynncraft, or searches players.
-        Leave as blank for general statistics"""
-        await ctx.message.add_reaction("\N{HOURGLASS}")
+        Leave blank for general statistics"""
         if user:
             data = self.REST("https://api.wynncraft.com/v2/player/"+self.escape(user)+"/stats")
             data = data["data"][0]
             if "error" in data:
-                await ctx.message.clear_reactions()
-                await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
-                await ctx.send(str(data["error"]))
-                return
+                raise commands.CommandError(message=str(data["error"]))
 
             rank = ""
             if data["rank"] != "Player":
@@ -407,9 +381,7 @@ class APIs(commands.Cog):
 
             embed.set_footer(text="\U00002063", icon_url="https://cdn.wynncraft.com/img/ico/android-icon-192x192.png")
             embed.timestamp = datetime.utcnow()
-            await ctx.message.clear_reactions()
             await ctx.send(files=[headFile], embed=embed)
-            return
         else:
             data = self.REST("https://api.wynncraft.com/public_api.php?action=onlinePlayersSum")
             embed = discord.Embed(title="Wynncraft", colour=0x7bbf32)
@@ -417,7 +389,6 @@ class APIs(commands.Cog):
 
             embed.set_footer(text="\U00002063", icon_url="https://cdn.wynncraft.com/img/ico/android-icon-192x192.png")
             embed.timestamp = datetime.utcnow()
-            await ctx.message.clear_reactions()
             await ctx.send(embed=embed)
 
     # ---
@@ -427,7 +398,6 @@ class APIs(commands.Cog):
     @commands.command(name="mixer")
     async def MixerAPI(self, ctx, *, user):
         """Gets information about mixer users"""
-        await ctx.message.add_reaction("\N{HOURGLASS}")
         data = self.REST("https://mixer.com/api/v1/channels/" + self.escape(user))
 
         name = data["token"]
@@ -483,13 +453,11 @@ class APIs(commands.Cog):
 
         embed.set_footer(icon_url="http://teambeyond.net/wp-content/uploads/2017/05/Mixer-Logo.png", text="LVL " + str(data["user"]["level"]) + " • Account created ")
         embed.timestamp = datetime.strptime(data["createdAt"], "%Y-%m-%dT%H:%M:%S.%fZ")
-        await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
     @commands.command(name="twitch")
     async def TwitchAPI(self, ctx, *, user):
         """Gets information about twitch users"""
-        await ctx.message.add_reaction("\N{HOURGLASS}")
         # TODO: Cache tokens
         token = self.REST("https://id.twitch.tv/oauth2/token?client_id="+config.apiKeys["twitchID"]+"&client_secret="+config.apiKeys["twitchSecret"]+"&grant_type=client_credentials", method=requests.post)["access_token"]
         data = self.REST("https://api.twitch.tv/helix/users?login=" + self.escape(user), headers={"Authorization": "Bearer " + token})["data"][0]
@@ -516,14 +484,12 @@ class APIs(commands.Cog):
         embed.add_field(name="Viewers", value=str(data["view_count"]))
 
         embed.set_footer(icon_url="https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c540.png", text="User id " + data["id"])
-        await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
 
     @commands.command(name="imdb", aliases=["movie", "movies"])
     async def IMDbAPI(self, ctx, *, title):
         """Gets information about movies using the IMDb"""
-        await ctx.message.add_reaction("\N{HOURGLASS}")
         data = self.REST("http://www.omdbapi.com/?apikey=" + config.apiKeys["omdb"] + "&t=" + self.escape(title))
 
         embed = discord.Embed(title=data["Title"] + " (" + data["Year"] + ")", colour=0xf5c518, url="https://www.imdb.com/title/" + data["imdbID"])
@@ -543,14 +509,12 @@ class APIs(commands.Cog):
             embed.add_field(name="Ratings", value=ratings)
 
         embed.timestamp = datetime.utcnow()
-        await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
 
     @commands.command(name="urbandictionary", aliases=["urban", "define"])
     async def UrbanDictionaryAPI(self, ctx, *, term):
         """Gets information about the urban dictionary"""
-        await ctx.message.add_reaction("\N{HOURGLASS}")
         data = self.REST("http://api.urbandictionary.com/v0/define?term=" + self.escape(term))
         data = data["list"][0]
         embed = discord.Embed(title=data["word"], colour=0x1d2439, url=data["permalink"])
@@ -558,22 +522,19 @@ class APIs(commands.Cog):
         embed.add_field(name="Example", value="```"+data["example"].replace("\r","")+"```")
         embed.set_footer(text=str(data["thumbs_up"])+"\N{THUMBS UP SIGN}, " + str(data["thumbs_down"]) + "\N{THUMBS DOWN SIGN} | Submitted")
         embed.timestamp = datetime.strptime(data["written_on"].split("T")[0], "%Y-%m-%d")
-        await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
 
     @commands.command(name="invite", aliases=["discord"])
     async def DiscordAPI(self, ctx, *, invite):
         """Gets information about discord invites"""
-        await ctx.message.add_reaction("\N{HOURGLASS}")
         invite = str(invite.split("/")[-1])
         data = self.REST("https://discordapp.com/api/v6/invite/" +  self.escape(invite) + "?with_counts=true")
 
         try:
             data["guild"]
         except:
-            await ctx.send(data["message"])
-            raise Exception()
+            raise commands.CommandError(message=data["message"])
 
         embed = discord.Embed(title="Click here to join the server!", colour=0x7289DA, url="https://discord.gg/" + data["code"])
         embed.add_field(name="Guild Name", value=str(data["guild"]["name"]))
@@ -621,14 +582,12 @@ class APIs(commands.Cog):
 
         embed.set_footer(text="Server ID " + str(data["guild"]["id"]))
         embed.timestamp = datetime.utcnow()
-        await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
 
     @commands.command(name="weather")
     async def WeatherAPI(self, ctx, *, city):
         """Gets information about the weather"""
-        await ctx.message.add_reaction("\N{HOURGLASS}")
         geocoding = self.REST("https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=en&q=" + self.escape(city))
         data = self.REST("https://api.darksky.net/forecast/" +  config.apiKeys["darksky"] + "/" + geocoding[0]["lat"] + "," + geocoding[0]["lon"] + "?exclude=minutely,hourly,daily,flags&units=si")
 
@@ -637,7 +596,7 @@ class APIs(commands.Cog):
         try:
             alerts = []
             for alert in data["alerts"]:
-                if len(alerts) > 23:
+                if len(alerts) > 3:
                     continue
                 if alert["title"] not in alerts:
                     embed.add_field(name=alert["title"], value=alert["description"][:1024])
@@ -653,7 +612,6 @@ class APIs(commands.Cog):
             + "Wind: " + str(data["currently"]["windSpeed"]) + " m/s (" + str(round(int(data["currently"]["windSpeed"]) * 2.2369362920544, 2)) + " mph)" + suffix)
         embed.set_footer(text="Powered by Dark Sky and OpenStreetMap")
         embed.timestamp = datetime.utcfromtimestamp(data["currently"]["time"])
-        await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
 
@@ -685,20 +643,17 @@ class APIs(commands.Cog):
     @commands.command(name="user")
     async def discordUser(self, ctx, *, user):
         """Gets information about discord users."""
-        await ctx.message.add_reaction("\N{HOURGLASS}")
         user = await commands.UserConverter().convert(ctx, user)
         embed = discord.Embed(title="Discord User " + user.name + "#" + str(user.discriminator), colour=0x7289DA)
         embed.set_thumbnail(url=str(user.avatar_url))
         embed.add_field(name="Account created", value="On " + user.created_at.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - user.created_at) + " ago")
         embed.set_footer(text="User ID" + str(user.id))
-        await ctx.message.clear_reactions()
         await ctx.send(embed=embed)
 
 
     @commands.command(name="status", aliases=["statuspage"])
     async def StatusAPI(self, ctx, *, name="None"):
         """Gets information about status pages."""
-        await ctx.message.add_reaction("\N{HOURGLASS}")
         for page in config.statusPages:
             if name.lower() == page[0]:
                 col = 0x00
@@ -715,7 +670,6 @@ class APIs(commands.Cog):
                     embed.add_field(name=comp["name"], value=comp["status"].replace("_", " ").title())
                 embed.timestamp = datetime.utcnow()
 
-                await ctx.message.clear_reactions()
                 await ctx.send(embed=embed)
 
                 for incident in j["incidents"]:
@@ -749,9 +703,7 @@ class APIs(commands.Cog):
                     await ctx.send(embed=embed)
                 return
 
-        await ctx.message.clear_reactions()
-        await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
-        await ctx.send("Invalid page! Currently supported pages: ```\n" + "\n".join([n.title() for n, a in config.statusPages]) + "```")
+        raise commands.CommandError(message="Invalid page! Currently supported pages: ```\n" + "\n".join([n.title() for n, a in config.statusPages]) + "```")
 
 def setup(bot):
     bot.add_cog(APIs(bot))

@@ -20,4 +20,12 @@ if __name__ == '__main__':
         logging.info(f'Logged in as: {bot.user.name} - {bot.user.id}')
         logging.info(f'Discord.py version: {discord.__version__}')
 
+    @bot.event
+    async def on_message(message):
+        ctx = await bot.get_context(message)
+        if ctx.valid:
+            await message.add_reaction("\N{HOURGLASS}")
+            await bot.process_commands(message)
+            await message.remove_reaction("\N{HOURGLASS}", bot.user)
+
     bot.run(config.token, bot=True, reconnect=True)

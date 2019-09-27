@@ -23,9 +23,7 @@ class Misc(commands.Cog):
     async def hex(self, ctx, *, col):
         hexcol = str(col).replace("#", "")
         if not re.search(r'^(?:[0-9a-fA-F]{3}){1,2}$', hexcol):
-            await ctx.message.clear_reactions()
-            await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
-            return
+            raise commands.CommandError(message="Invalid hex color")
 
         embed = discord.Embed(title="#"+hexcol, colour=int(hexcol, 16))
         r = int(hexcol[:2], 16)
@@ -46,14 +44,12 @@ class Misc(commands.Cog):
     @commands.command(aliases=["remind", "remindme"])
     async def reminder(self, ctx, *, string):
         """Reminder"""
-        await ctx.message.add_reaction("\N{HOURGLASS}")
         embed = discord.Embed(title="Reminder", colour=0x8630bf)
         date = search_dates(string, settings={"TIMEZONE": "UTC"})
         if date and date[-1][1]:
             embed.timestamp = date[-1][1]
         embed.description = string.split("|")[0]
         embed.set_footer(text=str(ctx.message.author.name) + '#' +  str(ctx.message.author.discriminator), icon_url=ctx.message.author.avatar_url)
-        await ctx.message.clear_reactions()
         await ctx.message.delete()
         await ctx.send(embed=embed, content='')
 
