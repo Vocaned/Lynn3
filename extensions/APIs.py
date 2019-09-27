@@ -162,31 +162,6 @@ class APIs(commands.Cog):
             embed.timestamp = datetime.utcnow()
             await ctx.send(embed=embed)
 
-    # FIXME: Remake for APIv2
-    @commands.command(name="apex", aliases=["apexlegends", "apesex"])
-    async def apexAPI(self, ctx, user, platform="origin"):
-        """Gets information about Apex Legends players.
-           Only PC information for now."""
-        if platform != "origin" and platform != "xbl" and platform != "psn":
-            raise commands.CommandError(message="%Possible platform: origin, xbl, psn")
-        data = await self.REST("https://public-api.tracker.gg/v2/apex/standard/profile/" + platform + "/" + user, headers={"TRN-Api-Key":config.apiKeys["tracker"]})
-        stats = []
-        for stat in data["data"]["segments"]:
-            print(stat)
-            for value in stat["stats"]["metadata"]["name"] :
-                print(value)
-                val = str(value["value"])
-                print(val)
-                stats.append((stat["metadata"]["name"] +" - " + value["displayName"], val.rstrip("0").rstrip(".") if "." in val else val))
-        embed = discord.Embed(title="Apex Legends", colour=0xff6666)
-        embed.set_author(name=str(data["data"]["platformInfo"]["platformUserHandle"]) + " - Level " + str(data["data"]["segments"][0]["stats"]["level"]["value"]))
-        for stat in stats:
-            embed.add_field(name=stat[0], value=stat[1])
-        embed.set_footer(text="Missing data because EA.", icon_url="https://logodownload.org/wp-content/uploads/2019/02/apex-legends-logo-1.png")
-        embed.timestamp = datetime.utcnow()
-        await ctx.send(embed=embed)
-
-
     @commands.command(name="csgo", aliases=["cs"])
     async def CSGOAPI(self, ctx, *, user):
         """Gets information about CSGO players."""
