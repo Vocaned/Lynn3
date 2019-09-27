@@ -169,7 +169,7 @@ class APIs(commands.Cog):
             await ctx.send("Possible platform: origin, xbl, psn")
             return
         await ctx.message.add_reaction("\N{HOURGLASS}")
-        data = self.REST("https://public-api.tracker.gg/v2/apex/standard/profile/" + platform + "/" + user, headers={"TRN-Api-Key":config.api_keys["tracker"]})
+        data = self.REST("https://public-api.tracker.gg/v2/apex/standard/profile/" + platform + "/" + user, headers={"TRN-Api-Key":config.apiKeys["tracker"]})
         stats = []
         for stat in data["data"]["segments"]:
             print(stat)
@@ -197,11 +197,11 @@ class APIs(commands.Cog):
             return
         await ctx.message.add_reaction("\N{HOURGLASS}")
         if not str(user).isdigit():
-            data = self.REST("http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=" + config.api_keys["steam"] + "&vanityurl=" + self.escape(user))
+            data = self.REST("http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=" + config.apiKeys["steam"] + "&vanityurl=" + self.escape(user))
             user = data["response"]["steamid"]
-        data = self.REST("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" + config.api_keys["steam"] + "&steamids=" + user)
+        data = self.REST("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" + config.apiKeys["steam"] + "&steamids=" + user)
         name = data["response"]["players"][0]["personaname"]
-        data = self.REST("http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=730&key=" + config.api_keys["steam"] + "&steamid=" + user)
+        data = self.REST("http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=730&key=" + config.apiKeys["steam"] + "&steamid=" + user)
         data = data["playerstats"]
         embed = discord.Embed(title="Counter-Strike: Global Offensive", colour=0xadd8e6)
         embed.set_author(name=str(name))
@@ -219,7 +219,7 @@ class APIs(commands.Cog):
     @commands.command(name="osu")
     async def OsuAPI(self, ctx, *, user):
         """Gets information about osu! players."""
-        data = self.REST("https://osu.ppy.sh/api/get_user?u=" + self.escape(user) + "&k=" + config.api_keys["osu"])[0]
+        data = self.REST("https://osu.ppy.sh/api/get_user?u=" + self.escape(user) + "&k=" + config.apiKeys["osu"])[0]
         embed = discord.Embed(title="osu! - " + data["username"], color=0xEA68A3)
         embed.set_thumbnail(url="https://a.ppy.sh/" + data["user_id"])
         embed.add_field(name="Level", value=str(round(float(data["level"]), 2)))
@@ -491,7 +491,7 @@ class APIs(commands.Cog):
         """Gets information about twitch users"""
         await ctx.message.add_reaction("\N{HOURGLASS}")
         # TODO: Cache tokens
-        token = self.REST("https://id.twitch.tv/oauth2/token?client_id="+config.api_keys["twitchID"]+"&client_secret="+config.api_keys["twitchSecret"]+"&grant_type=client_credentials", method=requests.post)["access_token"]
+        token = self.REST("https://id.twitch.tv/oauth2/token?client_id="+config.apiKeys["twitchID"]+"&client_secret="+config.apiKeys["twitchSecret"]+"&grant_type=client_credentials", method=requests.post)["access_token"]
         data = self.REST("https://api.twitch.tv/helix/users?login=" + self.escape(user), headers={"Authorization": "Bearer " + token})["data"][0]
 
         name = data["display_name"]
@@ -524,7 +524,7 @@ class APIs(commands.Cog):
     async def IMDbAPI(self, ctx, *, title):
         """Gets information about movies using the IMDb"""
         await ctx.message.add_reaction("\N{HOURGLASS}")
-        data = self.REST("http://www.omdbapi.com/?apikey=" + config.api_keys["omdb"] + "&t=" + self.escape(title))
+        data = self.REST("http://www.omdbapi.com/?apikey=" + config.apiKeys["omdb"] + "&t=" + self.escape(title))
 
         embed = discord.Embed(title=data["Title"] + " (" + data["Year"] + ")", colour=0xf5c518, url="https://www.imdb.com/title/" + data["imdbID"])
         embed.add_field(name="Released", value=data["Released"])
@@ -630,7 +630,7 @@ class APIs(commands.Cog):
         """Gets information about the weather"""
         await ctx.message.add_reaction("\N{HOURGLASS}")
         geocoding = self.REST("https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=en&q=" + self.escape(city))
-        data = self.REST("https://api.darksky.net/forecast/" +  config.api_keys["darksky"] + "/" + geocoding[0]["lat"] + "," + geocoding[0]["lon"] + "?exclude=minutely,hourly,daily,flags&units=si")
+        data = self.REST("https://api.darksky.net/forecast/" +  config.apiKeys["darksky"] + "/" + geocoding[0]["lat"] + "," + geocoding[0]["lon"] + "?exclude=minutely,hourly,daily,flags&units=si")
 
         embed = discord.Embed(title=geocoding[0]["display_name"], colour=0xffb347)
         embed.set_thumbnail(url="https://darksky.net/images/weather-icons/" + data["currently"]["icon"] + ".png")
@@ -660,7 +660,7 @@ class APIs(commands.Cog):
     @commands.command(name="twitter")
     async def TwitterAPI(self, ctx, *, user):
         """Gets information about twitter users."""
-        auth = OAuth1(config.api_keys["twitterConsKey"], config.api_keys["twitterConsSecret"], config.api_keys["twitterAccToken"], config.api_keys["twitterAccSecret"])
+        auth = OAuth1(config.apiKeys["twitterConsKey"], config.apiKeys["twitterConsSecret"], config.apiKeys["twitterAccToken"], config.apiKeys["twitterAccSecret"])
         data = self.REST("https://api.twitter.com/1.1/users/search.json?count=1&q=" + self.escape(user), auth=auth)[0]
         embed = discord.Embed(title=data["name"] + " (@" + data["screen_name"] + ")", url="https://twitter.com/"+data["screen_name"], description=data["description"], color=0x1DA1F2)
         embed.set_thumbnail(url=data["profile_image_url_https"])

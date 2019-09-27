@@ -1,8 +1,6 @@
 import discord
 from discord.ext import commands
-from os import listdir
-from os.path import isfile, join
-import sys, traceback
+import traceback
 import config
 import os
 import logging
@@ -11,7 +9,7 @@ errors = ""
 bot = commands.Bot(command_prefix=config.get_prefix, description=config.description)
 
 if __name__ == '__main__':
-    for extension in [f.replace('.py', '') for f in listdir(config.cogDir) if isfile(join(config.cogDir, f))]:
+    for extension in [f.replace('.py', '') for f in os.listdir("extensions") if os.path.isfile(os.path.join("extensions", f))]:
         try:
             bot.load_extension(config.cogDir + '.' + extension)
         except (discord.ClientException, ModuleNotFoundError):

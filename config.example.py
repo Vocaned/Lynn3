@@ -19,7 +19,7 @@ def get_prefix(bot, message):
         return '%'
     return commands.when_mentioned_or(*prefixes)(bot, message)
 
-api_keys = {
+apiKeys = {
     "tracker":          "[KEY]",
     "steam":            "[KEY]",
     "darksky":          "[KEY]",
