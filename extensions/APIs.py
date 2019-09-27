@@ -10,9 +10,6 @@ import BotUtils
 from aioauth_client import TwitterClient
 import aiohttp
 
-# TODO: Drop dateutil completely
-import dateutil
-
 class APIs(commands.Cog):
     """APIs"""
 
@@ -699,18 +696,18 @@ class APIs(commands.Cog):
                     if firstUpdate["affected_components"]:
                         embed.add_field(name="Affected components", value="\n".join(c["name"] for c in firstUpdate["affected_components"]))
                     if firstUpdate != lastUpdate and len(firstUpdate) + len(lastUpdate) + 5 < 1900:
-                        embed.description = "**" + dateutil.parser.parse(lastUpdate["created_at"]).strftime("%b %d %H:%M:%S %Y UTC%z") \
+                        embed.description = "**" + datetime.fromisoformat(lastUpdate["created_at"].rstrip("Z")).strftime("%b %d %H:%M:%S %Y UTC%z") \
                                           + "**: " + lastUpdate["body"] + "\n\n\n**" \
-                                          + dateutil.parser.parse(firstUpdate["created_at"]).strftime("%b %d %H:%M:%S %Y UTC%z") \
+                                          + datetime.fromisoformat(firstUpdate["created_at"].rstrip("Z")).strftime("%b %d %H:%M:%S %Y UTC%z") \
                                           + "**: " + firstUpdate["body"]
                     else:
                         embed.description = firstUpdate["body"]
 
                     if incident["scheduled_for"]:
-                        embed.timestamp = dateutil.parser.parse(incident["scheduled_for"])
+                        embed.timestamp = datetime.fromisoformat(incident["scheduled_for"].rstrip("Z"))
                         embed.set_footer(text=incident["impact"].title() + " • Starts")
                     else:
-                        embed.timestamp = dateutil.parser.parse(incident["created_at"])
+                        embed.timestamp = datetime.fromisoformat(incident["created_at"].rstrip("Z"))
                         embed.set_footer(text=incident["impact"].title() + " • Started")
 
                     await ctx.send(embed=embed)
