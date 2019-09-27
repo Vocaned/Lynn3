@@ -33,7 +33,10 @@ class Admin(commands.Cog):
         if isinstance(error, commands.CommandNotFound):
             return
 
-        await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
+        try:
+            await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
+        except:
+            pass
 
         if isinstance(error, commands.BotMissingPermissions):
             missing = [perm.replace('_', ' ').replace('guild', 'server').title() for perm in error.missing_perms]
@@ -81,7 +84,6 @@ class Admin(commands.Cog):
 
         if hasattr(error, "args") and len(error.args) != 0:
             await ctx.send(", ".join(error.args))
-            return
 
         print("Ignoring exception in " + str(ctx.command), file=sys.stderr)
         errors = "\n".join(traceback.format_exception(type(error), error, error.__traceback__))
@@ -344,6 +346,8 @@ class Admin(commands.Cog):
     @commands.is_owner()
     async def shutdown(self, ctx):
         await ctx.send("Goodbye!")
+        await ctx.message.remove_reaction("\N{HOURGLASS}", self.bot.user)
+        await ctx.message.add_reaction("\N{WAVING HAND SIGN}")
         await self.bot.close()
 def setup(bot):
     bot.add_cog(Admin(bot))

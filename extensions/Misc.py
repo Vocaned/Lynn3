@@ -6,7 +6,6 @@ import json
 import math
 import requests
 import re
-from dateparser.search import search_dates
 import time
 import asyncio
 
@@ -42,13 +41,22 @@ class Misc(commands.Cog):
         await ctx.send(embed=embed, content='')
 
     @commands.command(aliases=["remind", "remindme"])
-    async def reminder(self, ctx, *, string):
-        """Reminder"""
+    async def reminder(self, ctx, *message):
+        """Sets a reminder.
+        Time must be in ISO 8601 format. Times are in UTC. Examples:
+        %reminder 2017-01-10T12:30:59 Example message    =January 10th 2017, 12:30:59 UTC
+        %reminder 2026-05-09T20:00:00 Example message    =May 9th 2026, 8 pm UTC
+        %reminder Example message                      =No time specified
+        """
         embed = discord.Embed(title="Reminder", colour=0x8630bf)
-        date = search_dates(string, settings={"TIMEZONE": "UTC"})
-        if date and date[-1][1]:
-            embed.timestamp = date[-1][1]
-        embed.description = string.split("|")[0]
+        if len(message) > 1:
+            try:
+                date = datetime.fromisoformat(message[0])
+                embed.timestamp = date
+                message = message[1:]
+            except:
+                pass
+        embed.description = " ".join(message)
         embed.set_footer(text=str(ctx.message.author.name) + '#' +  str(ctx.message.author.discriminator), icon_url=ctx.message.author.avatar_url)
         await ctx.message.delete()
         await ctx.send(embed=embed, content='')
