@@ -67,13 +67,13 @@ class APIs(commands.Cog):
         last = 0
         for i in range(30):
             if a == b:
-                if last == a-1 and await self.REST("https://api.mojang.com/users/profiles/minecraft/" + name + "?at=" + str(a), returns="r.status_code == 200"):
+                if last == a-1 and await self.REST("https://api.mojang.com/users/profiles/minecraft/" + name + "?at=" + str(a), returns="r.status == 200"):
                     return datetime.utcfromtimestamp(a)
                 else:
                     return False
             else:
                 mid = a + math.floor((b - a) / 2)
-                if await self.REST("https://api.mojang.com/users/profiles/minecraft/" + name + "?at=" + str(mid), returns="r.status_code == 200"):
+                if await self.REST("https://api.mojang.com/users/profiles/minecraft/" + name + "?at=" + str(mid), returns="r.status == 200"):
                     b = mid
                 else:
                     a = mid+1

@@ -348,5 +348,6 @@ class Admin(commands.Cog):
         await ctx.message.remove_reaction("\N{HOURGLASS}", self.bot.user)
         await ctx.message.add_reaction("\N{WAVING HAND SIGN}")
         await self.bot.close()
+
 def setup(bot):
     bot.add_cog(Admin(bot))
