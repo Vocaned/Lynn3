@@ -26,7 +26,7 @@ class APIs(commands.Cog):
         for n in range(len(args)):
             if args[n]:
                 args[n] = f'"{str(args[n])}"'
-        func = f'{str(method)}(url="{str(url)}", headers={str(headers)}, data={json.dumps(str(data)) if data != None else None}, auth={str(auth)})'
+        func = f'{str(method)}(url="{str(url)}", headers={str(headers)}, data={json.dumps(str(data)) if data else None}, auth={str(auth)})'
         async with aiohttp.ClientSession() as s:
             async with eval(func) as r:
                 try:
@@ -302,18 +302,14 @@ class APIs(commands.Cog):
             if "error" in data:
                 raise commands.CommandError(message="%"+str(data["error"]))
 
-            rank = ""
-            if data["rank"] != "Player":
-                rank += "**" + data["rank"] + "**\n"
+            rankDict = {
+                "**" + data["rank"] + "**": data["rank"] != "Player",
+                "Veteran": data["meta"]["veteran"],
+                data["meta"]["tag"]["value"]: data["meta"]["tag"]["value"]
+            }
 
-            if data["meta"]["veteran"]:
-                rank += "Veteran\n"
-
-            if data["meta"]["tag"]["value"]:
-                rank += data["meta"]["tag"]["value"]
-
-            if rank == "":
-                rank = "Player"
+            ranks = [n for n,r in rankDict.items() if r]
+            rank = "\n".join(ranks if ranks else ["Player"])
 
             stats = []
             stats.append("**Items identified:** " + str(data["global"]["itemsIdentified"]))
@@ -337,6 +333,8 @@ class APIs(commands.Cog):
             classes.reverse()
 
             skin = await self.getMinecraftSkinUrl(data["uuid"].replace("-", ""))
+            if not skin:
+                await ctx.send("Ratelimited! Custom player skin will not be shown.")
             try:
                 skin["textures"]["SKIN"]["url"]
             except:
@@ -466,7 +464,7 @@ class APIs(commands.Cog):
 
         if data["description"]:
             embed.add_field(name="Description", value=data["description"])
-        embed.add_field(name="Viewers", value=str(data["view_count"]))
+        embed.add_field(name="Views", value=str(data["view_count"]))
 
         embed.set_footer(icon_url="https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c540.png", text="User id " + data["id"])
         await ctx.send(embed=embed)
