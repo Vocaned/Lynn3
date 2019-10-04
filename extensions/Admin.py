@@ -81,8 +81,11 @@ class Admin(commands.Cog):
             await ctx.send("You do not have permission to use this command.")
             return
 
-        if hasattr(error, "args") and len(error.args) != 0 and error.args[0][0] == "%":
-            await ctx.send(error.args[0][1:])
+        try:
+            if hasattr(error, "args") and len(error.args) != 0 and error.args[0][0] == "%":
+                await ctx.send(error.args[0][1:])
+        except:
+            pass
 
         print("Ignoring exception in " + str(ctx.command), file=sys.stderr)
         errors = "\n".join(traceback.format_exception(type(error), error, error.__traceback__))
