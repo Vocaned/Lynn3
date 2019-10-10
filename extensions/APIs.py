@@ -60,7 +60,6 @@ class APIs(commands.Cog):
 
         return ", ".join(strings)
 
-
     async def getMinecraftAge(self, name):
         a = 1263146630 # notch sign-up
         b = math.floor(datetime.utcnow().timestamp())
@@ -78,7 +77,6 @@ class APIs(commands.Cog):
                 else:
                     a = mid+1
                     last = mid
-
 
     async def getMinecraftUUID(self, name):
         r = await self.REST("https://api.mojang.com/users/profiles/minecraft/" + name)
@@ -308,22 +306,24 @@ class APIs(commands.Cog):
                 data["meta"]["tag"]["value"]: data["meta"]["tag"]["value"]
             }
 
-            ranks = [n for n,r in rankDict.items() if r]
+            ranks = [k for k,v in rankDict.items() if v]
             rank = "\n".join(ranks if ranks else ["Player"])
 
-            stats = []
-            stats.append("**Items identified:** " + str(data["global"]["itemsIdentified"]))
-            stats.append("**Mobs killed:** " + str(data["global"]["mobsKilled"]))
-            stats.append("**PvP kills:** " + str(data["global"]["pvp"]["kills"]))
-            stats.append("**PvP deaths:** " + str(data["global"]["pvp"]["deaths"]))
-            stats.append("**Chests found:** " + str(data["global"]["chestsFound"]))
-            stats.append("**Blocks walked:** " + str(data["global"]["blocksWalked"]))
-            stats.append("**Logins:** " + str(data["global"]["logins"]))
-            stats.append("**Deaths:** " + str(data["global"]["deaths"]))
-            stats.append("**Combat Level:** " + str(data["global"]["totalLevel"]["combat"]))
-            stats.append("**Total Level:** " + str(data["global"]["totalLevel"]["combined"]))
-            stats.sort(key=lambda x:int(x.split(" ")[-1]))
-            stats.reverse()
+            statDict = {
+                "Items identified": data["global"]["itemsIdentified"],
+                "Mobs killed": data["global"]["mobsKilled"],
+                "PvP kills": data["global"]["pvp"]["kills"],
+                "PvP deaths": data["global"]["pvp"]["deaths"],
+                "Chests found": data["global"]["chestsFound"],
+                "Blocks walked": data["global"]["blocksWalked"],
+                "Logins": data["global"]["logins"],
+                "Deaths": data["global"]["deaths"],
+                "Combal Level": data["global"]["totalLevel"]["combat"],
+                "Total Level": data["global"]["totalLevel"]["combined"]
+            }
+
+            stats = [("**"+k+"**", str(v)) for k,v in statDict.items()]
+            stats.sort(key=lambda x:int(x[-1]), reverse=True)
 
             classes = []
             for s in data["classes"]:
@@ -356,8 +356,8 @@ class APIs(commands.Cog):
             embed.add_field(name="Last joined on", value="On " + last.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - last) + " ago")
             if data["meta"]["location"]["online"]:
                 embed.add_field(name="Currently online in", value=data["meta"]["location"]["server"])
-
-            embed.add_field(name="Global stats", value="\n".join(stats))
+            
+            embed.add_field(name="Global stats", value="\n".join([x+": "+y for x,y in stats]))
             embed.add_field(name="Classes", value="\n".join(classes))
 
             embed.set_footer(text="\U00002063", icon_url="https://cdn.wynncraft.com/img/ico/android-icon-192x192.png")
