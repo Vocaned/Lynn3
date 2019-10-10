@@ -338,10 +338,10 @@ class APIs(commands.Cog):
             try:
                 skin["textures"]["SKIN"]["url"]
             except:
-                await self.bot.loop.run_in_executor(None, BotUtils.headRenderer, "https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
+                await BotUtils.headRenderer("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
                 headFile = discord.File("skins/head/Steve_skin.png", filename="head.png")
             else:
-                await self.bot.loop.run_in_executor(None, BotUtils.headRenderer, skin["textures"]["SKIN"]["url"])
+                await BotUtils.headRenderer(skin["textures"]["SKIN"]["url"])
                 headFile = discord.File("skins/head/" + skin["textures"]["SKIN"]["url"].split("/")[-1] + ".png", filename="head.png")
 
             embed = discord.Embed(title="Wynncraft Player", colour=0x7bbf32)
