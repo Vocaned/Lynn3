@@ -1,7 +1,25 @@
 import os
 from io import BytesIO
 import aiohttp
+import json
 from PIL import Image, ImageOps
+
+# Kinda hacky, sorry. I'll probably have no idea how this works in a couple of months. Anyways just don't touch it thanks
+async def REST(url, method="s.get", headers=None, data=None, auth=None, returns="await r.json(content_type=None)"):
+    args = [headers, data, auth]
+    for n in range(len(args)):
+        if args[n]:
+            args[n] = f'"{str(args[n])}"'
+    func = f'{str(method)}(url="{str(url)}", headers={str(headers)}, data={json.dumps(str(data)) if data else None}, auth={str(auth)})'
+    async with aiohttp.ClientSession() as s:
+        async with eval(func) as r:
+            try:
+                if returns.split(" ")[0] == "await":
+                    return await eval(" ".join(returns.split(" ")[1:]))
+                else:
+                    return eval(returns)
+            except:
+                return None
 
 async def makeBodyPart(img, img2, p, s, o11, o12, o21, o22):
     size = (p*s[0], p*s[1], p*s[2], p*s[3])
