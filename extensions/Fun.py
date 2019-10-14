@@ -196,17 +196,19 @@ class Fun(commands.Cog):
 			else:
 				results += "\n\nYour streak ended with " + str(streak)+"x"
 				streak = 0
-		results = await ctx.send(results+"\nClick \U0001F501 within 10 seconds to continue.")
-		await results.add_reaction("\U0001F501")
+
+		resultsMsg = await ctx.send(results+"\nClick \U0001F501 within 10 seconds to continue.")
+		await resultsMsg.add_reaction("\U0001F501")
 
 		def check2(reaction, user):
-			return user == ctx.author and reaction.message.id == results.id and str(reaction.emoji) == "\U0001F501"
+			return user == ctx.author and reaction.message.id == resultsMsg.id and str(reaction.emoji) == "\U0001F501"
 		try:
 			r,u = await self.bot.wait_for('reaction_add', timeout=10.0, check=check2)
 			ctx.message = None
 			await ctx.invoke(ctx.command, difficulty=difficulty, streak=streak)
 		except asyncio.TimeoutError:
-			pass
+			await resultsMsg.edit(results)
+			await resultsMsg.remove_reaction("\U0001F501", self.bot.user)
 
 
 def setup(bot):
