@@ -321,10 +321,10 @@ class APIs(commands.Cog):
             try:
                 skin["textures"]["SKIN"]["url"]
             except:
-                await BotUtils.headRenderer("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
+                await headRenderer("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
                 headFile = discord.File("skins/head/Steve_skin.png", filename="head.png")
             else:
-                await BotUtils.headRenderer(skin["textures"]["SKIN"]["url"])
+                await headRenderer(skin["textures"]["SKIN"]["url"])
                 headFile = discord.File("skins/head/" + skin["textures"]["SKIN"]["url"].split("/")[-1] + ".png", filename="head.png")
 
             embed = discord.Embed(title="Wynncraft Player", colour=0x7bbf32)
@@ -339,7 +339,7 @@ class APIs(commands.Cog):
             embed.add_field(name="Last joined on", value="On " + last.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - last) + " ago")
             if data["meta"]["location"]["online"]:
                 embed.add_field(name="Currently online in", value=data["meta"]["location"]["server"])
-            
+
             embed.add_field(name="Global stats", value="\n".join([x+": "+y for x,y in stats]))
             embed.add_field(name="Classes", value="\n".join(classes))
 
