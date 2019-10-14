@@ -673,5 +673,17 @@ class APIs(commands.Cog):
 
         raise commands.CommandError(message="%Invalid page! Currently supported pages: ```\n" + "\n".join([n.title() for n, a in config.statusPages]) + "```")
 
+    @commands.command(name="screenshot")
+    async def screenshot(self, ctx, *, url, size="1920x1080"):
+        if not url.startswith("http"):
+            url = "http://" + url
+        async with aiohttp.ClientSession() as s:
+            async with s.get("http://api.screenshotlayer.com/api/capture?viewport=" + size + "&access_key=" + config.apiKeys["screenshotlayer"] + "&url=" + url) as r:
+                with open("website.png", "wb") as f:
+                    f.write(await r.read())
+        shot = discord.File("website.png", filename="website.png")
+        await ctx.send(files=[shot])
+
+
 def setup(bot):
     bot.add_cog(APIs(bot))
