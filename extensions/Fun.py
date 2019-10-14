@@ -190,14 +190,20 @@ class Fun(commands.Cog):
 		except asyncio.TimeoutError:
 			results = "Ran out of time!\nThe answer was " + nameList[ansIndex] + " - " + parse.unquote(data["correct_answer"])
 			correct = False
+		hadStreak = False
 		if streak != 0:
+			hadStreak = True
+			endStreak = "\n\nYour streak ended with " + str(streak)+"x"
+			curStreak = "\n\nYou currently have a " + str(streak) + "x streak"
 			if correct:
-				results += "\n\nYou currently have a " + str(streak) + "x streak"
+				fullResults = results + curStreak
 			else:
-				results += "\n\nYour streak ended with " + str(streak)+"x"
+				fullResults = results + endStreak
 				streak = 0
+		else:
+			fullResults = results
 
-		resultsMsg = await ctx.send(results+"\nClick \U0001F501 within 10 seconds to continue.")
+		resultsMsg = await ctx.send(fullResults+"\nClick \U0001F501 within 10 seconds to continue.")
 		await resultsMsg.add_reaction("\U0001F501")
 
 		def check2(reaction, user):
@@ -207,7 +213,9 @@ class Fun(commands.Cog):
 			ctx.message = None
 			await ctx.invoke(ctx.command, difficulty=difficulty, streak=streak)
 		except asyncio.TimeoutError:
-			await resultsMsg.edit(results)
+			if hadStreak:
+				results += endStreak
+			await resultsMsg.edit(content=results)
 			await resultsMsg.remove_reaction("\U0001F501", self.bot.user)
 
 
