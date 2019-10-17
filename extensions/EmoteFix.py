@@ -16,7 +16,7 @@ class EmoteFix(commands.Cog):
         replaced = []
         shouldSend = False
         newmsg = message.content
-        match = re.findall(".*:\\S+?:.*", message.content)
+        match = re.findall("(?=[^:\\s]*):\\S+?:(?=[^:\\s]*)", message.content)
         if match:
             for emote in match:
                 if re.match("<a:\\S+:\\d{18}>", emote) is None and not emote in replaced:
