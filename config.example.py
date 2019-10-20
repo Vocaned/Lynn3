@@ -31,7 +31,8 @@ apiKeys = {
     "twitterAccSecret": "[KEY]",
     "osu":              "[KEY]",
     "twitchID":         "[KEY]",
-    "twitchSecret":     "[KEY]"
+    "twitchSecret":     "[KEY]",
+    "screenshotlayer":  "[KEY]"
 }
 
 statusPages = [

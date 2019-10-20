@@ -24,11 +24,7 @@ if __name__ == '__main__':
     async def on_message(message):
         ctx = await bot.get_context(message)
         if ctx.valid:
-            await message.add_reaction("\N{HOURGLASS}")
-            await bot.process_commands(message)
-            try:
-                await message.remove_reaction("\N{HOURGLASS}", bot.user)
-            except:
-                pass
+            async with ctx.channel.typing():
+                await bot.process_commands(message)
 
     bot.run(config.token, bot=True, reconnect=True)
