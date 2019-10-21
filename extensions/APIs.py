@@ -637,6 +637,8 @@ class APIs(commands.Cog):
                 for comp in j["components"]:
                     embed.add_field(name=comp["name"], value=comp["status"].replace("_", " ").title())
                 if page[2]:
+                    # Hack to seperate component status and metrics
+                    embed.add_field(inline=False, name="\U00002063", value="\U00002063")
                     for metric in page[2]:
                         m = await REST(page[1] + "/metrics-display/" + metric + "/day.json")
                         last = m["summary"]["last"]
