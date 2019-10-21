@@ -636,6 +636,12 @@ class APIs(commands.Cog):
                 embed = discord.Embed(title="**" + page[0].title() + " Status** - " + j["status"]["description"], colour=col, url=page[1])
                 for comp in j["components"]:
                     embed.add_field(name=comp["name"], value=comp["status"].replace("_", " ").title())
+                if page[2]:
+                    for metric in page[2]:
+                        m = await REST(page[1] + "/metrics-display/" + metric + "/day.json")
+                        last = m["summary"]["last"]
+                        last = str(round(last, 2)) if last else "0"
+                        embed.add_field(name=m["metrics"][0]["metric"]["name"], value=last)
                 embed.timestamp = datetime.utcnow()
 
                 await ctx.send(embed=embed)

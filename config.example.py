@@ -36,13 +36,15 @@ apiKeys = {
 }
 
 statusPages = [
-    ("discord", "https://status.discordapp.com"),
-    ("twitter", "https://api.twitterstat.us"),
-    ("reddit", "https://reddit.statuspage.io"),
-    ("cloudflare", "https://www.cloudflarestatus.com"),
-    ("dropbox", "https://status.dropbox.com"),
-    ("github", "https://www.githubstatus.com"),
-    ("medium", "https://medium.statuspage.io"),
-    ("epicgames", "https://status.epicgames.com"),
-    ("glitch", "https://status.glitch.com")
+    # Unfortunately statuspage.io doesn't include system metrics in their API.
+    # System metric IDs must be hardcoded because of that.
+    ("discord", "https://status.discordapp.com", ("ztt4777v23lf")),
+    ("twitter", "https://api.twitterstat.us", None),
+    ("reddit", "https://reddit.statuspage.io", ("rx2nb3pfx3w6", "0jwzw9drbt3d", "5nx0js42cvh6", "ykb0vk6gm40h", "k7t111j3ykjr", "zry7jgt3xffg")),
+    ("cloudflare", "https://www.cloudflarestatus.com", None),
+    ("dropbox", "https://status.dropbox.com", None),
+    ("github", "https://www.githubstatus.com", None),
+    ("medium", "https://medium.statuspage.io", ("kb1b7qv1kfv1", "d9gjgw59bwfz", "lwb7fbwqljjz")),
+    ("epicgames", "https://status.epicgames.com", None),
+    ("glitch", "https://status.glitch.com", ("2hfs13clgy2x", "lz9n5qdj9h67", "4kppgbgy1vg6", "yfyd7k8t6c2t", "f9m2jkbys0lt", "8hhlmmyf9fqw"))
 ]
