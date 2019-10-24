@@ -465,7 +465,7 @@ class APIs(commands.Cog):
         if data["Runtime"] != "N/A":
             embed.add_field(name="Length", value=data["Runtime"])
         embed.add_field(name="Genre", value=data["Genre"])
-        if "totalSeasons" in data and data["Website"] != "N/A":
+        if "totalSeasons" in data and data["totalSeasons"] != "N/A":
             embed.add_field(name="Seasons", value=data["totalSeasons"])
         embed.add_field(name="Plot", value="||"+data["Plot"]+"||")
         if "Website" in data and data["Website"] != "N/A":
