@@ -462,14 +462,15 @@ class APIs(commands.Cog):
         embed.add_field(name="Released", value=data["Released"])
         if "Production" in data:
             embed.add_field(name="Produced by", value=data["Production"])
-        embed.add_field(name="Length", value=data["Runtime"])
+        if data["Runtime"] != "N/A":
+            embed.add_field(name="Length", value=data["Runtime"])
         embed.add_field(name="Genre", value=data["Genre"])
-        if "totalSeasons" in data:
+        if "totalSeasons" in data and data["Website"] != "N/A":
             embed.add_field(name="Seasons", value=data["totalSeasons"])
         embed.add_field(name="Plot", value="||"+data["Plot"]+"||")
         if "Website" in data and data["Website"] != "N/A":
             embed.add_field(name="Website", value=data["Website"])
-        if "Awards" in data:
+        if "Awards" in data and data["Awards"] != "N/A":
             embed.add_field(name="Awards", value=data["Awards"].replace(". ", ".\n"))
         if data["Poster"] != "N/A":
             embed.set_image(url=data["Poster"])
