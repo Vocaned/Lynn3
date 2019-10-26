@@ -24,6 +24,7 @@ class APIs(commands.Cog):
         return urllib.parse.quote(url)
 
     # thanks stackoverflow love ya
+    # https://stackoverflow.com/a/13756038
     def td_format(self, td_object):
         seconds = int(td_object.total_seconds())
         periods = [
@@ -43,6 +44,8 @@ class APIs(commands.Cog):
 
         return ", ".join(strings)
 
+    # Ported to python from
+    # https://gist.github.com/jomo/be7dbb5228187edbb993
     async def getMinecraftAge(self, name):
         a = 1263146630 # notch sign-up
         b = math.floor(datetime.utcnow().timestamp())
@@ -101,6 +104,7 @@ class APIs(commands.Cog):
             names = []
             for i in range(len(history)):
                 names.append(history[i]["name"])
+                # Escape special markdown characters
                 names[i] = names[i].replace("*", "\\*").replace("_", "\\_").replace("~", "\\~")
             names.reverse()
             names[0] += " **[CURRENT]**"
@@ -113,19 +117,17 @@ class APIs(commands.Cog):
             embed.add_field(name="Name history", value="\n".join(names))
             embed.add_field(name="UUID", value=uuid["id"])
             try:
-                skin["textures"]["SKIN"]["url"]
+                embed.add_field(name="Skin URL", value="[Click me]("+skin["textures"]["SKIN"]["url"]+")")
+                await skinRenderer2D(skin["textures"]["SKIN"]["url"])
+                await headRenderer(skin["textures"]["SKIN"]["url"])
+                skinFile = discord.File("skins/2d/" + skin["textures"]["SKIN"]["url"].split("/")[-1] + ".png", filename="skin.png")
+                headFile = discord.File("skins/head/" + skin["textures"]["SKIN"]["url"].split("/")[-1] + ".png", filename="head.png")
             except:
                 # TODO: Try to find a official steve skin in mojang's skin server
                 await skinRenderer2D("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
                 await headRenderer("https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png")
                 skinFile = discord.File("skins/2d/Steve_skin.png", filename="skin.png")
                 headFile = discord.File("skins/head/Steve_skin.png", filename="head.png")
-            else:
-                embed.add_field(name="Skin URL", value="[Click me]("+skin["textures"]["SKIN"]["url"]+")")
-                await skinRenderer2D(skin["textures"]["SKIN"]["url"])
-                await headRenderer(skin["textures"]["SKIN"]["url"])
-                skinFile = discord.File("skins/2d/" + skin["textures"]["SKIN"]["url"].split("/")[-1] + ".png", filename="skin.png")
-                headFile = discord.File("skins/head/" + skin["textures"]["SKIN"]["url"].split("/")[-1] + ".png", filename="head.png")
 
             if created:
                 embed.add_field(name="Account created", value="On " + created.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - created) + " ago")
@@ -181,10 +183,10 @@ class APIs(commands.Cog):
         embed.add_field(name="PP", value=str(round(float(data["pp_raw"]), 2)))
         embed.add_field(name="Playtime", value=str(round(int(data["total_seconds_played"])/60/60, 2)) + "h")
         embed.add_field(name="Ranks", value="Silver SS: " + data["count_rank_ssh"]
-                                            + "\nGold SS: " + data["count_rank_ss"]
-                                            + "\nSilver S: " + data["count_rank_sh"]
-                                            + "\nGold S: " + data["count_rank_s"]
-                                            + "\nA: " + data["count_rank_a"])
+                                           + "\nGold SS: " + data["count_rank_ss"]
+                                           + "\nSilver S: " + data["count_rank_sh"]
+                                           + "\nGold S: " + data["count_rank_s"]
+                                           + "\nA: " + data["count_rank_a"])
         embed.add_field(name="Leaderboards", value="**#" + data["pp_rank"] + "** global"
                                                   + "\n**#" + data["pp_country_rank"] + "** in " + data["country"])
         embed.set_footer(text="Account created", icon_url="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/480px-Osu%21Logo_%282015%29.svg.png")
@@ -369,10 +371,7 @@ class APIs(commands.Cog):
         if data["user"]["username"].lower() != data["token"].lower():
             name = data["token"] + " (" + data["user"]["username"] + ")"
 
-        s = ""
-        if data["online"]:
-            s = " (Currently Streaming)"
-
+        s = " (Currently Streaming)" if data["online"] else ""
         embed = discord.Embed(title="Mixer user - " + name + s, color=0x002050, url="https://mixer.com/" + data["token"])
 
         if data["user"]["avatarUrl"]:
@@ -544,6 +543,8 @@ class APIs(commands.Cog):
 
         if "BANNER" in flags and data["guild"]["banner"]:
             embed.set_image(url="https://cdn.discordapp.com/banners/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["banner"]) + ".webp?size=4096")
+        elif "INVITE_SPLASH" in flags and data["guild"]["splash"]:
+            embed.set_image(url="https://cdn.discordapp.com/splashes/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["banner"]) + ".webp?size=4096")
 
         if "ANIMATED_ICON" in flags and \
             data["guild"]["icon"] and \
@@ -644,7 +645,7 @@ class APIs(commands.Cog):
                 for comp in j["components"]:
                     embed.add_field(name=comp["name"], value=comp["status"].replace("_", " ").title())
                 if page[2]:
-                    # Hack to seperate component status and metrics
+                    # HACK: Seperate component and metric statuses by using an invisible field
                     embed.add_field(inline=False, name="\U00002063", value="\U00002063")
                     for metric in page[2]:
                         m = await REST(page[1] + "/metrics-display/" + metric + "/day.json")
@@ -692,6 +693,7 @@ class APIs(commands.Cog):
     async def screenshot(self, ctx, *, url, size="1920x1080"):
         if not url.startswith("http"):
             url = "http://" + url
+        # Download file to website.png
         async with aiohttp.ClientSession() as s:
             async with s.get("http://api.screenshotlayer.com/api/capture?viewport=" + size + "&access_key=" + config.apiKeys["screenshotlayer"] + "&url=" + url) as r:
                 with open("website.png", "wb") as f:
