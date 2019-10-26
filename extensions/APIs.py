@@ -544,7 +544,7 @@ class APIs(commands.Cog):
         if "BANNER" in flags and data["guild"]["banner"]:
             embed.set_image(url="https://cdn.discordapp.com/banners/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["banner"]) + ".webp?size=4096")
         elif "INVITE_SPLASH" in flags and data["guild"]["splash"]:
-            embed.set_image(url="https://cdn.discordapp.com/splashes/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["banner"]) + ".webp?size=4096")
+            embed.set_image(url="https://cdn.discordapp.com/splashes/" + str(data["guild"]["id"]) + "/" + str(data["guild"]["splash"]) + ".webp?size=4096")
 
         if "ANIMATED_ICON" in flags and \
             data["guild"]["icon"] and \
