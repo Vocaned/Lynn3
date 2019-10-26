@@ -89,6 +89,7 @@ class APIs(commands.Cog):
     # ---
 
     @commands.command(name="minecraft", aliases=["mc"])
+    @commands.cooldown(rate=1, per=10)
     async def minecraftAPI(self, ctx, *, user=None):
         """Gets information about Minecraft, or searches players.
         Leave user as blank for general statistics"""
@@ -377,7 +378,6 @@ class APIs(commands.Cog):
         if data["user"]["avatarUrl"]:
             embed.set_thumbnail(url=data["user"]["avatarUrl"])
 
-
         typeNames = {
             "Verified": data["user"]["verified"],
             "Suspended": data["suspended"],
@@ -590,9 +590,9 @@ class APIs(commands.Cog):
     async def TwitterAPI(self, ctx, *, user):
         """Gets information about twitter users."""
         twitter = TwitterClient(consumer_key=config.apiKeys["twitterConsKey"],
-        consumer_secret=config.apiKeys["twitterConsSecret"],
-        oauth_token=config.apiKeys["twitterAccToken"],
-        oauth_token_secret=config.apiKeys["twitterAccSecret"])
+                                consumer_secret=config.apiKeys["twitterConsSecret"],
+                                oauth_token=config.apiKeys["twitterAccToken"],
+                                oauth_token_secret=config.apiKeys["twitterAccSecret"])
         data = await twitter.request("GET", "users/search.json", params={"count": 1, "q": self.escape(user)})
         data = data[0]
         embed = discord.Embed(title=data["name"] + " (@" + data["screen_name"] + ")", url="https://twitter.com/"+data["screen_name"], description=data["description"], color=0x1DA1F2)
