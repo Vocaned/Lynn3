@@ -63,7 +63,8 @@ class Misc(commands.Cog):
     @commands.command(aliases=["id"])
     async def snowflake(self, ctx, *, snowflake):
         # HACK: Parse mentions by just removing everything that's not a digit
-        snowflake = int((c for c in snowflake if c.isdigit()))
+        snowflake = (c for c in snowflake if c.isdigit())
+        snowflake = int(snowflake)
         embed = discord.Embed(title="Snowflake " + bin(snowflake)[2:], colour=0x7289DA)
         embed.description = "**Timestamp**: " + datetime.utcfromtimestamp(((snowflake >> 22) + 1420070400000) / 1000).strftime('%c') \
                           + "\n**Internal worker ID**: " + str((snowflake & 0x3E0000) >> 17) \
