@@ -687,7 +687,7 @@ class APIs(commands.Cog):
                     await ctx.send(embed=embed)
                 return
 
-        raise commands.CommandError(message="%Invalid page! Currently supported pages: ```\n" + "\n".join([n.title() for n, a in config.statusPages]) + "```")
+        raise commands.CommandError(message="%Invalid page! Currently supported pages: ```\n" + "\n".join([n.title() for n,u,c in config.statusPages]) + "```")
 
     @commands.command(name="screenshot")
     async def screenshot(self, ctx, *, url, size="1920x1080"):
