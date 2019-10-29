@@ -310,7 +310,14 @@ class Admin(commands.Cog):
             except:
                 p2 = ""
             await ctx.message.clear_reactions()
-            await ctx.send("```" + p + "\n" + p2 + "```")
+            # 1993 = 2000 - len("```\n```")
+            if len(p) + len(p2) >= 1993:
+                if len(p) >= 1994:
+                    await ctx.send("Git output too long. Changes were still applied. Remember to reload modules!")
+                else:
+                    await ctx.send("```" + p + "```")
+            else:
+                await ctx.send("```" + p + "\n" + p2 + "```")
         else:
             raise commands.UserInputError()
 
