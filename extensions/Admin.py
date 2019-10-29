@@ -299,7 +299,6 @@ class Admin(commands.Cog):
     @commands.is_owner()
     async def git(self, ctx, *, action):
         if action == "pull":
-            await ctx.message.add_reaction("\N{HOURGLASS}")
             p = subprocess.check_output(["git", "pull", config.gitURI], stderr=subprocess.STDOUT, timeout=30).decode("utf-8")
             w = p.split()
             try:
@@ -355,7 +354,6 @@ class Admin(commands.Cog):
     @commands.is_owner()
     async def shutdown(self, ctx):
         await ctx.send("Goodbye!")
-        await ctx.message.remove_reaction("\N{HOURGLASS}", self.bot.user)
         await ctx.message.add_reaction("\N{WAVING HAND SIGN}")
         await self.bot.close()
 
