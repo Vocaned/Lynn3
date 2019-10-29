@@ -1,12 +1,8 @@
 import discord
 from discord.ext import commands
 from datetime import datetime
-import subprocess
-import json
-import math
 import re
 import time
-import asyncio
 
 """Misc commands"""
 

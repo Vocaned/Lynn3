@@ -2,8 +2,6 @@ import discord
 from discord.ext import commands
 from datetime import datetime
 import random
-import logging
-import urllib
 from urllib import parse
 from BotUtils import REST
 import asyncio
@@ -123,10 +121,10 @@ class Fun(commands.Cog):
 
 	@commands.command(name='trivia')
 	async def trivia(self, ctx, *, difficulty="random", streak=0):
-		"""Generates a trivia question.
+		"""Generates trivia questions.
 		Difficulty can be Easy, Medium, Hard or Random
 		(default: Random)
-		Ignore the streak thing thanks :)"""
+		Ignore the streak parameter, thanks :)"""
 
 		if streak != 0 and ctx.message:
 			raise commands.CommandError("%Too many arguments. Are you trying to cheat?")

@@ -5,7 +5,7 @@ from datetime import datetime
 import base64
 import json
 import math
-import urllib.parse
+import urllib
 from BotUtils import REST, headRenderer, skinRenderer2D
 from aioauth_client import TwitterClient
 import aiohttp
