@@ -50,7 +50,7 @@ class APIs(commands.Cog):
         a = 1263146630 # notch sign-up
         b = math.floor(datetime.utcnow().timestamp())
         last = 0
-        for i in range(30):
+        for _ in range(30):
             if a == b:
                 if last == a-1 and await REST("https://api.mojang.com/users/profiles/minecraft/" + name + "?at=" + str(a), returns="r.status == 200"):
                     return datetime.utcfromtimestamp(a)
@@ -189,7 +189,7 @@ class APIs(commands.Cog):
                                            + "\nA: " + data["count_rank_a"])
         embed.add_field(name="Leaderboards", value="**#" + data["pp_rank"] + "** global"
                                                   + "\n**#" + data["pp_country_rank"] + "** in " + data["country"])
-        embed.set_footer(text="Account created", icon_url="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Osu%21Logo_%282015%29.svg/480px-Osu%21Logo_%282015%29.svg.png")
+        embed.set_footer(text="Account created", icon_url="https://osu.ppy.sh/favicon-32x32.png")
         embed.timestamp = datetime.strptime(data["join_date"], "%Y-%m-%d %H:%M:%S")
         await ctx.send(embed=embed)
 
@@ -414,7 +414,7 @@ class APIs(commands.Cog):
         if data["online"]:
             embed.add_field(name="Current viewers", value=str(data["viewersCurrent"]))
 
-        embed.set_footer(icon_url="http://teambeyond.net/wp-content/uploads/2017/05/Mixer-Logo.png", text="LVL " + str(data["user"]["level"]) + " • Account created ")
+        embed.set_footer(icon_url="https://mixer.com/_latest/assets/favicons/favicon-32x32.png", text="LVL " + str(data["user"]["level"]) + " • Account created ")
         embed.timestamp = datetime.strptime(data["createdAt"], "%Y-%m-%dT%H:%M:%S.%fZ")
         await ctx.send(embed=embed)
 
@@ -448,7 +448,7 @@ class APIs(commands.Cog):
             embed.add_field(name="Description", value=data["description"])
         embed.add_field(name="Views", value=str(data["view_count"]))
 
-        embed.set_footer(icon_url="https://www.stickpng.com/assets/images/580b57fcd9996e24bc43c540.png", text="User id " + data["id"])
+        embed.set_footer(icon_url="https://static.twitchcdn.net/assets/favicon-32-d6025c14e900565d6177.png", text="User id " + data["id"])
         await ctx.send(embed=embed)
 
 
@@ -645,7 +645,7 @@ class APIs(commands.Cog):
                 for comp in j["components"]:
                     embed.add_field(name=comp["name"], value=comp["status"].replace("_", " ").title())
                 if page[2]:
-                    # HACK: Seperate component and metric statuses by using an invisible field
+                    # Seperate component and metric statuses by using an invisible field
                     embed.add_field(inline=False, name="\U00002063", value="\U00002063")
                     for metric in page[2]:
                         m = await REST(page[1] + "/metrics-display/" + metric + "/day.json")
