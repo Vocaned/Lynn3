@@ -564,9 +564,12 @@ class APIs(commands.Cog):
         geocoding = await REST("https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=en&q=" + self.escape(city))
         data = await REST("https://api.darksky.net/forecast/" +  config.apiKeys["darksky"] + "/" + geocoding[0]["lat"] + "," + geocoding[0]["lon"] + "?exclude=minutely,hourly,daily,flags&units=si")
 
-        if data["alerts"]:
-            col = 0xff0000
-        else:
+        try:
+            if data["alerts"]:
+                col = 0xff0000
+            else:
+                col = 0xffb347
+        except:
             col = 0xffb347
 
         embed = discord.Embed(title=geocoding[0]["display_name"], color=col)
