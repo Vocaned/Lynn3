@@ -149,7 +149,7 @@ class APIs(commands.Cog):
     @commands.command(name="csgo", aliases=["cs"])
     async def CSGOAPI(self, ctx, *, user):
         """Gets information about CSGO players."""
-        if not str(user).isdigit():
+        if not user.isdigit():
             data = await REST("http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=" + config.apiKeys["steam"] + "&vanityurl=" + self.escape(user))
             user = data["response"]["steamid"]
         data = await REST("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" + config.apiKeys["steam"] + "&steamids=" + user)
@@ -564,7 +564,12 @@ class APIs(commands.Cog):
         geocoding = await REST("https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=en&q=" + self.escape(city))
         data = await REST("https://api.darksky.net/forecast/" +  config.apiKeys["darksky"] + "/" + geocoding[0]["lat"] + "," + geocoding[0]["lon"] + "?exclude=minutely,hourly,daily,flags&units=si")
 
-        embed = discord.Embed(title=geocoding[0]["display_name"], colour=0xffb347)
+        if data["alerts"]:
+            col = 0xff0000
+        else:
+            col = 0xffb347
+
+        embed = discord.Embed(title=geocoding[0]["display_name"], color=col)
         embed.set_thumbnail(url="https://darksky.net/images/weather-icons/" + data["currently"]["icon"] + ".png")
         try:
             alerts = []
