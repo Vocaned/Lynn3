@@ -229,11 +229,10 @@ class APIs(commands.Cog):
             embed.add_field(name="Account created", value="On " + datetime.utcfromtimestamp(data["registered"]).strftime("%c") + "\n" + ago + " ago")
             if flags:
                 embed.add_field(name="Notes", value=", ".join([flagName[n] for n in flags]))
-
-            if await REST("https://static.classicube.net/skins/" + str(data["username"]) + ".png", returns="r.status == 200"):
-                embed.add_field(name="Skin URL", value="[Click me](https://static.classicube.net/skins/" + str(data["username"]) + ".png)")
-                await skinRenderer2D("https://static.classicube.net/skins/" + str(data["username"]) + ".png", fromFile=False)
-                await headRenderer("https://static.classicube.net/skins/" + str(data["username"]) + ".png", fromFile=False)
+            if await REST("https://classicube.s3.amazonaws.com/skin/" + str(data["username"]) + ".png", returns="r.status == 200"):
+                embed.add_field(name="Skin URL", value="[Click me](https://classicube.s3.amazonaws.com/skin/" + str(data["username"]) + ".png)")
+                await skinRenderer2D("https://classicube.s3.amazonaws.com/skin/" + str(data["username"]) + ".png", fromFile=False)
+                await headRenderer("https://classicube.s3.amazonaws.com/skin/" + str(data["username"]) + ".png", fromFile=False)
                 file = discord.File("skins/2d/" + str(data["username"]) + ".png", filename="skin.png")
                 file2 = discord.File("skins/head/" + str(data["username"]) + ".png", filename="head.png")
             else:
