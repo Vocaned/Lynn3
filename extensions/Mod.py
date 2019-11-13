@@ -7,6 +7,80 @@ class Mod(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command(name="hackban")
+    @commands.has_permissions(ban_members=True)
+    async def hackban(self, ctx, uId, reason=""):
+        """Bans an user that's not in the server"""
+        try:
+            await ctx.guild.ban(discord.Object(id=uId), reason=reason)
+        except discord.Forbidden:
+            await ctx.send("Could not hackban " + uId)
+        else:
+            await ctx.send(uId + " was hackbanned.")
+
+    @commands.command(name="ban")
+    @commands.has_permissions(ban_members=True)
+    async def ban(self, ctx, user: discord.Member, reason=""):
+        """Bans an user"""
+        try:
+            await ctx.guild.ban(user, reason=reason)
+        except discord.Forbidden:
+            await ctx.send("Could not ban " + user.name)
+        else:
+            await ctx.send(user.name + " was banned.")
+
+    @commands.command(name="unban")
+    @commands.has_permissions(ban_members=True)
+    async def unban(self, ctx, uId, reason=""):
+        """Unbans an user"""
+        # TODO: Read bans and parse using username instead of ID
+        try:
+            await ctx.guild.ban(discord.Object(id=uId), reason=reason)
+        except discord.Forbidden:
+            await ctx.send("Could not unban " + uId)
+        else:
+            await ctx.send(uId + " was unbanned.")
+
+    @commands.command(name="kick")
+    @commands.has_permissions(kick_members=True)
+    async def kick(self, ctx, user: discord.Member, reason=""):
+        """Kicks an user"""
+        try:
+            await ctx.guild.kick(user, reason=reason)
+        except discord.Forbidden:
+            await ctx.send("Could not kick " + user.name)
+        else:
+            await ctx.send(user.name + " was kicked.")
+
+    @commands.command(name="nick", aliases=["nickname"])
+    @commands.has_permissions(change_nickname=True)
+    async def nick(self, ctx, user: discord.Member, nick=""):
+        """Changes user's nickname"""
+        try:
+            await user.edit(nick=nick)
+        except discord.Forbidden:
+            await ctx.send("Could not change " + user.name + "'s nickname")
+        else:
+            await ctx.send(user.name + "'s nickname was changed to `"+nick+"`")
+
+    @commands.command(name="role")
+    @commands.has_permissions(manage_roles=True)
+    async def role(self, ctx, user: discord.Member, role: discord.Role):
+        if role in user.roles:
+            try:
+                user.remove_roles(role)
+            except discord.Forbidden:
+                await ctx.send("Could not remove " + user.name + "'s role")
+            else:
+                await ctx.send(user.name + " was removed from the role " + role.name)
+        else:
+            try:
+                user.add_roles(role)
+            except discord.Forbidden:
+                await ctx.send("Could not add a role to " + user.name)
+            else:
+                await ctx.send(user.name + " was given the role " + role.name)
+
     @commands.command(name='purge', aliases=['prune'])
     @commands.has_permissions(manage_messages=True)
     async def purge(self, ctx, amount: int=None):
