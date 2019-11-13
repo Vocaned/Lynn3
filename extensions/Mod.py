@@ -69,14 +69,14 @@ class Mod(commands.Cog):
         """Add or remove role from user"""
         if role in user.roles:
             try:
-                user.remove_roles(discord.Object(id=role.id))
+                await user.remove_roles(role)
             except discord.Forbidden:
                 await ctx.send("Could not remove " + user.name + "'s role")
             else:
                 await ctx.send(user.name + " was removed from the role " + role.name)
         else:
             try:
-                user.add_roles(discord.Object(id=role.id))
+                await user.add_roles(role)
             except discord.Forbidden:
                 await ctx.send("Could not add a role to " + user.name)
             else:
