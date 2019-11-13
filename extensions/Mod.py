@@ -9,7 +9,7 @@ class Mod(commands.Cog):
 
     @commands.command(name="hackban")
     @commands.has_permissions(ban_members=True)
-    async def hackban(self, ctx, uId, *reason=""):
+    async def hackban(self, ctx, uId, *, reason=""):
         """Bans an user that's not in the server"""
         try:
             await ctx.guild.ban(discord.Object(id=uId), reason=reason)
@@ -20,7 +20,7 @@ class Mod(commands.Cog):
 
     @commands.command(name="ban")
     @commands.has_permissions(ban_members=True)
-    async def ban(self, ctx, user: discord.Member, *reason=""):
+    async def ban(self, ctx, user: discord.Member, *, reason=""):
         """Bans an user"""
         try:
             await ctx.guild.ban(user, reason=reason)
@@ -31,7 +31,7 @@ class Mod(commands.Cog):
 
     @commands.command(name="unban")
     @commands.has_permissions(ban_members=True)
-    async def unban(self, ctx, uId, *reason=""):
+    async def unban(self, ctx, uId, *, reason=""):
         """Unbans an user"""
         # TODO: Read bans and parse using username instead of ID
         try:
@@ -43,7 +43,7 @@ class Mod(commands.Cog):
 
     @commands.command(name="kick")
     @commands.has_permissions(kick_members=True)
-    async def kick(self, ctx, user: discord.Member, *reason=""):
+    async def kick(self, ctx, user: discord.Member, *, reason=""):
         """Kicks an user"""
         try:
             await ctx.guild.kick(user, reason=reason)
@@ -54,7 +54,7 @@ class Mod(commands.Cog):
 
     @commands.command(name="nick", aliases=["nickname"])
     @commands.has_permissions(change_nickname=True)
-    async def nick(self, ctx, user: discord.Member, *nick=""):
+    async def nick(self, ctx, user: discord.Member, *, nick=""):
         """Changes user's nickname"""
         try:
             await user.edit(nick=nick)
@@ -65,7 +65,7 @@ class Mod(commands.Cog):
 
     @commands.command(name="role")
     @commands.has_permissions(manage_roles=True)
-    async def role(self, ctx, user: discord.Member, *role: discord.Role):
+    async def role(self, ctx, user: discord.Member, *, role: discord.Role):
         """Add or remove role from user"""
         if role in user.roles:
             try:
