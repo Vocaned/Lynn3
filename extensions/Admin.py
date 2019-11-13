@@ -230,8 +230,11 @@ class Admin(commands.Cog):
     @commands.is_owner()
     async def debug(self, ctx):
         global errors
-        for msg in [errors[i:i+1990] for i in range(0, len(errors), 1990)]:
-            await ctx.send("```py\n" + msg.replace("```", "`\U00002063``") + "```")
+        if not errors:
+            await ctx.send("No errors logged.")
+        else:
+            for msg in [errors[i:i+1990] for i in range(0, len(errors), 1990)]:
+                await ctx.send("```py\n" + msg.replace("```", "`\U00002063``") + "```")
 
     @commands.command(hidden=True)
     @commands.is_owner()
