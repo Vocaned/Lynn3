@@ -3,6 +3,8 @@ from discord.ext import commands
 from datetime import datetime
 import re
 import time
+import subprocess
+import sys
 
 """Misc commands"""
 
@@ -55,6 +57,18 @@ class Misc(commands.Cog):
         embed.set_footer(text=str(ctx.message.author.name) + '#' +  str(ctx.message.author.discriminator), icon_url=ctx.message.author.avatar_url)
         await ctx.message.delete()
         await ctx.send(embed=embed, content='')
+
+    @commands.command()
+    async def whois(self, ctx, *, domain):
+        """Whois"""
+        if not sys.platform.startswith('linux'):
+            await ctx.send("This command is only usable when the bot is hosten on linux. Sorry!")
+            return
+        output = str(subprocess.check_output(["whois", domain], stderr=subprocess.PIPE))
+
+        # TODO: put this into botutils
+        for msg in [output[i:i+1990] for i in range(0, len(output), 1990)]:
+            await ctx.send("```\n" + msg.replace("```", "`\U00002063``") + "```")
 
     @commands.command(aliases=["id"])
     async def snowflake(self, ctx, *, snowflake):
