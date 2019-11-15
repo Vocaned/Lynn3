@@ -64,7 +64,7 @@ class Misc(commands.Cog):
         if not sys.platform.startswith('linux'):
             await ctx.send("This command is only usable when the bot is hosten on linux. Sorry!")
             return
-        output = str(subprocess.check_output(["whois", domain], stderr=subprocess.PIPE)).decode("utf-8")
+        output = subprocess.check_output(["whois", domain], stderr=subprocess.PIPE).decode("utf-8")
 
         # TODO: put this into botutils
         for msg in [output[i:i+1990] for i in range(0, len(output), 1990)]:
