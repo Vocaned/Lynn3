@@ -15,8 +15,6 @@ logging.basicConfig(format='%(asctime)s | [%(levelname)s] (%(filename)s) - %(mes
 
 def get_prefix(bot, message):
     prefixes = ['%', 'lynn ']
-    if not message.guild:
-        return '%'
     return commands.when_mentioned_or(*prefixes)(bot, message)
 
 apiKeys = {
@@ -24,7 +22,6 @@ apiKeys = {
     "steam":            "[KEY]",
     "darksky":          "[KEY]",
     "omdb":             "[KEY]",
-    "mapbox":           "[KEY]",
     "twitterConsKey":   "[KEY]",
     "twitterConsSecret":"[KEY]",
     "twitterAccToken":  "[KEY]",
