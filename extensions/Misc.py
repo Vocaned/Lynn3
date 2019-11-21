@@ -62,7 +62,7 @@ class Misc(commands.Cog):
     async def whois(self, ctx, *, domain):
         """Whois"""
         if not sys.platform.startswith('linux'):
-            await ctx.send("This command is only usable when the bot is hosten on linux. Sorry!")
+            await ctx.send("This command is only usable when the bot is hosted on linux. Sorry!")
             return
         output = subprocess.check_output(["whois", domain], stderr=subprocess.PIPE).decode("utf-8")
 

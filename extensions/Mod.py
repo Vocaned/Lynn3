@@ -5,14 +5,28 @@ class Mod(commands.Cog):
     """Mod"""
 
     def __init__(self, bot):
-        self.bot = bot
+        self.bot = bot            
+
+    # https://github.com/Rapptz/RoboDanny/blob/ffa6657d9618131ef65c59488b9f3b9ff85e16c7/cogs/mod.py#L122
+    class BannedMember(commands.Converter):
+        async def convert(self, ctx, argument):
+            ban_list = await ctx.guild.bans()
+            try:
+                member_id = int(argument, base=10)
+                entity = discord.utils.find(lambda u: u.user.id == member_id, ban_list)
+            except ValueError:
+                entity = discord.utils.find(lambda u: str(u.user) == argument, ban_list)
+
+            if entity is None:
+                raise commands.BadArgument("Not a valid previously-banned member.")
+            return entity
 
     @commands.command(name="hackban")
     @commands.has_permissions(ban_members=True)
-    async def hackban(self, ctx, uId, *, reason=""):
+    async def hackban(self, ctx, *, uId):
         """Bans an user that's not in the server"""
         try:
-            await ctx.guild.ban(discord.Object(id=uId), reason=reason)
+            await ctx.guild.ban(discord.Object(id=uId), reason="Hackbanned by " + ctx.author.name)
         except discord.Forbidden:
             await ctx.send("Could not hackban " + uId)
         else:
@@ -20,10 +34,10 @@ class Mod(commands.Cog):
 
     @commands.command(name="ban")
     @commands.has_permissions(ban_members=True)
-    async def ban(self, ctx, user: discord.Member, *, reason=""):
+    async def ban(self, ctx, *, user: discord.Member):
         """Bans an user"""
         try:
-            await ctx.guild.ban(user, reason=reason)
+            await ctx.guild.ban(user, reason="Banned by " + ctx.author.name)
         except discord.Forbidden:
             await ctx.send("Could not ban " + user.name)
         else:
@@ -31,22 +45,21 @@ class Mod(commands.Cog):
 
     @commands.command(name="unban")
     @commands.has_permissions(ban_members=True)
-    async def unban(self, ctx, uId, *, reason=""):
+    async def unban(self, ctx, *, user: BannedMember):
         """Unbans an user"""
-        # TODO: Read bans and parse using username instead of ID
         try:
-            await ctx.guild.ban(discord.Object(id=uId), reason=reason)
+            await ctx.guild.unban(user.user, reason="Unbanned by " + ctx.author.name)
         except discord.Forbidden:
-            await ctx.send("Could not unban " + uId)
+            await ctx.send("Could not unban " + user.name)
         else:
-            await ctx.send(uId + " was unbanned.")
+            await ctx.send(user.name + " was unbanned.")
 
     @commands.command(name="kick")
     @commands.has_permissions(kick_members=True)
-    async def kick(self, ctx, user: discord.Member, *, reason=""):
+    async def kick(self, ctx, *, user: discord.Member):
         """Kicks an user"""
         try:
-            await ctx.guild.kick(user, reason=reason)
+            await ctx.guild.kick(user, reason="Kicked by " + ctx.author.name)
         except discord.Forbidden:
             await ctx.send("Could not kick " + user.name)
         else:
