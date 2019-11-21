@@ -18,7 +18,7 @@ class Mod(commands.Cog):
                 entity = discord.utils.find(lambda u: str(u.user) == argument, ban_list)
 
             if entity is None:
-                raise commands.BadArgument("Not a valid previously-banned member.")
+                raise commands.BadArgument("%Not a valid previously-banned member.")
             return entity
 
     @commands.command(name="hackban")
