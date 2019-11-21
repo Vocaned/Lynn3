@@ -82,6 +82,12 @@ class Mod(commands.Cog):
             else:
                 await ctx.send(user.name + " was given the role " + role.name)
 
+    @commands.command(name="invite")
+    @commands.has_permissions(create_instant_invite=True)
+    async def invite(self, ctx, limit=0, duration=0):
+        inv = await ctx.channel.create_invite(max_age=duration, max_uses=limit)
+        await ctx.send("Invite created: https://discord.gg/" + inv.code)
+
     @commands.command(name='purge', aliases=['prune'])
     @commands.has_permissions(manage_messages=True)
     async def purge(self, ctx, amount: int=None):
