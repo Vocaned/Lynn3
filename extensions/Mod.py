@@ -84,9 +84,11 @@ class Mod(commands.Cog):
 
     @commands.command(name="createinvite", aliases=["makeinv"])
     @commands.has_permissions(create_instant_invite=True)
-    async def createinvite(self, ctx, limit=0, duration=0):
-        inv = await ctx.channel.create_invite(max_age=duration, max_uses=limit)
-        await ctx.send("Invite created: https://discord.gg/" + inv.code)
+    async def createinvite(self, ctx, limit=0, duration_minutes=0):
+        inv = await ctx.channel.create_invite(max_age=duration_minutes*60, max_uses=limit)
+        info = "Invite lasts for `"+ (str(inv.max_age // 60) if inv.max_age else "∞") + "` minutes.\n" \
+        + "Invite can be used `"+ (str(inv.max_uses) if inv.max_uses else "∞") + "` times."
+        await ctx.send("Invite created: https://discord.gg/" + inv.code + "\n" + info)
 
     @commands.command(name='purge', aliases=['prune'])
     @commands.has_permissions(manage_messages=True)
