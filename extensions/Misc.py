@@ -5,6 +5,7 @@ import re
 import time
 import subprocess
 import sys
+from BotUtils import splitMessage
 
 """Misc commands"""
 
@@ -66,9 +67,8 @@ class Misc(commands.Cog):
             return
         output = subprocess.check_output(["whois", domain], stderr=subprocess.PIPE).decode("utf-8")
 
-        # TODO: put this into botutils
-        for msg in [output[i:i+1990] for i in range(0, len(output), 1990)]:
-            await ctx.send("```\n" + msg.replace("```", "`\U00002063``") + "```")
+        for msg in splitMessage(output):
+            await ctx.send(msg)
 
     @commands.command(aliases=["id"])
     async def snowflake(self, ctx, *, snowflake):

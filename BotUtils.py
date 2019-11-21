@@ -119,3 +119,9 @@ async def skinRenderer2D(url, fromFile=True):
         os.makedirs("skins/2d")
     img2.save("skins/2d/" + str(filename) + ".png")
     return "skins/2d/" + str(filename) + ".png"
+
+def splitMessage(message, highlight=""):
+    returns = []
+    for msg in [message[i:i+1990] for i in range(0, len(message), 1990)]:
+            returns.append("```" + highlight + "\n" + msg.replace("```", "`\U00002063``") + "```")
+    return returns

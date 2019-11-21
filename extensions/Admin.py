@@ -12,6 +12,7 @@ import config
 import sys
 import math
 from Lynn import errors
+from BotUtils import splitMessage
 
 class Admin(commands.Cog):
     """Admin-only commands."""
@@ -205,7 +206,7 @@ class Admin(commands.Cog):
     @commands.is_owner()
     async def git(self, ctx, *, action):
         if action == "pull":
-            p = subprocess.check_output(["git", "pull", config.gitURI], stderr=subprocess.STDOUT, timeout=30).decode("utf-8")
+            p = subprocess.check_output(["git", "pull"], stderr=subprocess.STDOUT, timeout=30).decode("utf-8")
             w = p.split()
             try:
                 commits = w[w.index("Updating") + 1]
@@ -233,8 +234,8 @@ class Admin(commands.Cog):
         if not errors:
             await ctx.send("No errors logged.")
         else:
-            for msg in [errors[i:i+1990] for i in range(0, len(errors), 1990)]:
-                await ctx.send("```py\n" + msg.replace("```", "`\U00002063``") + "```")
+            for msg in splitMessage(errors, highlight="py"):
+                await ctx.send(msg)
 
     @commands.command(hidden=True)
     @commands.is_owner()

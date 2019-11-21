@@ -5,7 +5,7 @@ class Mod(commands.Cog):
     """Mod"""
 
     def __init__(self, bot):
-        self.bot = bot            
+        self.bot = bot
 
     # https://github.com/Rapptz/RoboDanny/blob/ffa6657d9618131ef65c59488b9f3b9ff85e16c7/cogs/mod.py#L122
     class BannedMember(commands.Converter):

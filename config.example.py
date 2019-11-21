@@ -2,8 +2,7 @@ from discord.ext import commands
 import logging
 from datetime import datetime
 token = "[TOKEN]"
-description = "Lynn 3.0_DEV"
-gitURI = "git@github.com:Fam0r/Lynn3.git"
+description = "Lynn"
 cogDir = "extensions"
 
 logging.basicConfig(format='%(asctime)s | [%(levelname)s] (%(filename)s) - %(message)s',
@@ -35,6 +34,7 @@ apiKeys = {
 statusPages = [
     # Unfortunately statuspage.io doesn't include system metrics in their API.
     # System metric IDs must be hardcoded because of that.
+    # TODO: BeautifulSoup scraping?
     ("discord", "https://status.discordapp.com", ("ztt4777v23lf",)),
     ("twitter", "https://api.twitterstat.us", None),
     ("reddit", "https://reddit.statuspage.io", ("rx2nb3pfx3w6", "0jwzw9drbt3d", "5nx0js42cvh6", "ykb0vk6gm40h", "k7t111j3ykjr", "zry7jgt3xffg")),
