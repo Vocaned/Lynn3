@@ -10,6 +10,7 @@ class EmoteFix(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
+    @commands.guild_only()
     async def on_message(self, message):
         if message.author.bot:
             return

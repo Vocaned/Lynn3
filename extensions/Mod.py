@@ -23,6 +23,7 @@ class Mod(commands.Cog):
 
     @commands.command(name="hackban")
     @commands.has_permissions(ban_members=True)
+    @commands.guild_only()
     async def hackban(self, ctx, *, uId):
         """Bans an user that's not in the server"""
         try:
@@ -34,6 +35,7 @@ class Mod(commands.Cog):
 
     @commands.command(name="ban")
     @commands.has_permissions(ban_members=True)
+    @commands.guild_only()
     async def ban(self, ctx, *, user: discord.Member):
         """Bans an user"""
         try:
@@ -45,6 +47,7 @@ class Mod(commands.Cog):
 
     @commands.command(name="unban")
     @commands.has_permissions(ban_members=True)
+    @commands.guild_only()
     async def unban(self, ctx, *, user: BannedMember):
         """Unbans an user"""
         try:
@@ -56,6 +59,7 @@ class Mod(commands.Cog):
 
     @commands.command(name="kick")
     @commands.has_permissions(kick_members=True)
+    @commands.guild_only()
     async def kick(self, ctx, *, user: discord.Member):
         """Kicks an user"""
         try:
@@ -67,6 +71,7 @@ class Mod(commands.Cog):
 
     @commands.command(name="nick", aliases=["nickname"])
     @commands.has_permissions(change_nickname=True)
+    @commands.guild_only()
     async def nick(self, ctx, user: discord.Member, *, nick=""):
         """Changes user's nickname"""
         try:
@@ -78,6 +83,7 @@ class Mod(commands.Cog):
 
     @commands.command(name="role")
     @commands.has_permissions(manage_roles=True)
+    @commands.guild_only()
     async def role(self, ctx, user: discord.Member, *, role: discord.Role):
         """Add or remove role from user"""
         if role in user.roles:
@@ -97,6 +103,7 @@ class Mod(commands.Cog):
 
     @commands.command(name="createinvite", aliases=["makeinv"])
     @commands.has_permissions(create_instant_invite=True)
+    @commands.guild_only()
     async def createinvite(self, ctx, limit=0, duration_minutes=0):
         inv = await ctx.channel.create_invite(max_age=duration_minutes*60, max_uses=limit)
         info = "Invite lasts for `"+ (str(inv.max_age // 60) if inv.max_age else "∞") + "` minutes.\n" \
@@ -105,6 +112,7 @@ class Mod(commands.Cog):
 
     @commands.command(name='purge', aliases=['prune'])
     @commands.has_permissions(manage_messages=True)
+    @commands.guild_only()
     async def purge(self, ctx, amount: int=None):
         """Purge an amount of messages in a channel"""
         if amount>500 or amount<0:
@@ -115,6 +123,7 @@ class Mod(commands.Cog):
 
     @commands.command(name='echo', aliases=['say', 'repeat'])
     @commands.has_permissions(manage_messages=True)
+    @commands.guild_only()
     async def echo(self, ctx, *message):
         await ctx.send(" ".join(message))
 
