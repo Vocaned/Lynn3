@@ -86,6 +86,29 @@ class APIs(commands.Cog):
     def getCSStat(self, data, stat):
         return [i for i in data["stats"] if i["name"] == stat][0]["value"]
 
+    async def mediawiki(self, ctx, query, apiURL, wikiName, introOnly=True):
+        if introOnly:
+            add = "&exintro="
+        else:
+            add = ""
+        search = await REST(apiURL + "?action=query&list=search&format=json&utf8=&srsearch=" + self.escape(query))
+        pageID = str(search["query"]["search"][0]["pageid"])
+        info = await REST(apiURL + "?action=query&prop=info|pageimages|extracts&inprop=url|displaytitle&piprop=original&pilicense=any&exchars=500&format=json&explaintext=&utf8=&pageids=" + pageID + add)
+        info = info["query"]["pages"][pageID]
+
+        title = info["displaytitle"]
+        url = info["fullurl"]
+        description = info["extract"]
+        try:
+            imgUrl = info["original"]["source"]
+        except:
+            imgUrl = None
+
+        embed = discord.Embed(title=title + " - " + wikiName, col=0x32cd32, url=url)
+        embed.description = description
+        if imgUrl:
+            embed.set_image(url=imgUrl)
+        await ctx.send(embed=embed)
 
     # ---
     # GAMES
@@ -707,6 +730,18 @@ class APIs(commands.Cog):
                     f.write(await r.read())
         shot = discord.File("website.png", filename="website.png")
         await ctx.send(files=[shot])
+
+    @commands.command(name="wiki", aliases=["wikipedia"])
+    async def wiki(self, ctx, *, query):
+        await self.mediawiki(ctx, query, "https://en.wikipedia.org/w/api.php", "Wikipedia")
+
+    @commands.command(name="wiktionary", aliases=["dictionary"])
+    async def wiktionary(self, ctx, *, query):
+        await self.mediawiki(ctx, query, "https://en.wiktionary.org/w/api.php", "Wiktionary", introOnly=False)
+
+    #@commands.command()
+    #async def gamepedia(self, ctx, wiki, *, query):
+        #for wiki in config.gamepedia:
 
 
 def setup(bot):
