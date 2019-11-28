@@ -202,30 +202,37 @@ class Admin(commands.Cog):
         new_ctx = await self.bot.get_context(msg)
         await self.bot.invoke(new_ctx)
 
-    @commands.command(hidden=True)
+    @commands.group(hidden=True)
     @commands.is_owner()
-    async def git(self, ctx, *, action):
-        if action == "pull":
-            p = subprocess.check_output(["git", "pull"], stderr=subprocess.STDOUT, timeout=30).decode("utf-8")
-            w = p.split()
-            try:
-                commits = w[w.index("Updating") + 1]
-
-                p2 = subprocess.check_output(["git", "log", "--format=%h %an | %B%n%N", commits], stderr=subprocess.STDOUT, timeout=30)
-                p2 = "\n".join([line for line in p2.decode("utf-8").split('\n') if line.strip() != '']) + "\n\nRemember to reload modules!"
-            except:
-                p2 = ""
-            await ctx.message.clear_reactions()
-            # 1993 = 2000 - len("```\n```")
-            if len(p) + len(p2) >= 1993:
-                if len(p) >= 1994:
-                    await ctx.send("Git output too long. Changes were still applied. Remember to reload modules!")
-                else:
-                    await ctx.send("```" + p + "```")
-            else:
-                await ctx.send("```" + p + "\n" + p2 + "```")
-        else:
+    async def git(self, ctx):
+        if not ctx.invoked_subcommand:
             raise commands.UserInputError()
+
+    @git.command(name="pull")
+    async def gitpull(self, ctx):
+        p = subprocess.check_output(["git", "pull"], stderr=subprocess.STDOUT, timeout=30).decode("utf-8")
+        w = p.split()
+        try:
+            commits = w[w.index("Updating") + 1]
+
+            p2 = subprocess.check_output(["git", "log", "--format=%h %an | %B%n%N", commits], stderr=subprocess.STDOUT, timeout=30)
+            p2 = "\n".join([line for line in p2.decode("utf-8").split('\n') if line.strip() != ''])
+        except:
+            p2 = ""
+        await ctx.message.clear_reactions()
+        # 1993 = 2000 - len("```\n```")
+        if len(p) + len(p2) >= 1993:
+            if len(p) >= 1994:
+                await ctx.send("Git output too long. Changes were still applied.")
+            else:
+                await ctx.send("```" + p + "```")
+        else:
+            await ctx.send("```" + p + "\n" + p2 + "```")
+
+    @git.command(name="log", aliases=["show"])
+    async def gitlog(self, ctx, last="1"):
+        p = subprocess.check_output(["git", "log", "-"+last], stderr=subprocess.STDOUT, timeout=30).decode("utf-8")
+        await ctx.send("```" + p[:1994] + "```")
 
     @commands.command(hidden=True)
     @commands.is_owner()
