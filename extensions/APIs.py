@@ -87,10 +87,6 @@ class APIs(commands.Cog):
         return [i for i in data["stats"] if i["name"] == stat][0]["value"]
 
     async def mediawiki(self, ctx, query, apiURL, wikiName, introOnly=True):
-        if introOnly:
-            add = "&exintro="
-        else:
-            add = ""
         # Assuming the user knows what they are looking for by using srwhat=nearmatch
         search = await REST(apiURL + "?action=query&list=search&format=json&srwhat=nearmatch&utf8&srsearch=" + self.escape(query))
         if not search["query"]["search"]:
@@ -102,7 +98,7 @@ class APIs(commands.Cog):
                 return
 
         pageID = str(search["query"]["search"][0]["pageid"])
-        info = await REST(apiURL + "?action=query&prop=info|pageimages|extracts&inprop=url|displaytitle&piprop=original&pilicense=any&exchars=500&format=json&explaintext&utf8&redirects&pageids=" + pageID + add)
+        info = await REST(apiURL + "?action=query&prop=info|pageimages|extracts&inprop=url|displaytitle&piprop=original&pilicense=any&exchars=500&format=json&explaintext&utf8&redirects&pageids=" + pageID)
         # Get "first" page with an unknown pageID
         info = list(info["query"]["pages"].values())[0]
 
@@ -750,7 +746,7 @@ class APIs(commands.Cog):
 
     @commands.command(name="wiktionary", aliases=["dictionary"])
     async def wiktionary(self, ctx, *, query):
-        await self.mediawiki(ctx, query, "https://en.wiktionary.org/w/api.php", "Wiktionary", introOnly=False)
+        await self.mediawiki(ctx, query, "https://en.wiktionary.org/w/api.php", "Wiktionary")
 
     @commands.command(name="wikilanguage", aliases=["wikil", "wikilang"])
     async def wikilanguage(self, ctx, lang, *, query):
@@ -758,7 +754,7 @@ class APIs(commands.Cog):
 
     @commands.command(name="wiktionarylanguage", aliases=["wiktionaryl", "wiktionarylang", "dictionarylanguage", "dictionarylang", "dictionaryl"])
     async def wiktionarylanguage(self, ctx, lang, *, query):
-        await self.mediawiki(ctx, query, "https://"+lang+".wiktionary.org/w/api.php", "Wiktionary " + lang.upper(), introOnly=False)
+        await self.mediawiki(ctx, query, "https://"+lang+".wiktionary.org/w/api.php", "Wiktionary " + lang.upper())
 
     @commands.command(name="gamepedia")
     async def gamepedia(self, ctx, wiki, *, query):
