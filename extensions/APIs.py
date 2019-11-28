@@ -758,7 +758,7 @@ class APIs(commands.Cog):
 
     @commands.command(name="wiktionarylanguage", aliases=["wiktionaryl", "wiktionarylang", "dictionarylanguage", "dictionarylang", "dictionaryl"])
     async def wiktionarylanguage(self, ctx, lang, *, query):
-        await self.mediawiki(ctx, query, "https://"+lang+".wiktionary.org/w/api.php", "Wiktionary " + lang.upper())
+        await self.mediawiki(ctx, query, "https://"+lang+".wiktionary.org/w/api.php", "Wiktionary " + lang.upper(), introOnly=False)
 
     @commands.command(name="gamepedia")
     async def gamepedia(self, ctx, wiki, *, query):
