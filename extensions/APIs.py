@@ -752,6 +752,14 @@ class APIs(commands.Cog):
     async def wiktionary(self, ctx, *, query):
         await self.mediawiki(ctx, query, "https://en.wiktionary.org/w/api.php", "Wiktionary", introOnly=False)
 
+    @commands.command(name="wikilanguage", aliases=["wikil", "wikilang"])
+    async def wikilanguage(self, ctx, lang, *, query):
+        await self.mediawiki(ctx, query, "https://"+lang+".wikipedia.org/w/api.php", "Wikipedia " + lang.upper())
+
+    @commands.command(name="wiktionarylanguage", aliases=["wiktionaryl", "wiktionarylang", "dictionarylanguage", "dictionarylang", "dictionaryl"])
+    async def wiktionarylanguage(self, ctx, lang, *, query):
+        await self.mediawiki(ctx, query, "https://"+lang+".wiktionary.org/w/api.php", "Wiktionary " + lang.upper())
+
     @commands.command(name="gamepedia")
     async def gamepedia(self, ctx, wiki, *, query):
         await self.mediawiki(ctx, query, "https://"+wiki+".gamepedia.com/api.php", wiki.title() + " Wiki")
