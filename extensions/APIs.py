@@ -739,9 +739,9 @@ class APIs(commands.Cog):
     async def wiktionary(self, ctx, *, query):
         await self.mediawiki(ctx, query, "https://en.wiktionary.org/w/api.php", "Wiktionary", introOnly=False)
 
-    #@commands.command()
-    #async def gamepedia(self, ctx, wiki, *, query):
-        #for wiki in config.gamepedia:
+    @commands.command(name="gamepedia")
+    async def gamepedia(self, ctx, wiki, *, query):
+        await self.mediawiki(ctx, query, "https://"+wiki+".gamepedia.com/api.php", wiki.title() + " Wiki")
 
 
 def setup(bot):
