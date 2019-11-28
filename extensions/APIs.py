@@ -91,12 +91,22 @@ class APIs(commands.Cog):
             add = "&exintro="
         else:
             add = ""
-        search = await REST(apiURL + "?action=query&list=search&format=json&utf8=&srsearch=" + self.escape(query))
-        pageID = str(search["query"]["search"][0]["pageid"])
-        info = await REST(apiURL + "?action=query&prop=info|pageimages|extracts&inprop=url|displaytitle&piprop=original&pilicense=any&exchars=500&format=json&explaintext=&utf8=&pageids=" + pageID + add)
-        info = info["query"]["pages"][pageID]
+        # Assuming the user knows what they are looking for by using srwhat=nearmatch
+        search = await REST(apiURL + "?action=query&list=search&format=json&srwhat=nearmatch&utf8&srsearch=" + self.escape(query))
+        if not search["query"]["search"]:
+            # No matches found, guess what the user meant
+            search = await REST(apiURL + "?action=query&list=search&format=json&utf8&srsearch=" + self.escape(query))
+            # Check if user is just stupid and can't spell properly
+            if not search["query"]["search"] and "suggestionsnippet" in search["query"]["searchinfo"]:
+                await ctx.send("No results found. Did you mean: " + search["query"]["searchinfo"]["suggestionsnippet"].replace("<em>", "__").replace("</em>", "__") + "?")
+                return
 
-        title = info["displaytitle"]
+        pageID = str(search["query"]["search"][0]["pageid"])
+        info = await REST(apiURL + "?action=query&prop=info|pageimages|extracts&inprop=url|displaytitle&piprop=original&pilicense=any&exchars=500&format=json&explaintext&utf8&redirects&pageids=" + pageID + add)
+        # Get "first" page with an unknown pageID
+        info = list(info["query"]["pages"].values())[0]
+
+        title = info["title"]
         url = info["fullurl"]
         description = info["extract"]
         try:
@@ -731,6 +741,9 @@ class APIs(commands.Cog):
         shot = discord.File("website.png", filename="website.png")
         await ctx.send(files=[shot])
 
+    # The wiki has to have the TextExtracts extension in order for the API to work.
+    # TODO: Don't rely on TextExtracts by stripping html manually (?)
+
     @commands.command(name="wiki", aliases=["wikipedia"])
     async def wiki(self, ctx, *, query):
         await self.mediawiki(ctx, query, "https://en.wikipedia.org/w/api.php", "Wikipedia")
@@ -743,6 +756,16 @@ class APIs(commands.Cog):
     async def gamepedia(self, ctx, wiki, *, query):
         await self.mediawiki(ctx, query, "https://"+wiki+".gamepedia.com/api.php", wiki.title() + " Wiki")
 
+    # TODO: Bulbapedia doesn't return pageIDs in searches
+    """@commands.command(name="pokemon", aliases=["pokémon", "bulbapedia"])
+    async def bulbapedia(self, ctx, *, query):
+        await self.mediawiki(ctx, query, "https://bulbapedia.bulbagarden.net/w/api.php", "Bulbapedia")"""
+
+    # Enable this if fandom ever decides to update their MediaWiki installation. Fandom's version (1.19.24) was last updated March 31st, 2015.
+    # Fandom also disabled searching API so :shrug:
+    """@commands.command(name="fandom")
+    async def fandom(self, ctx, wiki, *, query):
+        await self.mediawiki(ctx, query, "https://"+wiki+".fandom.com/api.php", wiki.title() + " Wiki")"""
 
 def setup(bot):
     bot.add_cog(APIs(bot))
