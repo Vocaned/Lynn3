@@ -110,7 +110,7 @@ class APIs(commands.Cog):
         except:
             imgUrl = None
 
-        embed = discord.Embed(title=title + " - " + wikiName, col=0x32cd32, url=url)
+        embed = discord.Embed(title=title + " - " + wikiName, color=0x32cd32, url=url)
         embed.description = description
         if imgUrl:
             embed.set_image(url=imgUrl)
@@ -761,7 +761,7 @@ class APIs(commands.Cog):
         await self.mediawiki(ctx, query, "https://"+wiki+".gamepedia.com/api.php", wiki.title() + " Wiki")
 
     # TODO: Bulbapedia doesn't return pageIDs in searches
-    """@commands.command(name="pokemon", aliases=["pokémon", "bulbapedia"])
+    """@commands.command(name="pokémon", aliases=["pokemon", "bulbapedia"])
     async def bulbapedia(self, ctx, *, query):
         await self.mediawiki(ctx, query, "https://bulbapedia.bulbagarden.net/w/api.php", "Bulbapedia")"""
 
