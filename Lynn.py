@@ -4,11 +4,11 @@ import config
 import os
 import logging
 
-errors = ""
+errors = ''
 bot = commands.Bot(command_prefix=config.get_prefix, description=config.description)
 
 if __name__ == '__main__':
-    for extension in [f.replace('.py', '') for f in os.listdir("extensions") if os.path.isfile(os.path.join("extensions", f))]:
+    for extension in [f.replace('.py', '') for f in os.listdir('extensions') if os.path.isfile(os.path.join('extensions', f))]:
         try:
             bot.load_extension(config.cogDir + '.' + extension)
         except (discord.ClientException, ModuleNotFoundError):
