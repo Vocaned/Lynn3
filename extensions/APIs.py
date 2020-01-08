@@ -558,7 +558,8 @@ class APIs(commands.Cog):
             "ANIMATED_ICON": "Animated icon",
             "COMMERCE": "Store",
             "MORE_EMOJI": "More emoji",
-            "PUBLIC": "Public server (Lurkable)"
+            "PUBLIC": "Public server (Lurkable)",
+            "PARTNERED": "Partnered"
         }
 
         flags = data["guild"]["features"]
