@@ -634,7 +634,7 @@ class APIs(commands.Cog):
                                 oauth_token_secret=config.apiKeys["twitterAccSecret"])
         data = await twitter.request("GET", "users/search.json", params={"count": 1, "q": self.escape(user)})
         data = data[0]
-        embed = discord.Embed(title=f"{data["name"]} (@{data["screen_name"]})", url="https://twitter.com/"+data["screen_name"], description=data["description"], color=0x1DA1F2)
+        embed = discord.Embed(title=f'{data["name"]} (@{data["screen_name"]})', url="https://twitter.com/"+data["screen_name"], description=data["description"], color=0x1DA1F2)
         embed.set_thumbnail(url=data["profile_image_url_https"])
         embed.add_field(name="Tweets", value=str(data["statuses_count"]))
         embed.add_field(name="Followers", value=str(data["followers_count"]))
