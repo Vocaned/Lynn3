@@ -258,6 +258,8 @@ class APIs(commands.Cog):
             embed.add_field(name="Account created", value="On " + datetime.utcfromtimestamp(data["registered"]).strftime("%c") + "\n" + ago + " ago")
             if flags:
                 embed.add_field(name="Notes", value=", ".join([flagName[n] for n in flags]))
+            if data["forum_title"]:
+                embed.add_field(name="Forum Title", value=discord.utils.escape_mentions(data["forum_title"]))
             if await REST("https://classicube.s3.amazonaws.com/skin/" + str(data["username"]) + ".png", returns="r.status == 200"):
                 embed.add_field(name="Skin URL", value="[Click me](https://classicube.s3.amazonaws.com/skin/" + str(data["username"]) + ".png)")
                 await skinRenderer2D("https://classicube.s3.amazonaws.com/skin/" + str(data["username"]) + ".png", fromFile=False)
@@ -632,7 +634,7 @@ class APIs(commands.Cog):
                                 oauth_token_secret=config.apiKeys["twitterAccSecret"])
         data = await twitter.request("GET", "users/search.json", params={"count": 1, "q": self.escape(user)})
         data = data[0]
-        embed = discord.Embed(title=data["name"] + " (@" + data["screen_name"] + ")", url="https://twitter.com/"+data["screen_name"], description=data["description"], color=0x1DA1F2)
+        embed = discord.Embed(title=f"{data["name"]} (@{data["screen_name"]})", url="https://twitter.com/"+data["screen_name"], description=data["description"], color=0x1DA1F2)
         embed.set_thumbnail(url=data["profile_image_url_https"])
         embed.add_field(name="Tweets", value=str(data["statuses_count"]))
         embed.add_field(name="Followers", value=str(data["followers_count"]))
@@ -656,10 +658,10 @@ class APIs(commands.Cog):
     async def discordUser(self, ctx, *, user):
         """Gets information about discord users."""
         user = await commands.UserConverter().convert(ctx, user)
-        embed = discord.Embed(title="Discord User " + user.name + "#" + str(user.discriminator), colour=0x7289DA)
+        embed = discord.Embed(title=f"Discord User {user.name}#{str(user.discriminator)}", colour=0x7289DA)
         embed.set_thumbnail(url=str(user.avatar_url))
-        embed.add_field(name="Account created", value="On " + user.created_at.strftime("%c") + "\n" + self.td_format(datetime.utcnow() - user.created_at) + " ago")
-        embed.set_footer(text="User ID" + str(user.id))
+        embed.add_field(name="Account created", value=f"On {user.created_at.strftime('%c')}\n{self.td_format(datetime.utcnow() - user.created_at)} ago")
+        embed.set_footer(text=f"User ID {str(user.id)}")
         await ctx.send(embed=embed)
 
 
