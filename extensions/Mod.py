@@ -70,7 +70,7 @@ class Mod(commands.Cog):
             await ctx.send(user.name + " was kicked.")
 
     @commands.command(name="nick", aliases=["nickname"])
-    @commands.has_permissions(change_nickname=True)
+    @commands.has_permissions(change_nicknames=True)
     @commands.guild_only()
     async def nick(self, ctx, user: discord.Member, *, nick=""):
         """Changes user's nickname"""
