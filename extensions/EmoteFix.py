@@ -42,6 +42,7 @@ class EmoteFix(commands.Cog):
                 hook = await message.channel.create_webhook(name="EmoteFix")
             else:
                 hook = hook[0]
+            newmsg = newmsg.replace("@here", "@\U00002063here").replace("@everyone", "@\U00002063everyone")
             await hook.send(content=newmsg, username=message.author.display_name, avatar_url=message.author.avatar_url)
             await message.delete()
 
