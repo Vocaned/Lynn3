@@ -45,6 +45,10 @@ class Admin(commands.Cog):
             await ctx.send(_message)
             return
 
+        if isinstance(error, commands.NSFWChannelRequired):
+            await ctx.send("This command can only be used in NSFW channels.")
+            return
+
         if isinstance(error, commands.DisabledCommand):
             await ctx.send('This command has been disabled.')
             return
