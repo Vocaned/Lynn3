@@ -513,7 +513,8 @@ class APIs(commands.Cog):
         embed.timestamp = datetime.utcnow()
         await ctx.send(embed=embed)
 
-
+    
+    @commands.is_nsfw()
     @commands.command(name="urbandictionary", aliases=["urban", "define"])
     async def UrbanDictionaryAPI(self, ctx, *, term):
         """Gets information about the urban dictionary"""
