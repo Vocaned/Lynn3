@@ -513,9 +513,9 @@ class APIs(commands.Cog):
         embed.timestamp = datetime.utcnow()
         await ctx.send(embed=embed)
 
-    
+
     @commands.is_nsfw()
-    @commands.command(name="urbandictionary", aliases=["urban", "define"])
+    @commands.command(name="urbandictionary", aliases=["urban"])
     async def UrbanDictionaryAPI(self, ctx, *, term):
         """Gets information about the urban dictionary"""
         data = await REST("http://api.urbandictionary.com/v0/define?term=" + self.escape(term))
@@ -655,18 +655,6 @@ class APIs(commands.Cog):
         embed.timestamp = datetime.strptime(data["created_at"], "%a %b %d %H:%M:%S %z %Y")
         await ctx.send(embed=embed)
 
-
-    @commands.command(name="user")
-    async def discordUser(self, ctx, *, user):
-        """Gets information about discord users."""
-        user = await commands.UserConverter().convert(ctx, user)
-        embed = discord.Embed(title=f"Discord User {user.name}#{str(user.discriminator)}", colour=0x7289DA)
-        embed.set_thumbnail(url=str(user.avatar_url))
-        embed.add_field(name="Account created", value=f"On {user.created_at.strftime('%c')}\n{self.td_format(datetime.utcnow() - user.created_at)} ago")
-        embed.set_footer(text=f"User ID {str(user.id)}")
-        await ctx.send(embed=embed)
-
-
     @commands.command(name="status", aliases=["statuspage"])
     async def StatusAPI(self, ctx, *, name="None"):
         """Gets information about status pages."""
@@ -748,7 +736,7 @@ class APIs(commands.Cog):
     async def wiki(self, ctx, *, query):
         await self.mediawiki(ctx, query, "https://en.wikipedia.org/w/api.php", "Wikipedia")
 
-    @commands.command(name="wiktionary", aliases=["dictionary"])
+    @commands.command(name="wiktionary", aliases=["dictionary", "define"])
     async def wiktionary(self, ctx, *, query):
         await self.mediawiki(ctx, query, "https://en.wiktionary.org/w/api.php", "Wiktionary")
 
@@ -756,7 +744,7 @@ class APIs(commands.Cog):
     async def wikilanguage(self, ctx, lang, *, query):
         await self.mediawiki(ctx, query, "https://"+lang+".wikipedia.org/w/api.php", "Wikipedia " + lang.upper())
 
-    @commands.command(name="wiktionarylanguage", aliases=["wiktionaryl", "wiktionarylang", "dictionarylanguage", "dictionarylang", "dictionaryl"])
+    @commands.command(name="wiktionarylanguage", aliases=["wiktionarylang", "dictionarylanguage", "dictionarylang", "definelang", "definelanguage"])
     async def wiktionarylanguage(self, ctx, lang, *, query):
         await self.mediawiki(ctx, query, "https://"+lang+".wiktionary.org/w/api.php", "Wiktionary " + lang.upper())
 
