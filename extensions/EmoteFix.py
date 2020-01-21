@@ -4,7 +4,7 @@ import re
 
 
 class EmoteFix(commands.Cog):
-    """EmoteFix"""
+    '''EmoteFix'''
 
     def __init__(self, bot):
         self.bot = bot
@@ -17,32 +17,32 @@ class EmoteFix(commands.Cog):
         replaced = []
         shouldSend = False
         newmsg = message.content
-        match = re.findall("(?=[^:\\s]*):\\S+?:(?=[^:\\s]*)", message.content)
+        match = re.findall('(?=[^:\\s]*):\\S+?:(?=[^:\\s]*)', message.content)
         if match:
             for emote in match:
-                if not re.match("<a:\\S+:\\d{18}>", message.content) and not emote in replaced:
-                    em = emote.replace(":", "")
+                if not re.match('<a:\\S+:\\d{18}>', message.content) and not emote in replaced:
+                    em = emote.replace(':', '')
                     for e in message.guild.emojis:
                         if e.name.lower() == em.lower():
-                            prefix = ""
+                            prefix = ''
                             if not e.animated:
                                 # TODO: Emotes from other servers
                                 continue
                             else:
-                                prefix = "a"
-                            fullemote = "<" + prefix + ":" + str(em) + ":" + str(e.id) + ">"
+                                prefix = 'a'
+                            fullemote = f'<{prefix}:{str(em)}:{str(e.id)}>'
                             newmsg = newmsg.replace(emote, fullemote)
                             replaced.append(emote)
                             shouldSend = True
 
-        match = re.findall("\\[.+]\\(<?https?://.+\\..+\\)", message.content)
+        match = re.findall('\\[.+]\\(<?https?://.+\\..+\\)', message.content)
         if match or shouldSend:
-            hook = [h for h in await message.channel.webhooks() if h.name == "EmoteFix"]
+            hook = [h for h in await message.channel.webhooks() if h.name == 'EmoteFix']
             if not hook:
-                hook = await message.channel.create_webhook(name="EmoteFix")
+                hook = await message.channel.create_webhook(name='EmoteFix')
             else:
                 hook = hook[0]
-            newmsg = newmsg.replace("@here", "@\U00002063here").replace("@everyone", "@\U00002063everyone")
+            newmsg = newmsg.replace('@here', '@\U00002063here').replace('@everyone', '@\U00002063everyone')
             await hook.send(content=newmsg, username=message.author.display_name, avatar_url=message.author.avatar_url)
             await message.delete()
 

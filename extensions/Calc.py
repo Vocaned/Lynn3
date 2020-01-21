@@ -318,19 +318,19 @@ def eval_rpn(tokens):
 
 
 class Calculator(commands.Cog):
-     """Calculator"""
+     '''Calculator'''
 
      def __init__(self, bot):
           self.bot = bot
 
      @commands.command(name='calculator', aliases=["calc", "math"])
      async def calculator(self, ctx, *, expr):
-          """Calculator""",
+          '''Calculator'''
           expr = tokenize(expr)
           expr = implicit_multiplication(expr)
           expr = to_rpn(expr)
           expr = eval_rpn(expr)
-          await ctx.send("> " + str(expr))
+          await ctx.send('> {}'.format(expr))
 
 def setup(bot):
     bot.add_cog(Calculator(bot))

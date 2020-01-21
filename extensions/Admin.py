@@ -141,11 +141,11 @@ class Admin(commands.Cog):
                     self.bot.reload_extension(config.cogDir+"."+file)
                     n+=1
             end = time.time()
-            await ctx.send('Reloaded `'+str(n)+'` modules in `' + str(round((end-start)*1000, 2)) + 'ms`.')
+            await ctx.send(f'Reloaded `{str(n)}` modules in `{str(round((end-start)*1000, 2))}ms`.')
         else:
             self.bot.reload_extension(config.cogDir+"."+module)
             end = time.time()
-            await ctx.send('Reloaded `'+str(module)+'` in `'+str(round((end-start)*1000, 2))+'ms`.')
+            await ctx.send(f'Reloaded `{str(module)}` in `{str(round((end-start)*1000, 2))}ms`.')
 
     @commands.command(pass_context=True, hidden=True, name='eval')
     @commands.is_owner()
