@@ -56,9 +56,9 @@ class Mod(commands.Cog):
         try:
             await ctx.guild.unban(user.user, reason=f'Unbanned by {ctx.author.name}')
         except discord.Forbidden:
-            await ctx.send(f'Could not unban {user.name}')
+            await ctx.send(f'Could not unban {user.user.name}')
         else:
-            await ctx.send(f'{user.name} was unbanned.')
+            await ctx.send(f'{user.user.name} was unbanned.')
 
     @commands.command(name='kick')
     @commands.has_permissions(kick_members=True)
