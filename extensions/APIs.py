@@ -11,7 +11,7 @@ from aioauth_client import TwitterClient
 import aiohttp
 
 class APIs(commands.Cog):
-    """APIs"""
+    '''APIs'''
 
     def __init__(self, bot):
         self.bot = bot
@@ -28,21 +28,21 @@ class APIs(commands.Cog):
     def td_format(self, td_object):
         seconds = int(td_object.total_seconds())
         periods = [
-            ("year",        60*60*24*365),
-            ("month",       60*60*24*30),
-            ("day",         60*60*24),
-            ("hour",        60*60),
-            ("minute",      60)
+            ('year',        60*60*24*365),
+            ('month',       60*60*24*30),
+            ('day',         60*60*24),
+            ('hour',        60*60),
+            ('minute',      60)
         ]
 
         strings=[]
         for period_name, period_seconds in periods:
             if seconds > period_seconds:
                 period_value , seconds = divmod(seconds, period_seconds)
-                has_s = "s" if period_value > 1 else ""
+                has_s = 's' if period_value > 1 else ''
                 strings.append("%s %s%s" % (period_value, period_name, has_s))
 
-        return ", ".join(strings)
+        return ', '.join(strings)
 
     # Ported to python from
     # https://gist.github.com/jomo/be7dbb5228187edbb993
@@ -52,65 +52,68 @@ class APIs(commands.Cog):
         last = 0
         for _ in range(30):
             if a == b:
-                if last == a-1 and await REST("https://api.mojang.com/users/profiles/minecraft/" + name + "?at=" + str(a), returns="r.status == 200"):
+                if last == a-1 and await REST(f'https://api.mojang.com/users/profiles/minecraft/{name}?at={str(a)}', returns='r.status == 200'):
                     return datetime.utcfromtimestamp(a)
                 else:
                     return False
             else:
                 mid = a + math.floor((b - a) / 2)
-                if await REST("https://api.mojang.com/users/profiles/minecraft/" + name + "?at=" + str(mid), returns="r.status == 200"):
+                if await REST(f'https://api.mojang.com/users/profiles/minecraft/{name}?at={str(mid)}', returns='r.status == 200'):
                     b = mid
                 else:
                     a = mid+1
                     last = mid
 
     async def getMinecraftUUID(self, name):
-        r = await REST("https://api.mojang.com/users/profiles/minecraft/" + name)
+        r = await REST(f'https://api.mojang.com/users/profiles/minecraft/{name}')
         if r:
             return r
 
-        r = await REST("https://api.mojang.com/users/profiles/minecraft/" + name + "?at=0")
+        r = await REST(f'https://api.mojang.com/users/profiles/minecraft/{name}?at=0')
         if r:
             return r
         return None
 
     async def getMinecraftSkinUrl(self, uuid):
-        data = await REST("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid)
+        data = await REST(f'https://sessionserver.mojang.com/session/minecraft/profile/{uuid}')
         try:
-            val = data["properties"][0]["value"]
+            val = data['properties'][0]['value']
         except:
             return None
         decoded = base64.b64decode(val)
         return(json.loads(decoded))
 
     def getCSStat(self, data, stat):
-        return [i for i in data["stats"] if i["name"] == stat][0]["value"]
+        return [i for i in data['stats'] if i['name'] == stat][0]['value']
 
     async def mediawiki(self, ctx, query, apiURL, wikiName, introOnly=True):
         # Assuming the user knows what they are looking for by using srwhat=nearmatch
-        search = await REST(apiURL + "?action=query&list=search&format=json&srwhat=nearmatch&utf8&srsearch=" + self.escape(query))
-        if not search["query"]["search"]:
+        search = await REST(f'{apiURL}?action=query&list=search&format=json&srwhat=nearmatch&utf8&srsearch={self.escape(query)}')
+        if not search['query']['search']:
             # No matches found, guess what the user meant
-            search = await REST(apiURL + "?action=query&list=search&format=json&utf8&srsearch=" + self.escape(query))
+            search = await REST(f'{apiURL}?action=query&list=search&format=json&utf8&srsearch={self.escape(query)}')
             # Check if user is just stupid and can't spell properly
-            if not search["query"]["search"] and "suggestionsnippet" in search["query"]["searchinfo"]:
-                await ctx.send("No results found. Did you mean: " + search["query"]["searchinfo"]["suggestionsnippet"].replace("<em>", "__").replace("</em>", "__") + "?")
+            if not search['query']['search']:
+                if 'suggestionsnippet' in search['query']['searchinfo']:
+                    await ctx.send('No results found. Did you mean: {}?'.format(search['query']['searchinfo']['suggestionsnippet'].replace('<em>', '__').replace('</em>', '__')))
+                else:
+                    await ctx.send('No results found.')
                 return
 
-        pageID = str(search["query"]["search"][0]["pageid"])
-        info = await REST(apiURL + "?action=query&prop=info|pageimages|extracts&inprop=url|displaytitle&piprop=original&pilicense=any&exchars=500&format=json&explaintext&utf8&redirects&pageids=" + pageID)
+        pageID = str(search['query']['search'][0]['pageid'])
+        info = await REST(f'{apiURL}?action=query&prop=info|pageimages|extracts&inprop=url|displaytitle&piprop=original&pilicense=any&exchars=500&format=json&explaintext&utf8&redirects&pageids={pageID}')
         # Get "first" page with an unknown pageID
-        info = list(info["query"]["pages"].values())[0]
+        info = list(info['query']['pages'].values())[0]
 
-        title = info["title"]
-        url = info["fullurl"]
-        description = info["extract"]
+        title = info['title']
+        url = info['fullurl']
+        description = info['extract']
         try:
-            imgUrl = info["original"]["source"]
+            imgUrl = info['original']['source']
         except:
             imgUrl = None
 
-        embed = discord.Embed(title=title + " - " + wikiName, color=0x32cd32, url=url)
+        embed = discord.Embed(title=f'{title} - {wikiName}', color=0x32cd32, url=url)
         embed.description = description
         if imgUrl:
             embed.set_image(url=imgUrl)

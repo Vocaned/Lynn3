@@ -46,7 +46,7 @@ class Admin(commands.Cog):
             return
 
         if isinstance(error, commands.NSFWChannelRequired):
-            await ctx.send("This command can only be used in NSFW channels.")
+            await ctx.send('This command can only be used in NSFW channels.')
             return
 
         if isinstance(error, commands.DisabledCommand):
@@ -54,7 +54,7 @@ class Admin(commands.Cog):
             return
 
         if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send("This command is on cooldown, please retry in {}s.".format(math.ceil(error.retry_after)))
+            await ctx.send('This command is on cooldown, please retry in {}s.'.format(math.ceil(error.retry_after)))
             return
 
         if isinstance(error, commands.MissingPermissions):
@@ -68,7 +68,7 @@ class Admin(commands.Cog):
             return
 
         if isinstance(error, commands.UserInputError):
-            await ctx.send("Invalid input. Usage:")
+            await ctx.send('Invalid input. Usage:')
             await ctx.send_help(ctx.command)
             return
 
@@ -80,17 +80,17 @@ class Admin(commands.Cog):
             return
 
         if isinstance(error, commands.CheckFailure):
-            await ctx.send("You do not have permission to use this command.")
+            await ctx.send('You do not have permission to use this command.')
             return
 
         try:
-            if hasattr(error, "args") and len(error.args) != 0 and error.args[0][0] == "%":
+            if hasattr(error, 'args') and len(error.args) != 0 and error.args[0][0] == '%':
                 await ctx.send(error.args[0][1:])
         except:
             pass
 
-        print("Ignoring exception in " + str(ctx.command), file=sys.stderr)
-        errors = "\n".join(traceback.format_exception(type(error), error, error.__traceback__))
+        print('Ignoring exception in {}'.format(ctx.command), file=sys.stderr)
+        errors = '\n'.join(traceback.format_exception(type(error), error, error.__traceback__))
 
     def cleanup_code(self, content):
         """Automatically removes code blocks from the code."""
