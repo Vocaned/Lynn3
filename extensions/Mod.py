@@ -114,7 +114,7 @@ class Mod(commands.Cog):
     async def createinvite(self, ctx, limit=0, duration_minutes=0):
         inv = await ctx.channel.create_invite(max_age=duration_minutes*60, max_uses=limit)
         info = f'''Invite lasts for `{(str(inv.max_age // 60) if inv.max_age else '∞')}` minutes.
-        Invite can be used `{(str(inv.max_uses) if inv.max_uses else '∞')}` times.'''
+Invite can be used `{(str(inv.max_uses) if inv.max_uses else '∞')}` times.'''
         await ctx.send(f'Invite created: https://discord.gg/{inv.code}\n{info}')
 
     @commands.command(name='purge', aliases=['prune'])
