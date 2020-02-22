@@ -223,7 +223,6 @@ class Admin(commands.Cog):
             p2 = "\n".join([line for line in p2.decode("utf-8").split('\n') if line.strip() != ''])
         except:
             p2 = ""
-        await ctx.message.clear_reactions()
         # 1993 = 2000 - len("```\n```")
         if len(p) + len(p2) >= 1993:
             if len(p) >= 1994:
