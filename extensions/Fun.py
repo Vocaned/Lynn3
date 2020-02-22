@@ -156,7 +156,7 @@ class Fun(commands.Cog):
 		elif data['difficulty'] == 'hard':
 			col = 0xFF0000
 
-		embed = discord.Embed(title=f'{ctx.author.display_name}\'s Trivia - {parse.unquote(data["category"])}', color=col)
+		embed = discord.Embed(title=f'{ctx.author.mention}\'s Trivia - {parse.unquote(data["category"])}', color=col)
 		embed.description = f'```{parse.unquote(data["question"])}```'
 		embed.set_footer(text=f'Difficulty: {data["difficulty"]}. Data provided by Open Trivia DB (PixelTail Games)')
 
@@ -178,14 +178,14 @@ class Fun(commands.Cog):
 			r,u = await self.bot.wait_for('reaction_add', timeout=20.0, check=check)
 			guessIndex = nameList.index(str(r))
 			if guessIndex == ansIndex:
-				results = f'{ctx.author.display_name}, Correct!\n{nameList[ansIndex]} - {parse.unquote(data["correct_answer"])}'
+				results = f'{ctx.author.mention}, Correct!\n{nameList[ansIndex]} - {parse.unquote(data["correct_answer"])}'
 				streak += 1
 				correct = True
 			else:
-				results = f'{ctx.author.display_name}, Wrong!\nYou picked {nameList[guessIndex]} - {parse.unquote(answers[guessIndex])}\nThe answer was {nameList[ansIndex]} - {parse.unquote(data["correct_answer"])}\n'
+				results = f'{ctx.author.mention}, Wrong!\nYou picked {nameList[guessIndex]} - {parse.unquote(answers[guessIndex])}\nThe answer was {nameList[ansIndex]} - {parse.unquote(data["correct_answer"])}\n'
 				correct = False
 		except asyncio.TimeoutError:
-			results = f'{ctx.author.display_name}, Ran out of time!\nThe answer was {nameList[ansIndex]} - {parse.unquote(data["correct_answer"])}'
+			results = f'{ctx.author.mention}, Ran out of time!\nThe answer was {nameList[ansIndex]} - {parse.unquote(data["correct_answer"])}'
 			correct = False
 		hadStreak = False
 		if streak != 0:
