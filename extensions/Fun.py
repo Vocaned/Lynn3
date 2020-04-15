@@ -156,7 +156,7 @@ class Fun(commands.Cog):
 		elif data['difficulty'] == 'hard':
 			col = 0xFF0000
 
-		embed = discord.Embed(title=f'{ctx.author.mention}\'s Trivia - {parse.unquote(data["category"])}', color=col)
+		embed = discord.Embed(title=f'Trivia - {parse.unquote(data["category"])}', color=col)
 		embed.description = f'```{parse.unquote(data["question"])}```'
 		embed.set_footer(text=f'Difficulty: {data["difficulty"]}. Data provided by Open Trivia DB (PixelTail Games)')
 
@@ -168,7 +168,7 @@ class Fun(commands.Cog):
 			embed.add_field(name=self.boolNames[0], value='True')
 			embed.add_field(name=self.boolNames[1], value='False')
 			nameList = self.boolNames
-		msg = await ctx.send(embed=embed)
+		msg = await ctx.send(ctx.author.mention, embed=embed)
 		for name in nameList:
 			await msg.add_reaction(name)
 

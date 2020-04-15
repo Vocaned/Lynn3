@@ -22,7 +22,7 @@ def get_prefix(bot, message):
 apiKeys = {
     'tracker':          '[KEY]',
     'steam':            '[KEY]',
-    'darksky':          '[KEY]',
+    'openweathermap':   '[KEY]',
     'omdb':             '[KEY]',
     'twitterConsKey':   '[KEY]',
     'twitterConsSecret':'[KEY]',
