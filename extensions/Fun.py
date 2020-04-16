@@ -117,7 +117,7 @@ class Fun(commands.Cog):
 		await ctx.send(embed=embed, content='')
 
 	multiNames = ['\U0001F1E6', '\U0001F1E7', '\U0001F1E8', '\U0001F1E9']
-	boolNames = ['\U00002714', '\U00002716']
+	boolNames = ['\U00002611', '\U0001F1FD']
 
 	@commands.command(name='trivia')
 	async def trivia(self, ctx, *, difficulty='random', streak=0):
