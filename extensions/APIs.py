@@ -569,7 +569,7 @@ class APIs(commands.Cog):
         flags = data["guild"]["features"]
 
         if flags:
-            embed.add_field(name="Special features", value="\n".join([flagName[n] for n in flags]))
+            embed.add_field(name="Special features", value="\n".join([flagName.get(n, n) for n in flags]))
 
         try:
             embed.add_field(name="Invite created by", value=str(data["inviter"]["username"]) + "#" + str(data["inviter"]["discriminator"]) + " (<@" + str(data["inviter"]["id"]) + ">)")
