@@ -552,18 +552,21 @@ class APIs(commands.Cog):
         flagName = {
             "VERIFIED": "Verified",
             "LURKABLE": "Lurking enabled",
-            "INVITE_SPLASH": "Custom invite splash screen",
+            "INVITE_SPLASH": "Invite splash screen",
             "VIP_REGIONS": "VIP Server",
             "FEATURABLE": "Featured server",
-            "DISCOVERABLE": "In server discoveries",
+            "DISCOVERABLE": "Discoverable",
             "NEWS": "News channel",
             "BANNER": "Custom banner",
-            "VANITY_URL": "Custom vanity url",
+            "VANITY_URL": "Vanity URL",
             "ANIMATED_ICON": "Animated icon",
             "COMMERCE": "Store",
-            "MORE_EMOJI": "More emoji",
-            "PUBLIC": "Public server (Lurkable)",
-            "PARTNERED": "Partnered"
+            "MORE_EMOJI": "More emojis",
+            "PUBLIC": "Public server",
+            "PARTNERED": "Partnered",
+            "WELCOME_SCREEN_ENABLED": "Welcome Screen",
+            "RELAY_ENABLED": "Sharded server",
+            "ENABLED_DISCOVERABLE_BEFORE": "Discoverable (?)"
         }
 
         flags = data["guild"]["features"]
