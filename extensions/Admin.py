@@ -215,7 +215,7 @@ class Admin(commands.Cog):
     @git.command(name="reset")
     async def gitreset(self, ctx):
         p = subprocess.check_output(["git", "reset", "--hard", "origin/master"], stderr=subprocess.STDOUT, timeout=30).decode("utf-8")
-        await ctx.send(splitMessage(p))
+        await ctx.send(splitMessage(p)[0])
 
     @git.command(name="pull")
     async def gitpull(self, ctx):
