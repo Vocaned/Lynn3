@@ -27,13 +27,13 @@ class Data(commands.Cog):
     @decode.command(name='base64', aliases=['b64'])
     async def dbase64(self, ctx, *, val):
         try:
-            await ctx.send(f'{ctx.author.mention}, `{self.sanitize(base64.b64decode(val.encode()))}`')
+            await ctx.send(f'{ctx.author.mention}, ```{self.sanitize(base64.b64decode(val.encode()))}```')
         except binascii.Error:
             await ctx.send('Could not parse base64')
 
     @encode.command(name='base64', aliases=['b64'])
     async def ebase64(self, ctx, *, val):
-        await ctx.send(f'{ctx.author.mention}, `{self.sanitize(base64.b64encode(val.encode()))}`')
+        await ctx.send(f'{ctx.author.mention}, ```{self.sanitize(base64.b64encode(val.encode()))}```')
 
 
 def setup(bot):
