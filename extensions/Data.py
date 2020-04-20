@@ -10,7 +10,7 @@ class Data(commands.Cog):
         self.bot = bot
 
     def sanitize(self, string: bytes) -> str:
-        return string.decode('utf-8', 'ignore').replace('```', '\\```')
+        return string.decode('utf-8', 'ignore').replace('```', '`\U00002063``')
 
     # BASE
     @commands.group(name='decode')
