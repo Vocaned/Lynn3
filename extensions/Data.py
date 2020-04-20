@@ -10,12 +10,12 @@ class Data(commands.Cog):
         self.bot = bot
 
     # BASE
-    @commands.command(name='decode', aliases=['decoding'])
+    @commands.group(name='decode', aliases=['decoding'])
     async def decode(self, ctx):
         if not ctx.invoked_subcommand:
             raise commands.UserInputError()
     
-    @commands.command(name='encode', aliases=['encoding'])
+    @commands.group(name='encode', aliases=['encoding'])
     async def encode(self, ctx):
         if not ctx.invoked_subcommand:
             raise commands.UserInputError()
