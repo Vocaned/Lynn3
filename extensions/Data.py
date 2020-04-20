@@ -9,13 +9,16 @@ class Data(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    def sanitize(self, string: bytes) -> str:
+        return string.decode('utf-8', 'ignore').replace('`', '\\`')
+
     # BASE
-    @commands.group(name='decode', aliases=['decoding'])
+    @commands.group(name='decode')
     async def decode(self, ctx):
         if not ctx.invoked_subcommand:
             raise commands.UserInputError()
     
-    @commands.group(name='encode', aliases=['encoding'])
+    @commands.group(name='encode')
     async def encode(self, ctx):
         if not ctx.invoked_subcommand:
             raise commands.UserInputError()
@@ -24,13 +27,13 @@ class Data(commands.Cog):
     @decode.command(name='base64', aliases=['b64'])
     async def dbase64(self, ctx, *, val):
         try:
-            await ctx.send(f'{ctx.author.mention}, `{base64.b64decode(val.encode()).decode("utf-8", "ignore")}`')
+            await ctx.send(f'{ctx.author.mention}, `{self.sanitize(base64.b64decode(val.encode()))}`')
         except binascii.Error:
             await ctx.send('Could not parse base64')
 
     @encode.command(name='base64', aliases=['b64'])
     async def ebase64(self, ctx, *, val):
-        await ctx.send(f'{ctx.author.mention}, `{base64.b64encode(val.encode()).decode()}`')
+        await ctx.send(f'{ctx.author.mention}, `{self.sanitize(base64.b64encode(val.encode()))}`')
 
 
 def setup(bot):
