@@ -36,7 +36,7 @@ class Data(commands.Cog):
     async def ebase64(self, ctx, *, val):
         await self.send(ctx, base64.b64encode(val.encode()))
 
-    #HEX
+    # HEX
     @decode.command(name='hex', aliases=['base8', 'b8'])
     async def dhex(self, ctx, *, val):
         try:
