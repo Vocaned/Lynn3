@@ -217,7 +217,7 @@ class Fun(commands.Cog):
 			await resultsMsg.remove_reaction(continueName, self.bot.user)
 
 	games = {}
-	hangmanMaxTries = 8
+	hangmanMaxTries = 9
 
 	def hangmanMsg(self, ctx, game: dict) -> str:
 		# TODO: Embed messages
@@ -231,7 +231,7 @@ class Fun(commands.Cog):
 		message = f"""
 {ctx.author.mention}
 {' '.join(chars)}
-You have {game['left']} guesses left.
+You have {game['left']-1} guesses left.
 
 Wrong guesses: {', '.join([c for c in game['wrong']])}
 
