@@ -255,7 +255,7 @@ Type `{ctx.prefix}hangman [guess]` to guess a letter or a word, or `{ctx.prefix}
 				with open('hangman.txt', 'r') as f:
 					word = random.choice(f.readlines()).replace('\n', '')
 				self.games[str(ctx.author.id)] = {
-					'word': word,
+					'word': word.lower(),
 					'wrong': '',
 					'right': '',
 					'tries': 0,
@@ -267,6 +267,7 @@ Type `{ctx.prefix}hangman [guess]` to guess a letter or a word, or `{ctx.prefix}
 		elif not game:
 			await ctx.send(f'A game is not running. Type `{ctx.prefix}hangman` to start a game of hangman.')
 		else:
+			guess = guess.lower()
 			if guess == '-':
 				await ctx.send(f'Stopped the game. The word was {game["word"]}')
 				del self.games[str(ctx.author.id)]
@@ -285,7 +286,7 @@ Type `{ctx.prefix}hangman [guess]` to guess a letter or a word, or `{ctx.prefix}
 					game['tries'] += 1
 					if guess in game['word']:
 						game['right'] += guess
-						await ctx.send(f'Correct!\n{self.hangmanMsg(ctx, game)}')
+
 						won = True
 						for char in game['word']:
 							if char not in game['right']:
@@ -293,13 +294,15 @@ Type `{ctx.prefix}hangman [guess]` to guess a letter or a word, or `{ctx.prefix}
 						if won:
 							await ctx.send(f'You got the word `{game["word"]}` in {game["tries"]} guesses!')
 							del self.games[str(ctx.author.id)]
+
+						await ctx.send(f'Correct!\n{self.hangmanMsg(ctx, game)}')
 					else:
 						game['wrong'] += guess
 						game['left'] -= 1
 						await ctx.send(f'Incorrect!\n{self.hangmanMsg(ctx, game)}')
 		
 		if game and game['left'] <= 1:
-			await ctx.send(f'You lost! The word was {game["word"]}')
+			await ctx.send(f'You lost! The word was `{game["word"]}`')
 			del self.games[str(ctx.author.id)]
 
 

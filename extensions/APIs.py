@@ -758,6 +758,10 @@ class APIs(commands.Cog):
     async def gamepedia(self, ctx, wiki, *, query):
         await self.mediawiki(ctx, query, "https://"+wiki+".gamepedia.com/api.php", wiki.title() + " Wiki")
 
+    @commands.command(name="mcwiki", aliases=["minecraftwiki"])
+    async def mcwiki(self, ctx, *, query):
+        await self.mediawiki(ctx, query, "https://minecraft.gamepedia.com/api.php", wiki.title() + " Wiki")
+
     # TODO: Bulbapedia doesn't return pageIDs in searches
     """@commands.command(name="pokémon", aliases=["pokemon", "bulbapedia"])
     async def bulbapedia(self, ctx, *, query):
