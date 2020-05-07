@@ -735,6 +735,12 @@ class APIs(commands.Cog):
         shot = discord.File("website.png", filename="website.png")
         await ctx.send(files=[shot])
 
+    @commands.command(name="wolframalpha", aliases=["wa", "wolfram"])
+    async def wolframalpha(self, ctx, *, query):
+        embed = discord.Embed()
+        embed.set_image(url=f"http://api.wolframalpha.com/v1/simple?appid={config.apiKeys['wolframalpha']}&layout=labelbar&background=2F3136&foreground=white&i={self.escape(query)}")
+        await ctx.send(embed=embed)
+
     # The wiki has to have the TextExtracts extension in order for the API to work.
     # TODO: Don't rely on TextExtracts by stripping html manually (?)
 

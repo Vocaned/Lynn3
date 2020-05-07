@@ -31,7 +31,8 @@ apiKeys = {
     'osu':              '[KEY]',
     'twitchID':         '[KEY]',
     'twitchSecret':     '[KEY]',
-    'screenshotlayer':  '[KEY]'
+    'screenshotlayer':  '[KEY]',
+    'wolframalpha':     '[KEY]'
 }
 
 statusPages = [
