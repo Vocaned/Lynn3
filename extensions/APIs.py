@@ -737,9 +737,17 @@ class APIs(commands.Cog):
 
     @commands.command(name="wolframalpha", aliases=["wa", "wolfram"])
     async def wolframalpha(self, ctx, *, query):
-        embed = discord.Embed()
-        embed.set_image(url=f"http://api.wolframalpha.com/v1/simple?appid={config.apiKeys['wolframalpha']}&layout=labelbar&background=2F3136&foreground=white&i={self.escape(query)}")
-        await ctx.send(embed=embed)
+        # Discord can't download the file so we do it ourselves
+        async with aiohttp.ClientSession() as s:
+            async with s.get(f"http://api.wolframalpha.com/v1/simple?appid={config.apiKeys['wolframalpha']}&layout=labelbar&background=2F3136&foreground=white&i={self.escape(query)}") as r:
+                data = await r.read()
+                if len(data) < 1000: # HACK: Probably error msg if response is under 1000 bytes
+                    await ctx.send(f"{ctx.author.mention} " + data.decode("utf-8"))
+                    return
+                with open("wolfram.png", "wb") as f:
+                    f.write(await r.read())
+        answer = discord.File("wolfram.png", filename="wolfram.png")
+        await ctx.send(files=[answer])
 
     # The wiki has to have the TextExtracts extension in order for the API to work.
     # TODO: Don't rely on TextExtracts by stripping html manually (?)
