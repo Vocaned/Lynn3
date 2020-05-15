@@ -23,7 +23,7 @@ if __name__ == '__main__':
     async def on_message(message):
         ctx = await bot.get_context(message)
         if ctx.valid:
-            async with ctx.channel.typing():
-                await bot.process_commands(message)
+            await ctx.channel.trigger_typing()
+            await bot.process_commands(message)
 
     bot.run(config.token, bot=True, reconnect=True)

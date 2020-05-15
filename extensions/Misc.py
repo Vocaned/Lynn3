@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from datetime import datetime
+import asyncio
 import re
 import time
 import subprocess
@@ -42,22 +43,17 @@ class Misc(commands.Cog):
     async def reminder(self, ctx, *message):
         '''Sets a reminder.
         Time must be in ISO 8601 format. Times are in UTC. Examples:
-        %reminder 2017-01-10T12:30:59 Example message    =January 10th 2017, 12:30:59 UTC
+        %reminder 2017-01-10T07:30:59 Example message    =January 10th 2017, 12:30:59 UTC
         %reminder 2026-05-09T20:00:00 Example message    =May 9th 2026, 8 pm UTC
-        %reminder Example message                      =No time specified
         '''
+
+        date = datetime.fromisoformat(message[0])
+        await ctx.send("I'll remind you on " + date.strftime("%c") + "!\n*(please dont use this command for anything super important, reminders might just fail and never actually remind you because I don't have the motivation to make this bot good)*")
+        await asyncio.sleep((date-datetime.utcnow()).total_seconds())
+        
         embed = discord.Embed(title='Reminder', colour=0x8630bf)
-        if len(message) > 1:
-            try:
-                date = datetime.fromisoformat(message[0])
-                embed.timestamp = date
-                message = message[1:]
-            except:
-                pass
-        embed.description = ' '.join(message)
-        embed.set_footer(text=f'{str(ctx.message.author.name)}#{str(ctx.message.author.discriminator)}', icon_url=ctx.message.author.avatar_url)
-        await ctx.message.delete()
-        await ctx.send(embed=embed, content='')
+        embed.description = ' '.join(message[1:])
+        await ctx.send(embed=embed, content=ctx.author.mention)
 
     @commands.command()
     async def whois(self, ctx, *, domain):
