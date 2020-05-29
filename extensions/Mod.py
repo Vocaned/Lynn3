@@ -84,7 +84,7 @@ class Mod(commands.Cog):
             return
         
         emoji = await ctx.message.attachments[0].read()
-        ret = await ctx.guild.create_custom_emoji(name, emoji)
+        ret = await ctx.guild.create_custom_emoji(name=name, image=emoji)
 
         await ctx.send(f'Emote <:{ret.name}:{ret.id}> created successfully')
 
