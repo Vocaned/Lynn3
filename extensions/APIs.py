@@ -115,7 +115,7 @@ class APIs(commands.Cog):
 
         embed = discord.Embed(title=f'{title} - {wikiName}', color=0x32cd32, url=url)
         embed.description = description
-        if imgUrl:
+        if imgUrl and ctx.channel.is_nsfw():
             embed.set_image(url=imgUrl)
         await ctx.send(embed=embed)
 
