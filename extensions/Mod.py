@@ -73,6 +73,22 @@ class Mod(commands.Cog):
         else:
             await ctx.send(f'{user.name} was kicked.')
 
+    @commands.command(name='emote', aliases=['emoji'])
+    @commands.has_permissions(manage_emojis=True)
+    @commands.bot_has_permissions(manage_emojis=True)
+    @commands.guild_only()
+    async def emote(self, ctx, *, name):
+        '''Adds an emote with a specified name'''
+        if not ctx.message.attachments:
+            await ctx.send('Please upload the image and run the command in the same message.')
+            return
+        
+        emoji = await ctx.message.attachments[0].read()
+        ret = await ctx.guild.create_custom_emoji(name, emoji)
+
+        await ctx.send(f'Emote <:{ret.name}:{ret.id}> created successfully')
+
+
     @commands.command(name='nick', aliases=['nickname'])
     @commands.has_permissions(manage_nicknames=True)
     @commands.bot_has_permissions(manage_nicknames=True)
