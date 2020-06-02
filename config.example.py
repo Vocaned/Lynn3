@@ -5,7 +5,6 @@ from datetime import datetime
 
 token = '[TOKEN]'
 description ='Lynn'
-cogDir = 'extensions'
 
 os.makedirs('logs', exist_ok=True)
 logging.basicConfig(format='%(asctime)s | [%(levelname)s] (%(filename)s) - %(message)s',

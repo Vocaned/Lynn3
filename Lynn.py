@@ -1,16 +1,16 @@
 import discord
 from discord.ext import commands
 import config
-import os
+import glob
 import logging
 
 errors = ''
 bot = commands.Bot(command_prefix=config.get_prefix, description=config.description)
 
 if __name__ == '__main__':
-    for extension in [f.replace('.py', '') for f in os.listdir('extensions') if os.path.isfile(os.path.join('extensions', f))]:
+    for extension in [f.replace('.py', '').replace('/', '.') for f in glob.glob("cogs/**/*.py", recursive=True)]:
         try:
-            bot.load_extension(config.cogDir + '.' + extension)
+            bot.load_extension(extension)
         except (discord.ClientException, ModuleNotFoundError):
             logging.error(f'Failed to load extension {extension}.', exc_info=True)
 
