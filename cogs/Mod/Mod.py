@@ -139,13 +139,12 @@ Invite can be used `{(str(inv.max_uses) if inv.max_uses else '∞')}` times.'''
         '''Adds an emote with a specified name'''
         if ctx.message.attachments:
             emoji = await ctx.message.attachments[0].read()
-            
         else:
             async with aiohttp.ClientSession() as session:
                 async with session.get(args.split(' ')[0]) as resp:
                     if resp.status != 200:
                         raise commands.ArgumentParsingError()
-            emoji = io.BytesIO(await resp.read())
+                    emoji = io.BytesIO(await resp.read())
 
         ret = await ctx.guild.create_custom_emoji(name=args[1:], image=emoji)
         await ctx.send(f'Emote <:{ret.name}:{ret.id}> created successfully')
