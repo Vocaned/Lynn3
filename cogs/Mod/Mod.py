@@ -147,7 +147,7 @@ Invite can be used `{(str(inv.max_uses) if inv.max_uses else '∞')}` times.'''
                         raise commands.ArgumentParsingError()
             emoji = io.BytesIO(await resp.read())
 
-        ret = await ctx.guild.create_custom_emoji(name=args, image=emoji)
+        ret = await ctx.guild.create_custom_emoji(name=args[1:], image=emoji)
         await ctx.send(f'Emote <:{ret.name}:{ret.id}> created successfully')
 
     @commands.command(name='echo', aliases=['say', 'repeat'])
