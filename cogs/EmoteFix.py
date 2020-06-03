@@ -20,7 +20,7 @@ class EmoteFix(commands.Cog):
         match = re.findall('(?=[^:\\s]*):\\S+?:(?=[^:\\s]*)', message.content)
         if match:
             for emote in match:
-                if not re.match('<a:\\S+:\\d{18}>', message.content) and not emote in replaced:
+                if not re.search('<a:\\S+:\\d{18}>', message.content) and not emote in replaced:
                     em = emote.replace(':', '')
                     for e in message.guild.emojis:
                         if e.name.lower() == em.lower():

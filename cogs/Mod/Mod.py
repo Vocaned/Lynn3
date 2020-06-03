@@ -136,7 +136,9 @@ Invite can be used `{(str(inv.max_uses) if inv.max_uses else '∞')}` times.'''
     @commands.bot_has_permissions(manage_emojis=True)
     @commands.guild_only()
     async def emote(self, ctx, *, args):
-        '''Adds an emote with a specified name'''
+        '''Adds an emote with a specified name
+        args = [name] when image is an attachment, [url] [name] when uploading from URL
+        '''
         if ctx.message.attachments:
             emoji = await ctx.message.attachments[0].read()
         else:
