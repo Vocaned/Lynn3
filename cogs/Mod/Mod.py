@@ -144,11 +144,10 @@ Invite can be used `{(str(inv.max_uses) if inv.max_uses else '∞')}` times.'''
                 async with session.get(args.split(' ')[0]) as resp:
                     if resp.status != 200:
                         raise commands.ArgumentParsingError()
-                    data = io.BytesIO(await resp.read())
-                    emoji = discord.File(emoji, args.split(' ')[0].split('/')[-1])
+                    emoji = await resp.read()
 
-        ret = await ctx.guild.create_custom_emoji(name=args[1:], image=emoji)
-        await ctx.send(f'Emote <:{ret.name}:{ret.id}> created successfully')
+        ret = await ctx.guild.create_custom_emoji(name=' '.join(args.split(' ')[1:]), image=emoji)
+        await ctx.send(f'Emote :{ret.name}: created successfully')
 
     @commands.command(name='echo', aliases=['say', 'repeat'])
     @commands.has_permissions(manage_messages=True)
