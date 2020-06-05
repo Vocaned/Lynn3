@@ -55,17 +55,6 @@ class Misc(commands.Cog):
         embed.description = ' '.join(message[1:])
         await ctx.send(embed=embed, content=ctx.author.mention)
 
-    @commands.command()
-    async def whois(self, ctx, *, domain):
-        '''Whois'''
-        if not sys.platform.startswith('linux'):
-            await ctx.send('This command is only usable when the bot is hosted on linux. Sorry!')
-            return
-        output = subprocess.check_output(['whois', domain], stderr=subprocess.PIPE).decode('utf-8')
-
-        for msg in splitMessage(output):
-            await ctx.send(msg)
-
     @commands.command(aliases=['id'])
     async def snowflake(self, ctx, *, snowflake):
         # HACK: Parse mentions by just removing everything that's not a digit
