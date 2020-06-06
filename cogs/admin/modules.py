@@ -9,7 +9,9 @@ class Modules(commands.Cog):
     @commands.is_owner()
     async def modules(self, ctx):
         """Lists all loaded modules"""
-        await ctx.send("Loaded modules: ```" + "\n".join(list(map(lambda x: x.replace('cogs.', ''), self.bot.extensions))) + "```")
+        modulelist = list(map(lambda x: x.replace('cogs.', ''), self.bot.extensions))
+        modulelist.sort()
+        await ctx.send("Loaded modules: ```" + "\n".join(modulelist) + "```")
 
     @commands.command(hidden=True)
     @commands.is_owner()

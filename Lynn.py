@@ -4,7 +4,6 @@ import config
 import glob
 import logging
 
-errors = ''
 bot = commands.Bot(command_prefix=config.get_prefix, description=config.description)
 
 if __name__ == '__main__':

@@ -1,9 +1,9 @@
 from discord.ext import commands
 import discord
 import sys
-from Lynn import errors
 import traceback
 import math
+import logging
 
 class Error(commands.Cog):
     def __init__(self, bot):
@@ -11,14 +11,17 @@ class Error(commands.Cog):
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
-        global errors
         error = getattr(error, 'original', error)
 
         if isinstance(error, commands.CommandNotFound):
             return
 
-        print('Ignoring exception in {}'.format(ctx.command), file=sys.stderr)
-        errors = '\n'.join(traceback.format_exception(type(error), error, error.__traceback__))
+        logging.error('Ignoring exception in {}'.format(ctx.command))
+        try:
+            with open('error.dat', 'w') as f:
+                f.write('\n'.join(traceback.format_exception(type(error), error, error.__traceback__)))
+        except:
+            logging.error('ERROR: Could not write error into error.dat')
 
         try:
             await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
@@ -71,6 +74,22 @@ class Error(commands.Cog):
 
         if isinstance(error, commands.CheckFailure):
             await ctx.send('You do not have permission to use this command.')
+            return
+
+        if isinstance(error, commands.ExtensionAlreadyLoaded):
+            await ctx.send('Extension already loaded.')
+            return
+        
+        if isinstance(error, commands.ExtensionNotFound):
+            await ctx.send('Extension not found.')
+            return
+
+        if isinstance(error, commands.ExtensionNotLoaded):
+            await ctx.send('Extension not loaded.')
+            return
+        
+        if isinstance(error, commands.ExtensionFailed):
+            await ctx.send('Failed to load extension.')
             return
 
         try:

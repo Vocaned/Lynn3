@@ -1,6 +1,5 @@
 __pycache__
 config.py
-juttu.py
 *.db
 logs
 .vscode
@@ -8,3 +7,4 @@ downloads
 skins
 Lynn.code-workspace
 *.png
+error.dat

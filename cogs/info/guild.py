@@ -8,7 +8,7 @@ class Guild(commands.Cog):
     @commands.command(name='guild', aliases=['discord', 'invite'])
     async def DiscordAPI(self, ctx, *, invite):
         """Gets information about discord invites"""
-        invite = self.bot.fetch_invite(invite, with_counts=True)
+        invite = await self.bot.fetch_invite(invite, with_counts=True)
 
         embed = discord.Embed(title='Click here to join the server', colour=0x7289DA, url=invite.url)
         embed.add_field(name='Guild Name', value=invite.guild.name)
@@ -18,7 +18,7 @@ class Guild(commands.Cog):
         embed.add_field(name='Online', value=invite.approximate_presence_count)
 
         if invite.guild.features:
-            embed.add_field(name='Special features', value='\n'.join(invite.guild.features))
+            embed.add_field(name='Special features', value='`'+'`\n`'.join(invite.guild.features)+'`', inline=False)
 
         try:
             embed.add_field(name='Invite created by', value=f"{invite.inviter.name}#{invite.inviter.discriminator} ({invite.inviter.mention})")

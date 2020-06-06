@@ -1,6 +1,5 @@
 from discord.ext import commands
 import discord
-from Lynn import errors
 from BotUtils import splitMessage
 
 class Admin(commands.Cog):
@@ -12,12 +11,12 @@ class Admin(commands.Cog):
     @commands.command(hidden=True)
     @commands.is_owner()
     async def debug(self, ctx):
-        global errors
-        if not errors:
-            await ctx.send('No errors logged.')
-        else:
-            for msg in splitMessage(errors, highlight='py'):
-                await ctx.send(msg)
+        with open('error.dat', 'r') as errors:
+            if not errors:
+                await ctx.send('No errors logged.')
+            else:
+                for msg in splitMessage(errors, highlight='py'):
+                    await ctx.send(msg)
 
     @commands.command(hidden=True)
     @commands.is_owner()
