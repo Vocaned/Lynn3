@@ -1,7 +1,11 @@
+import discord
+from discord.ext import commands
 import os
 from io import BytesIO
 import aiohttp
+import urllib
 import json
+from config import apiKeys
 from PIL import Image, ImageOps
 
 # Kinda hacky, sorry. I'll probably have no idea how this works in a couple of months. Anyways just don't touch it thanks
@@ -20,6 +24,14 @@ async def REST(url, method='s.get', headers=None, data=None, auth=None, returns=
                     return eval(returns)
             except:
                 return None
+
+def escapeURL(url: str) -> str:
+    return urllib.parse.quote(url)
+
+def getAPIKey(service: str) -> str:
+    if not service in apiKeys:
+        raise commands.DisabledCommand(message='Command disabled due to missing API key. Please contact bot owner')
+    return apiKeys[service]
 
 async def makeBodyPart(img, img2, p, s, o11, o12, o21, o22):
     size = (p*s[0], p*s[1], p*s[2], p*s[3])

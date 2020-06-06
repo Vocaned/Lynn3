@@ -1,0 +1,43 @@
+from discord.ext import commands
+from BotUtils import REST
+import discord
+
+class Twitch(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(name="twitch")
+    async def TwitchAPI(self, ctx, *, user):
+        """Gets information about twitch users"""
+        # TODO: Cache tokens
+        token = await REST("https://id.twitch.tv/oauth2/token?client_id="+config.apiKeys["twitchID"]+"&client_secret="+config.apiKeys["twitchSecret"]+"&grant_type=client_credentials", method="s.post")
+        token = token["access_token"]
+        data = await REST("https://api.twitch.tv/helix/users?login=" + self.escape(user), headers={"Authorization": "Bearer " + token})
+        data = data["data"][0]
+
+        name = data["display_name"]
+        if data["login"].lower() != data["display_name"].lower():
+            name = data["display_name"] + " (" + data["login"] + ")"
+
+        embed = discord.Embed(title="Twitch user - " + name, color=0x6441A4, url="https://twitch.tv/" + data["login"])
+
+        embed.set_thumbnail(url=data["profile_image_url"])
+
+        if data["offline_image_url"]:
+            embed.set_image(url=data["offline_image_url"])
+
+        if data["broadcaster_type"]:
+            utype = data["broadcaster_type"].title()
+            if data["type"]:
+                utype += "\n" + data["type"].title()
+            embed.add_field(name="User Type", value=utype)
+
+        if data["description"]:
+            embed.add_field(name="Description", value=data["description"])
+        embed.add_field(name="Views", value=str(data["view_count"]))
+
+        embed.set_footer(icon_url="https://static.twitchcdn.net/assets/favicon-32-d6025c14e900565d6177.png", text="User id " + data["id"])
+        await ctx.send(embed=embed)
+
+def setup(bot):
+    bot.add_cog(Twitch(bot))
