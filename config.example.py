@@ -30,6 +30,7 @@ apiKeys = {
     'twitchID':         '[KEY]',
     'twitchSecret':     '[KEY]',
     'wolframalpha':     '[KEY]'
+    #'openweathermap':   '[KEY]'
 }
 
 statusPages = [

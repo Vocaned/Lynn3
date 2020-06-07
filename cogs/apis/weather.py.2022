@@ -1,0 +1,33 @@
+# FOR USE WHEN DARKSKY API SHUTS DOWN (2022)
+
+from discord.ext import commands
+from BotUtils import REST, getAPIKey, escapeURL
+from datetime import datetime
+import discord
+
+class Weather(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(name='weather')
+    async def WeatherAPI(self, ctx, *, city):
+        """Gets information about the weather"""
+        geocoding = await REST('https://nominatim.openstreetmap.org/search?format=json&limit=1&accept-language=en&q='+escapeURL(city))
+        data = await REST(f"https://api.openweathermap.org/data/2.5/weather?lat={geocoding[0]['lat']}&lon={geocoding[0]['lon']}&appid={getAPIKey('openweathermap')}")
+
+
+        embed = discord.Embed(title=geocoding[0]['display_name'], color=0xffb347)
+        embed.set_thumbnail(url=f"https://openweathermap.org/img/wn/{data['weather'][0]['icon']}.png")
+
+        embed.add_field(name='Weather', value=f"{round(data['main']['temp']-273.15, 2)}°C ({round((data['main']['temp']-273.15) * (9/5) + 32, 2)}°F)\n"
+            + data['weather'][0]['description'].title() + '\n'
+            + f"Humidity: {data['main']['humidity']}%\n"
+            + f"Clouds: {data['clouds']['all']}%\n"
+            + f"Wind: {data['wind']['speed']} m/s ({round(int(data['wind']['speed']) * 2.2369362920544, 2)} mph)")
+        embed.set_footer(text='Powered by OpenWeatherMap and OpenStreetMap')
+        embed.timestamp = datetime.utcfromtimestamp(data['dt'])
+        await ctx.send(embed=embed)
+
+
+def setup(bot):
+    bot.add_cog(Weather(bot))

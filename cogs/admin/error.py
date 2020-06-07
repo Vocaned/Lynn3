@@ -94,7 +94,7 @@ class Error(commands.Cog):
 
         try:
             if hasattr(error, 'args') and len(error.args) != 0:
-                await ctx.send(f"Error: `{error.args}`")
+                await ctx.send(f"Error: `{error.args[0]}`")
         except:
             pass
 
