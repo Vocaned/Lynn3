@@ -29,7 +29,8 @@ apiKeys = {
     'osu':              '[KEY]',
     'twitchID':         '[KEY]',
     'twitchSecret':     '[KEY]',
-    'wolframalpha':     '[KEY]'
+    'wolframalpha':     '[KEY]',
+    'ocrspace':         '[KEY]'
     #'openweathermap':   '[KEY]'
 }
 

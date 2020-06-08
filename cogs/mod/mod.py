@@ -131,25 +131,7 @@ Invite can be used `{(str(inv.max_uses) if inv.max_uses else '∞')}` times.'''
         await ctx.message.channel.purge(limit=amount)
         await ctx.send(f'Sucesfully deleted **{int(amount)}** messages!', delete_after=5)
 
-    @commands.command(name='emote', aliases=['emoji'])
-    @commands.has_permissions(manage_emojis=True)
-    @commands.bot_has_permissions(manage_emojis=True)
-    @commands.guild_only()
-    async def emote(self, ctx, *, args):
-        '''Adds an emote with a specified name
-        args = [name] when image is an attachment, [url] [name] when uploading from URL
-        '''
-        if ctx.message.attachments:
-            emoji = await ctx.message.attachments[0].read()
-        else:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(args.split(' ')[0]) as resp:
-                    if resp.status != 200:
-                        raise commands.ArgumentParsingError()
-                    emoji = await resp.read()
 
-        ret = await ctx.guild.create_custom_emoji(name=' '.join(args.split(' ')[1:]), image=emoji)
-        await ctx.send(f'Emote :{ret.name}: created successfully')
 
     @commands.command(name='echo', aliases=['say', 'repeat'])
     @commands.has_permissions(manage_messages=True)
