@@ -12,10 +12,11 @@ class Admin(commands.Cog):
     @commands.is_owner()
     async def debug(self, ctx):
         with open('error.dat', 'r') as errors:
-            if not errors:
+            error = errors.read()
+            if not error:
                 await ctx.send('No errors logged.')
             else:
-                for msg in splitMessage(errors, highlight='py'):
+                for msg in splitMessage(error, highlight='py'):
                     await ctx.send(msg)
 
     @commands.command(hidden=True)
