@@ -118,10 +118,20 @@ class Minecraft(commands.Cog):
             await ctx.send(files=[skinFile, headFile], embed=embed)
         else:
             sale = await REST('https://api.mojang.com/orders/statistics', method='POST', data='{"metricKeys":["item_sold_minecraft","prepaid_card_redeemed_minecraft"]}', headers={"content-type": "application/json"})
-            embed = discord.Embed(title='Minecraft', colour=0x82540f)
+            embed = discord.Embed(title='Minecraft', colour=0xa4d168)
             embed.add_field(name='Sold total', value=sale['total'])
             embed.add_field(name='Sold in the last 24h', value=sale['last24h'])
             embed.add_field(name='Sold per second', value=sale['saleVelocityPerSeconds'])
+            embed.set_footer(text='\U00002063', icon_url='https://minecraft.net/favicon-96x96.png')
+            embed.timestamp = datetime.utcnow()
+            await ctx.send(embed=embed)
+
+            sale = await REST('https://api.mojang.com/orders/statistics', method='POST', data='{"metricKeys":["item_sold_dungeons"]}', headers={"content-type": "application/json"})
+            embed = discord.Embed(title='Minecraft Dungeons', colour=0xe57834)
+            embed.add_field(name='Sold total', value=sale['total'])
+            embed.add_field(name='Sold in the last 24h', value=sale['last24h'])
+            embed.add_field(name='Sold per second', value=sale['saleVelocityPerSeconds'])
+            # TODO: Minecraft dungeons favicon
             embed.set_footer(text='\U00002063', icon_url='https://minecraft.net/favicon-96x96.png')
             embed.timestamp = datetime.utcnow()
             await ctx.send(embed=embed)
