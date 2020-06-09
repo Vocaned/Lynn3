@@ -59,7 +59,7 @@ class Mixer(commands.Cog):
         if data['online']:
             embed.add_field(name='Current viewers', value=str(data['viewersCurrent']))
 
-        embed.set_footer(icon_url='https://mixer.com/_latest/assets/favicons/favicon-32x32.png', text='LVL ' + str(data['user']['level']) + ' • Account created ')
+        embed.set_footer(icon_url='https://mixer.com/_latest/assets/favicons/favicon-32x32.png', text=f"LVL {data['user']['level']} • Account created ")
         embed.timestamp = datetime.strptime(data['createdAt'], '%Y-%m-%dT%H:%M:%S.%fZ')
         await ctx.send(embed=embed)
 

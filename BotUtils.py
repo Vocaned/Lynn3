@@ -9,38 +9,22 @@ import re
 from config import apiKeys
 from PIL import Image, ImageOps
 
-# Kinda hacky, sorry. I'll probably have no idea how this works in a couple of months. Anyways just don't touch it thanks
-async def REST(url, method='s.get', headers=None, data=None, auth=None, returns='await r.json(content_type=None)'):
-    args = [headers, data, auth]
-    for n in range(len(args)):
-        if args[n]:
-            args[n] = f'"{str(args[n])}"'
-    func = f'{str(method)}(url="{str(url)}", headers={str(headers)}, data={json.dumps(str(data)) if data else None}, auth={str(auth)})'
+async def REST(url: str, method='GET', headers=None, data=None, auth=None, returns='json') -> aiohttp.ClientResponse:
     async with aiohttp.ClientSession() as s:
-        async with eval(func) as r:
-            try:
-                if returns.split(' ')[0] == 'await':
-                    return await eval(' '.join(returns.split(' ')[1:]))
-                else:
-                    return eval(returns)
-            except:
-                return None
-
-async def REST2(url, method='s.get', headers=None, data=None, auth=None, returns='await r.json(content_type=None)'):
-    args = [headers, data, auth]
-    for n in range(len(args)):
-        if args[n]:
-            args[n] = f'"{str(args[n])}"'
-    func = f'{str(method)}(url="{str(url)}", headers={str(headers)}, data={data}, auth={str(auth)})'
-    async with aiohttp.ClientSession() as s:
-        async with eval(func) as r:
-            try:
-                if returns.split(' ')[0] == 'await':
-                    return await eval(' '.join(returns.split(' ')[1:]))
-                else:
-                    return eval(returns)
-            except:
-                return None
+        async with s.request(method, url, headers=headers, data=data, auth=auth) as r:
+            temp = []
+            for ret in returns.split('|'):
+                if ret == 'json':
+                    temp.append(await r.json())
+                elif ret == 'status':
+                    temp.append(r.status)
+                elif ret == 'raw':
+                    temp.append(await r.read())
+                elif ret == 'object':
+                    return r
+            if len(temp) == 1:
+                return temp[0]
+            return temp
 
 def escapeURL(url: str) -> str:
     return urllib.parse.quote(url)

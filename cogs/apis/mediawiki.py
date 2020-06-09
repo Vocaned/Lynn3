@@ -52,15 +52,15 @@ class Mediawiki(commands.Cog):
 
     @commands.command(name='wikilanguage', aliases=['wikil', 'wikilang'])
     async def wikilanguage(self, ctx, lang, *, query):
-        await self.mediawiki(ctx, query, 'https://'+lang+'.wikipedia.org/w/api.php', 'Wikipedia ' + lang.upper())
+        await self.mediawiki(ctx, query, f"https://{lang}.wikipedia.org/w/api.php", 'Wikipedia ' + lang.upper())
 
     @commands.command(name='wiktionarylanguage', aliases=['wiktionarylang', 'dictionarylanguage', 'dictionarylang', 'definelang', 'definelanguage'])
     async def wiktionarylanguage(self, ctx, lang, *, query):
-        await self.mediawiki(ctx, query, 'https://'+lang+'.wiktionary.org/w/api.php', 'Wiktionary ' + lang.upper())
+        await self.mediawiki(ctx, query, f"https://{lang}.wiktionary.org/w/api.php", 'Wiktionary ' + lang.upper())
 
     @commands.command(name='gamepedia')
     async def gamepedia(self, ctx, wiki, *, query):
-        await self.mediawiki(ctx, query, 'https://'+wiki+'.gamepedia.com/api.php', wiki.title() + ' Wiki')
+        await self.mediawiki(ctx, query, f"https://{wiki}.gamepedia.com/api.php", wiki.title() + ' Wiki')
 
     @commands.command(name='mcwiki', aliases=['minecraftwiki'])
     async def mcwiki(self, ctx, *, query):

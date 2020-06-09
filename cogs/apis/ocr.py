@@ -1,5 +1,5 @@
 from discord.ext import commands
-from BotUtils import REST2, getAPIKey, isURL
+from BotUtils import REST, getAPIKey, isURL
 from datetime import datetime
 import discord
 
@@ -101,7 +101,7 @@ class OCR(commands.Cog):
             else:
                 raise commands.ArgumentParsingError()
 
-        data = await REST2('https://api.ocr.space/parse/image', method='s.post', headers={'apikey': getAPIKey('ocrspace')}, data={'url': link, 'language': lang, 'OCREngine': engine})
+        data = await REST('https://api.ocr.space/parse/image', method='POST', headers={'apikey': getAPIKey('ocrspace')}, data={'url': link, 'language': lang, 'OCREngine': engine})
 
         if data['OCRExitCode'] != 1:
             await ctx.send(f"`{data['ErrorMessage']}`")

@@ -30,7 +30,7 @@ class Twitch(commands.Cog):
     async def TwitchAPI(self, ctx, *, user):
         """Gets information about twitch users"""
         # TODO: Cache tokens
-        token = await REST(f"https://id.twitch.tv/oauth2/token?client_id={getAPIKey('twitchID')}&client_secret={getAPIKey('twitchSecret')}&grant_type=client_credentials", method='s.post')
+        token = await REST(f"https://id.twitch.tv/oauth2/token?client_id={getAPIKey('twitchID')}&client_secret={getAPIKey('twitchSecret')}&grant_type=client_credentials", method='POST')
         token = token['access_token']
         data = await REST(f"https://api.twitch.tv/helix/users?login={escapeURL(user)}", headers={'Authorization': 'Bearer ' + token, 'Client-ID': getAPIKey('twitchID')})
         data = data['data'][0]

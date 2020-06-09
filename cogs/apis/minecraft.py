@@ -18,13 +18,13 @@ class Minecraft(commands.Cog):
         last = 0
         for _ in range(30):
             if a == b:
-                if last == a-1 and await REST(f"https://api.mojang.com/users/profiles/minecraft/{name}?at={str(a)}", returns='r.status == 200'):
+                if last == a-1 and await REST(f"https://api.mojang.com/users/profiles/minecraft/{name}?at={str(a)}", returns='status') == 200:
                     return datetime.utcfromtimestamp(a)
                 else:
                     return False
             else:
                 mid = a + math.floor((b - a) / 2)
-                if await REST(f"https://api.mojang.com/users/profiles/minecraft/{name}?at={str(mid)}", returns='r.status == 200'):
+                if await REST(f"https://api.mojang.com/users/profiles/minecraft/{name}?at={str(mid)}", returns='status')  == 200:
                     b = mid
                 else:
                     a = mid+1
@@ -117,10 +117,11 @@ class Minecraft(commands.Cog):
             embed.timestamp = datetime.utcnow()
             await ctx.send(files=[skinFile, headFile], embed=embed)
         else:
-            sale = await REST('https://api.mojang.com/orders/statistics', method='s.post', data='{"metricKeys":["item_sold_minecraft","prepaid_card_redeemed_minecraft"]}', headers='{"content-type": "application/json"}')
+            sale = await REST('https://api.mojang.com/orders/statistics', method='POST', data='{"metricKeys":["item_sold_minecraft","prepaid_card_redeemed_minecraft"]}', headers={"content-type": "application/json"})
             embed = discord.Embed(title='Minecraft', colour=0x82540f)
             embed.add_field(name='Sold total', value=sale['total'])
             embed.add_field(name='Sold in the last 24h', value=sale['last24h'])
+            embed.add_field(name='Sold per second', value=sale['saleVelocityPerSeconds'])
             embed.set_footer(text='\U00002063', icon_url='https://minecraft.net/favicon-96x96.png')
             embed.timestamp = datetime.utcnow()
             await ctx.send(embed=embed)
@@ -162,8 +163,9 @@ class Minecraft(commands.Cog):
                 embed.add_field(name='Notes', value=', '.join([flagName[n] for n in flags]))
             if data['forum_title']:
                 embed.add_field(name='Forum Title', value=discord.utils.escape_mentions(data['forum_title']))
-            if await REST('https://classicube.s3.amazonaws.com/skin/' + str(data['username']) + '.png', returns='r.status == 200'):
-                skinURL = f'https://classicube.s3.amazonaws.com/skin/{str(data["username"])}.png'
+            
+            skinURL = f'https://classicube.s3.amazonaws.com/skin/{str(data["username"])}.png'
+            if await REST(skinURL, returns='status') == 200:
                 embed.add_field(name='Skin URL', value=f"[Click me]({skinURL})")
                 await skinRenderer2D(skinURL, fromFile=False)
                 await headRenderer(skinURL, fromFile=False)
@@ -191,7 +193,7 @@ class Minecraft(commands.Cog):
             servers = ''
             for server in sorted(data['servers'], key=lambda k: k['players'], reverse=True):
                 if server['players'] > 0:
-                    temp = '[' + str(server['country_abbr']) + '] [' + str(server['name']) + '](https://www.classicube.net/server/play/' + str(server['hash']) + ') | ' + str(server['players']) + '/' + str(server['maxplayers'])
+                    temp = f"[{server['country_abbr']}] [{server['name']}](https://www.classicube.net/server/play/{server['hash']}) | {server['players']}/{server['maxplayers']}"
                     if len(servers) + len('\n---\n') + len(temp) > 1024:
                         serverlist.append(servers)
                         servers = ''

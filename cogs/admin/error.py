@@ -27,6 +27,12 @@ class Error(commands.Cog):
             await ctx.message.add_reaction("\N{NO ENTRY SIGN}")
         except:
             pass
+  
+        try:
+            if hasattr(error, 'args'):
+                await ctx.send(f"Error: `{type(error).__name__}: {error}`")
+        except:
+            pass
 
         if isinstance(error, commands.BotMissingPermissions):
             missing = [perm.replace('_', ' ').replace('guild', 'server').title() for perm in error.missing_perms]
@@ -91,12 +97,6 @@ class Error(commands.Cog):
         if isinstance(error, commands.ExtensionFailed):
             await ctx.send('Failed to load extension.')
             return
-
-        try:
-            if hasattr(error, 'args') and len(error.args) != 0:
-                await ctx.send(f"Error: `{error.args[0]}`")
-        except:
-            pass
 
 def setup(bot):
     bot.add_cog(Error(bot))
