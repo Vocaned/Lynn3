@@ -20,7 +20,7 @@ class Emote(commands.Cog):
         if ctx.message.attachments:
             emoji = await ctx.message.attachments[0].read()
         else:
-            emoji = REST(args.split(' ')[0], returns='raw')
+            emoji = await REST(args.split(' ')[0], returns='raw')
 
         ret = await ctx.guild.create_custom_emoji(name=' '.join(args.split(' ')[1:]), image=emoji)
         await ctx.send(f'Emote {ret} created successfully')
