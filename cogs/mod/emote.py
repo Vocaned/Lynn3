@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from BotUtils import REST
 import aiohttp
 import io
 class Emote(commands.Cog):
@@ -19,14 +20,10 @@ class Emote(commands.Cog):
         if ctx.message.attachments:
             emoji = await ctx.message.attachments[0].read()
         else:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(args.split(' ')[0]) as resp:
-                    if resp.status != 200:
-                        raise commands.ArgumentParsingError()
-                    emoji = await resp.read()
+            emoji = REST(args.split(' ')[0], returns='raw')
 
         ret = await ctx.guild.create_custom_emoji(name=' '.join(args.split(' ')[1:]), image=emoji)
-        await ctx.send(f'Emote :{ret.name}: created successfully')
+        await ctx.send(f'Emote {ret} created successfully')
 
 def setup(bot):
     bot.add_cog(Emote(bot))

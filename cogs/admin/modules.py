@@ -5,8 +5,7 @@ class Modules(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(hidden=True)
-    @commands.is_owner()
+    @commands.command()
     async def modules(self, ctx):
         """Lists all loaded modules"""
         modulelist = list(map(lambda x: x.replace('cogs.', ''), self.bot.extensions))

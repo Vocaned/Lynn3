@@ -124,17 +124,18 @@ class Minecraft(commands.Cog):
             embed.add_field(name='Sold per second', value=sale['saleVelocityPerSeconds'])
             embed.set_footer(text='\U00002063', icon_url='https://minecraft.net/favicon-96x96.png')
             embed.timestamp = datetime.utcnow()
-            await ctx.send(embed=embed)
-
+            
             sale = await REST('https://api.mojang.com/orders/statistics', method='POST', data='{"metricKeys":["item_sold_dungeons"]}', headers={"content-type": "application/json"})
-            embed = discord.Embed(title='Minecraft Dungeons', colour=0xe57834)
-            embed.add_field(name='Sold total', value=sale['total'])
-            embed.add_field(name='Sold in the last 24h', value=sale['last24h'])
-            embed.add_field(name='Sold per second', value=sale['saleVelocityPerSeconds'])
+            embed2 = discord.Embed(title='Minecraft Dungeons', colour=0xe57834)
+            embed2.add_field(name='Sold total', value=sale['total'])
+            embed2.add_field(name='Sold in the last 24h', value=sale['last24h'])
+            embed2.add_field(name='Sold per second', value=sale['saleVelocityPerSeconds'])
             # TODO: Minecraft dungeons favicon
-            embed.set_footer(text='\U00002063', icon_url='https://minecraft.net/favicon-96x96.png')
-            embed.timestamp = datetime.utcnow()
+            embed2.set_footer(text='\U00002063', icon_url='https://minecraft.net/favicon-96x96.png')
+            embed2.timestamp = datetime.utcnow()
+
             await ctx.send(embed=embed)
+            await ctx.send(embed=embed2)
 
     @commands.command(name='classicube', aliases=['cc'])
     async def classiCubeAPI(self, ctx, *, user=None):
