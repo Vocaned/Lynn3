@@ -132,4 +132,5 @@ class UserInfo(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(UserInfo(bot))
+    # Disable until 1.4 releases
+    #bot.add_cog(UserInfo(bot))
