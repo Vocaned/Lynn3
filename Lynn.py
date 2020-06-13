@@ -7,7 +7,7 @@ import logging
 bot = commands.Bot(command_prefix=config.get_prefix, description=config.description)
 
 if __name__ == '__main__':
-    for extension in [f.replace('.py', '').replace('/', '.') for f in glob.glob('cogs/**/*.py', recursive=True)]:
+    for extension in [f.replace('.py', '').replace('/', '.').replace('\\', '.') for f in glob.glob('cogs/**/*.py', recursive=True)]:
         try:
             bot.load_extension(extension)
         except (discord.ClientException, ModuleNotFoundError):
