@@ -43,8 +43,8 @@ class Admin(commands.Cog):
     @commands.command(hidden=True)
     @commands.is_owner()
     async def shutdown(self, ctx):
-        await ctx.send('Goodbye!')
         await ctx.message.add_reaction('\N{WAVING HAND SIGN}')
+        await ctx.send('Goodbye!')
         await self.bot.close()
 
 def setup(bot):

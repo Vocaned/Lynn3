@@ -1,6 +1,7 @@
 from discord.ext import commands
 from BotUtils import REST, escapeURL
 import discord
+import re
 
 class Mediawiki(commands.Cog):
     def __init__(self, bot):
@@ -20,23 +21,39 @@ class Mediawiki(commands.Cog):
                     await ctx.send('No results found.')
                 return
 
-        pageID = str(search['query']['search'][0]['pageid'])
-        info = await REST(f'{apiURL}?action=query&prop=info|pageimages|extracts&inprop=url|displaytitle&piprop=original&pilicense=any&exchars=500&format=json&explaintext&utf8&redirects&pageids={pageID}')
+        pageID = search['query']['search'][0]['pageid']
+        info = await REST(f'{apiURL}?action=query&prop=info|pageimages|extracts&inprop=url|displaytitle&piprop=original&pilicense=any&exlimit=1&format=json&explaintext&utf8&redirects&pageids={pageID}')
         # Get "first" page with an unknown pageID
         info = list(info['query']['pages'].values())[0]
 
         title = info['title']
         url = info['fullurl']
-        description = info['extract']
         try:
             imgUrl = info['original']['source']
         except:
             imgUrl = None
 
-        embed = discord.Embed(title=f"{title} - {wikiName}", color=0x32cd32, url=url)
-        embed.description = description
+        totalchars = 0
+        title = f"{title} - {wikiName}"
+        totalchars += len(title)
+        embed = discord.Embed(title=title, color=0x32cd32, url=url)
         if imgUrl:
             embed.set_image(url=imgUrl)
+
+        extract = info['extract'].replace('\\t', '')
+        r = re.compile('([^=])(==\\s)(.+?)(\\s==)')
+        m = [m for m in r.finditer(extract)]
+
+        embed.description = extract[:min(m[0].start(), 2048)]
+        totalchars += len(embed.description)
+
+        for i in range(len(m)):
+            next = None if i+1 == len(m) else m[i+1].start()
+            val = extract[m[i].end():next]
+            if val.strip() and len(val)+len(m[i].group(3))+totalchars < 6000:
+                embed.add_field(name=m[i].group(3), value=val.strip()[:1024], inline=False)
+                totalchars += len(val)+len(m[i].group(3))
+        
         await ctx.send(embed=embed)
 
     # The wiki has to have the TextExtracts extension in order for the API to work.
