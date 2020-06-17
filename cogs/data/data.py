@@ -37,18 +37,29 @@ class Data(commands.Cog):
         await self.send(ctx, base64.b64encode(val.encode()))
 
     # HEX
-    @decode.command(name='hex', aliases=['base8', 'b8'])
+    @decode.command(name='hex', aliases=['base8', 'hexadecimal'])
     async def dhex(self, ctx, *, val):
         try:
             await self.send(ctx, bytes.fromhex(val))
         except:
             await ctx.send('Could not parse hex')
         
-    @encode.command(name='hex', aliases=['base8', 'b8'])
+    @encode.command(name='hex', aliases=['base8', 'hexadecimal'])
     async def ehex(self, ctx, *, val):
-        await self.send(ctx, binascii.hexlify(val.encode()))
+        await self.send(ctx, binascii.hexlify(val.encode(), b' ', 2))
 
+    # BINARY
+    @decode.command(name='binary', aliases=['base2', 'bin'])
+    async def dbin(self, ctx, *, val):
+        try:
+            n = int(val, 2)
+            await self.send(ctx, n.to_bytes((n.bit_length() + 7) // 8, 'big').decode())
+        except (ValueError, binascii.Error):
+            await ctx.send('Could not parse binary')
 
+    @encode.command(name='binary', aliases=['base2', 'bin'])
+    async def ebin(self, ctx, *, val):
+        await self.send(ctx, bin(int.from_bytes(val.encode(), 'big')))
 
 
 def setup(bot):
