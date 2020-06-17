@@ -46,7 +46,7 @@ class Data(commands.Cog):
         
     @encode.command(name='hex', aliases=['base8', 'hexadecimal'])
     async def ehex(self, ctx, *, val):
-        await self.send(ctx, binascii.hexlify(val.encode(), b' ', 2))
+        await self.send(ctx, binascii.hexlify(val.encode()))
 
     # BINARY
     @decode.command(name='binary', aliases=['base2', 'bin'])
