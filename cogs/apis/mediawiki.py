@@ -37,7 +37,7 @@ class Mediawiki(commands.Cog):
         title = f"{title} - {wikiName}"
         totalchars += len(title)
         embed = discord.Embed(title=title, color=0x32cd32, url=url)
-        if imgUrl:
+        if imgUrl and (not ctx.guild or ctx.channel.is_nsfw()):
             embed.set_image(url=imgUrl)
 
         extract = info['extract'].replace('\\t', '')
