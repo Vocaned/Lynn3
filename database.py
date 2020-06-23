@@ -14,8 +14,6 @@ conn.set_session(autocommit=True)
 
 cur = conn.cursor()
 
-# Update from commit [75519d]: ALTER TABLE users DROP COLUMN classicube, DROP COLUMN minecraft; ALTER TABLE guilds ADD COLUMN customcommands TEXT;
-
 cur.execute('''CREATE TABLE IF NOT EXISTS guilds
             (id BIGINT PRIMARY KEY      NOT NULL,
             disabledmodules TEXT,
@@ -35,6 +33,7 @@ async def setUser(id, key, value):
         cur.execute('SELECT * FROM users WHERE id = %s', (id,))
         res = cur.fetchone()
 
+    # 'UPDATE users SET %s = %s WHERE id = %s' doesn't work since %s includes quotes
     cur.execute('UPDATE users SET {} = %s WHERE id = %s'.format(key), (value, id))
 
 async def setGuild(id, key, value):
@@ -46,7 +45,6 @@ async def setGuild(id, key, value):
         cur.execute('SELECT * FROM guilds WHERE id = %s', (id,))
         res = cur.fetchone()
 
-    # 'UPDATE guild SET %s = %s WHERE id = %s' doesn't work since %s includes quotes
     cur.execute('UPDATE guilds SET {} = %s WHERE id = %s'.format(key), (value, id))
 
 async def getValue(table, id, key):

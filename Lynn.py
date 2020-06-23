@@ -4,6 +4,8 @@ import config
 import glob
 import logging
 
+# 1.4
+# bot = commands.Bot(command_prefix=config.get_prefix, description=config.description, allowed_mentions=discord.AllowedMentions(everyone=False))
 bot = commands.Bot(command_prefix=config.get_prefix, description=config.description)
 
 if __name__ == '__main__':

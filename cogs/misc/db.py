@@ -12,9 +12,8 @@ class db(commands.Cog):
     @commands.command()
     async def location(self, ctx, *, location=None):
         """Get or set current location.
-        Used for commands like wolfram alpha and weather
-        Add (hidden) after location to prevent your location from being visible in commands like weather
-        (hidden) disables wolfram alpha location completely."""
+        Used for weather command
+        Add (hidden) after location to prevent your location from being visible to others"""
         if not location:
             loc = await database.getValue('users', ctx.author.id, 'location')
             if not loc:
