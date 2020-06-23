@@ -7,7 +7,7 @@ class Mediawiki(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def mediawiki(self, ctx, query, apiURL, wikiName, introOnly=True):
+    async def mediawiki(self, ctx, query, apiURL, wikiName, introOnly=True, safe=False):
         # Assuming the user knows what they are looking for by using srwhat=nearmatch
         search = await REST(f"{apiURL}?action=query&list=search&format=json&srwhat=nearmatch&utf8&srsearch={escapeURL(query)}")
         if not search['query']['search']:
@@ -37,7 +37,7 @@ class Mediawiki(commands.Cog):
         title = f"{title} - {wikiName}"
         totalchars += len(title)
         embed = discord.Embed(title=title, color=0x32cd32, url=url)
-        if imgUrl and (not ctx.guild or ctx.channel.is_nsfw()):
+        if imgUrl and (safe or (not ctx.guild or ctx.channel.is_nsfw())):
             embed.set_image(url=imgUrl)
 
         extract = info['extract'].replace('\\t', '')
@@ -77,11 +77,11 @@ class Mediawiki(commands.Cog):
 
     @commands.command(name='gamepedia')
     async def gamepedia(self, ctx, wiki, *, query):
-        await self.mediawiki(ctx, query, f"https://{wiki}.gamepedia.com/api.php", wiki.title() + ' Wiki')
+        await self.mediawiki(ctx, query, f"https://{wiki}.gamepedia.com/api.php", wiki.title() + ' Wiki', safe=True)
 
     @commands.command(name='mcwiki', aliases=['minecraftwiki'])
     async def mcwiki(self, ctx, *, query):
-        await self.mediawiki(ctx, query, 'https://minecraft.gamepedia.com/api.php', 'Minecraft Wiki')
+        await self.mediawiki(ctx, query, 'https://minecraft.gamepedia.com/api.php', 'Minecraft Wiki', safe=True)
         
     # TODO: Bulbapedia doesn't return pageIDs in searches
 
