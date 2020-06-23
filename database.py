@@ -14,16 +14,17 @@ conn.set_session(autocommit=True)
 
 cur = conn.cursor()
 
+# Update from commit [75519d]: ALTER TABLE users DROP COLUMN classicube, DROP COLUMN minecraft; ALTER TABLE guilds ADD COLUMN customcommands TEXT;
+
 cur.execute('''CREATE TABLE IF NOT EXISTS guilds
             (id BIGINT PRIMARY KEY      NOT NULL,
             disabledmodules TEXT,
-            prefix          TEXT);''')
+            prefix          TEXT,
+            customcommands  TEXT);''')
 
 cur.execute('''CREATE TABLE IF NOT EXISTS users
             (id BIGINT PRIMARY KEY      NOT NULL,
-            location   TEXT,
-            classicube TEXT,
-            minecraft  TEXT);''')
+            location   TEXT);''')
 
 async def setUser(id, key, value):
     cur.execute('SELECT * FROM users WHERE id = %s', (id,))
