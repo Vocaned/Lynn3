@@ -6,9 +6,9 @@ import logging
 # $ createdb lynnDB
 
 conn = psycopg2.connect(database="lynnDB",
-                        user = "postgres",
+                        user = "pi",
                         password = "pass123",
-                        host = "127.0.0.1",
+                        host = "raspberry.pi",
                         port = "5432")
 conn.set_session(autocommit=True)
 
@@ -28,8 +28,8 @@ async def setUser(id, key, value):
     cur.execute('SELECT * FROM users WHERE id = %s', (id,))
     res = cur.fetchone()
     if not res:
-        cur.execute('''INSERT INTO users (id, location, classicube, minecraft)
-                    VALUES (%s, '', '', '')''', (id,))
+        cur.execute('''INSERT INTO users (id, location)
+                    VALUES (%s, '')''', (id,))
         cur.execute('SELECT * FROM users WHERE id = %s', (id,))
         res = cur.fetchone()
 
@@ -40,8 +40,8 @@ async def setGuild(id, key, value):
     cur.execute('SELECT * FROM guilds WHERE id = %s', (id,))
     res = cur.fetchone()
     if not res:
-        cur.execute('''INSERT INTO guilds (id, disabledmodules, prefix)
-                    VALUES (%s, '', '')''', (id,))
+        cur.execute('''INSERT INTO guilds (id, disabledmodules, prefix, customcommands)
+                    VALUES (%s, '', '', '')''', (id,))
         cur.execute('SELECT * FROM guilds WHERE id = %s', (id,))
         res = cur.fetchone()
 
