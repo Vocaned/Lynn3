@@ -9,7 +9,7 @@ import re
 from config import apiKeys
 from PIL import Image, ImageOps
 
-async def REST(url: str, method='GET', headers=None, data=None, auth=None, returns='json') -> aiohttp.ClientResponse:
+async def REST(url: str, method='GET', headers=None, data=None, auth=None, returns='json'):
     async with aiohttp.ClientSession() as s:
         async with s.request(method, url, headers=headers, data=data, auth=auth) as r:
             temp = []
@@ -66,7 +66,8 @@ async def makeDualBodyPart(img, img2, p, s1, s2, o1, o2, l=False):
         img2.paste(part1, (p*o1, p*o2))
 
 
-async def headRenderer(url, fromFile=True):
+async def headRenderer(url: str, fromFile=True) -> str:
+    """Renders a Minecraft head and returns path to image"""
     filename = url.split('/')[-1].replace('.png', '')
     if fromFile and os.path.isfile(f'skins/head/{str(filename)}.png'):
         return f'skins/head/{str(filename)}.png',
@@ -90,8 +91,8 @@ async def headRenderer(url, fromFile=True):
     img2.save(f'skins/head/{str(filename)}.png')
     return f'skins/head/{str(filename)}.png'
 
-async def skinRenderer2D(url, fromFile=True):
-    """Renders a skin in 2D and returns path to the saved file"""
+async def skinRenderer2D(url, fromFile=True) -> str:
+    """Renders a Minecraft skin in 2D and returns path to the saved file"""
 
     filename = url.split('/')[-1].replace('.png', '')
     if fromFile and os.path.isfile(f'skins/2d/{str(filename)}.png'):
@@ -144,7 +145,7 @@ async def skinRenderer2D(url, fromFile=True):
     img2.save(f'skins/2d/{str(filename)}.png')
     return f'skins/2d/{str(filename)}.png'
 
-def splitMessage(message, highlight=''):
+def splitMessage(message: str, highlight='') -> list:
     returns = []
     for msg in [message[i:i+1990] for i in range(0, len(message), 1990)]:
             returns.append('```' + highlight + '\n' + msg.replace('```', '`\U00002063``') + '```')
