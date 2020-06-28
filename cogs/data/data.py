@@ -52,7 +52,7 @@ class Data(commands.Cog):
     @decode.command(name='binary', aliases=['base2', 'bin'])
     async def dbin(self, ctx, *, val):
         try:
-            n = int(val, 2)
+            n = int(val.replace(' ', ''), 2)
             await self.send(ctx, n.to_bytes((n.bit_length() + 7) // 8, 'big').decode())
         except (ValueError, binascii.Error):
             await ctx.send('Could not parse binary')
