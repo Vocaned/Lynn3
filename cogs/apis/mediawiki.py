@@ -75,6 +75,14 @@ class Mediawiki(commands.Cog):
     async def wiktionarylanguage(self, ctx, lang, *, query):
         await self.mediawiki(ctx, query, f"https://{lang}.wiktionary.org/w/api.php", 'Wiktionary ' + lang.upper())
 
+    @commands.command(name='wikibooks', aliases=['wikibook', 'book', 'books'])
+    async def wikibooks(self, ctx, *, query):
+        await self.mediawiki(ctx, query, 'https://en.wikibooks.org/w/api.php', 'Wikibooks')
+
+    @commands.command(name='wikibookslanguage', aliases=['wikibookslang', 'wikibooklanguage', 'wikibooklang', 'bookslanguage', 'booklang', 'booklanguage', 'booklang'])
+    async def wikibookslanguage(self, ctx, lang, *, query):
+        await self.mediawiki(ctx, query, f"https://{lang}.wikibooks.org/w/api.php", 'Wikibooks ' + lang.upper())
+
     @commands.command(name='gamepedia')
     async def gamepedia(self, ctx, wiki, *, query):
         await self.mediawiki(ctx, query, f"https://{wiki}.gamepedia.com/api.php", wiki.title() + ' Wiki', safe=True)
