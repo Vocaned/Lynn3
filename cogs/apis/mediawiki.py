@@ -79,7 +79,7 @@ class Mediawiki(commands.Cog):
     async def wikibooks(self, ctx, *, query):
         await self.mediawiki(ctx, query, 'https://en.wikibooks.org/w/api.php', 'Wikibooks')
 
-    @commands.command(name='wikibookslanguage', aliases=['wikibookslang', 'wikibooklanguage', 'wikibooklang', 'bookslanguage', 'booklang', 'booklanguage', 'booklang'])
+    @commands.command(name='wikibookslanguage', aliases=['wikibookslang', 'wikibooklanguage', 'wikibooklang', 'bookslanguage', 'bookslang', 'booklanguage', 'booklang'])
     async def wikibookslanguage(self, ctx, lang, *, query):
         await self.mediawiki(ctx, query, f"https://{lang}.wikibooks.org/w/api.php", 'Wikibooks ' + lang.upper())
 
