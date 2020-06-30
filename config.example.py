@@ -30,7 +30,8 @@ apiKeys = {
     'twitchID':         '[KEY]',
     'twitchSecret':     '[KEY]',
     'wolframalpha':     '[KEY]',
-    'ocrspace':         '[KEY]'
+    'ocrspace':         '[KEY]',
+    'newsapi':          '[KEY]'
     #'openweathermap':   '[KEY]'
 }
 
