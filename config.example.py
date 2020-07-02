@@ -39,7 +39,7 @@ statusPages = [
     # Unfortunately statuspage.io doesn't include system metrics in their API.
     # System metric IDs must be hardcoded because of that.
     # TODO: BeautifulSoup scraping?
-    ('discord', 'https://status.discordapp.com', ('ztt4777v23lf',)),
+    ('discord', 'https://status.discord.com', ('ztt4777v23lf',)),
     ('twitter', 'https://api.twitterstat.us', None),
     ('reddit', 'https://reddit.statuspage.io', ('rx2nb3pfx3w6', '0jwzw9drbt3d', '5nx0js42cvh6', 'ykb0vk6gm40h', 'k7t111j3ykjr', 'zry7jgt3xffg')),
     ('cloudflare', 'https://www.cloudflarestatus.com', None),
