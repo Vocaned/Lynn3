@@ -12,7 +12,7 @@ class Git(commands.Cog):
         if not ctx.invoked_subcommand:
             raise commands.UserInputError()
 
-    @git.command(name='reset')
+    @git.command(name='reset', aliases=['fuck'])
     async def gitreset(self, ctx):
         p = subprocess.check_output(['git', 'reset', '--hard', 'origin/master'], stderr=subprocess.STDOUT, timeout=30).decode('utf-8')
         await ctx.send(splitMessage(p)[0])
