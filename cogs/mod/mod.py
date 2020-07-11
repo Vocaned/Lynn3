@@ -129,7 +129,7 @@ Invite can be used `{(str(inv.max_uses) if inv.max_uses else '∞')}` times.'''
             raise commands.CommandError(message='Invalid amount')
         await ctx.message.delete()
         await ctx.message.channel.purge(limit=amount)
-        await ctx.send(f'Sucesfully deleted **{int(amount)}** messages!', delete_after=5)
+        await ctx.send(f'Succesfully deleted **{int(amount)}** messages', delete_after=5)
 
 
 
