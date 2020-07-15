@@ -81,6 +81,7 @@ class Minecraft(commands.Cog):
                 raise commands.BadArgument(message='User not found')
             history = await REST(f"https://api.mojang.com/user/profiles/{uuid['id']}/names")
             names = []
+            user = history[-1]['name']
             for i in range(len(history)):
                 names.append(history[i]['name'])
                 # Escape special markdown characters
@@ -92,7 +93,7 @@ class Minecraft(commands.Cog):
             if not skin:
                 raise commands.CommandOnCooldown(commands.BucketType.default, 10)
             embed = discord.Embed(title='Minecraft User', colour=0x82540f)
-            embed.set_author(name=history[-1]['name'], icon_url='attachment://head.png')
+            embed.set_author(name=user, icon_url='attachment://head.png')
             embed.add_field(name='Name history', value='\n'.join(names))
             embed.add_field(name='UUID', value=uuid['id'])
             try:
@@ -115,7 +116,18 @@ class Minecraft(commands.Cog):
             embed.set_footer(text='\U00002063', icon_url='https://minecraft.net/favicon-96x96.png')
             embed.set_image(url='attachment://skin.png')
             embed.timestamp = datetime.utcnow()
+
+            # Optifine Cape
+            OFCape = await REST(f"http://s.optifine.net/capes/{user}.png", returns='status')
+            if OFCape == 200:
+                OF = discord.Embed(title='Optifine Cape', colour=0x82540f)
+                OF.set_author(name=user, icon_url='attachment://head.png')
+                OF.set_image(url=f"http://s.optifine.net/capes/{user}.png")
+
+
             await ctx.send(files=[skinFile, headFile], embed=embed)
+            if OF:
+                await ctx.send(files=[headFile], embed=OF)
         else:
             sale = await REST('https://api.mojang.com/orders/statistics', method='POST', data='{"metricKeys":["item_sold_minecraft","prepaid_card_redeemed_minecraft"]}', headers={"content-type": "application/json"})
             embed = discord.Embed(title='Minecraft', colour=0xa4d168)
