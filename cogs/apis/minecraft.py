@@ -52,13 +52,13 @@ class Minecraft(commands.Cog):
         return ', '.join(strings)
 
     async def getMinecraftUUID(self, name):
-        r = await REST(f"https://api.mojang.com/users/profiles/minecraft/{name}")
-        if r:
-            return r
+        r = await REST(f"https://api.mojang.com/users/profiles/minecraft/{name}", returns='raw|status')
+        if r[1] == 200:
+            return json.loads(r[0])
 
-        r = await REST(f"https://api.mojang.com/users/profiles/minecraft/{name}?at=0")
-        if r:
-            return r
+        r = await REST(f"https://api.mojang.com/users/profiles/minecraft/{name}?at=0", returns='raw|status')
+        if r[1] == 200:
+            return json.loads(r[0])
         return None
 
     async def getMinecraftSkinUrl(self, uuid):
