@@ -127,7 +127,7 @@ class Minecraft(commands.Cog):
 
             await ctx.send(files=[skinFile, headFile], embed=embed)
             if OF:
-                await ctx.send(files=[headFile], embed=OF)
+                await ctx.send(file=headFile, embed=OF)
         else:
             sale = await REST('https://api.mojang.com/orders/statistics', method='POST', data='{"metricKeys":["item_sold_minecraft","prepaid_card_redeemed_minecraft"]}', headers={"content-type": "application/json"})
             embed = discord.Embed(title='Minecraft', colour=0xa4d168)
