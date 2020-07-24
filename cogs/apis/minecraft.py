@@ -413,7 +413,7 @@ class Minecraft(commands.Cog):
         embed.timestamp = datetime.utcnow()
         await ctx.send(embed=embed)
 
-    @classicube.command(name='server', aliases=['servers'])
+    @classicube.command(name='servers', aliases=['server'])
     async def CCServers(self, ctx):
         """Alias for %cc stats"""
         await self.CCStats(ctx)
