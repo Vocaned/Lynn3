@@ -263,8 +263,9 @@ class Minecraft(commands.Cog):
                 data = self._read_fully(conn, extra_varint=True)
 
                 # Send and read unix time
-                self._send_data(conn, b'\x01', time.time() * 1000)
-                unix = self._read_fully(conn)
+                unix = time.time()
+                self._send_data(conn, b'\x01', 123)
+                _ = self._read_fully(conn)
         except socket.timeout as e:
             if not valid:
                 raise commands.CommandError(message='Could not connect to server. Make sure the IP is valid.')
@@ -274,7 +275,7 @@ class Minecraft(commands.Cog):
             raise commands.CommandError(message='Server did not respond properly. TODO: Fix hivemc doing this.')
         
         # Get time.time() before loading json as that can take a couple of milliseconds
-        ping = int(time.time() * 1000) - struct.unpack('L', unix)[0]
+        ping = int((time.time() - unix) * 1000)
 
         response = json.loads(data.decode('utf8'))
         response['ping'] = ping
