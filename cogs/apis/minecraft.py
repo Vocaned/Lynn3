@@ -318,6 +318,14 @@ class Minecraft(commands.Cog):
         embed.add_field(name='Players', value=f"{response['players']['online']}/{response['players']['max']}")
         embed.add_field(name='Ping', value=f"{response['ping']}ms")
 
+        if 'modinfo' in response:
+            if response['modinfo']['type'] == 'FML':
+                embed.add_field(name='Forge Server', value=f"{len(response['modinfo']['modList'])} mods enabled.")
+            else:
+                embed.add_field(name='Modded Server', value=f"Type: {response['modinfo']['type']}")
+        elif 'forgeData' in response:
+            embed.add_field(name='Forge Server', value=f"{len(response['forgeData']['mods'])} mods enabled.")
+
         embed.timestamp = datetime.utcnow()
         await ctx.send(file=favicon, embed=embed)
 
