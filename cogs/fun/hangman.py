@@ -41,7 +41,7 @@ Type `{ctx.prefix}hangman [guess]` to guess a letter or a word, or `{ctx.prefix}
 
         if not guess:
             if not game:
-                with open('hangman.txt', 'r') as f:
+                with open('res/hangman.txt', 'r') as f:
                     word = random.choice(f.readlines()).replace('\n', '')
                 self.games[str(ctx.author.id)] = {
                     'word': word,

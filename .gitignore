@@ -6,6 +6,7 @@ logs
 downloads
 skins
 Lynn.code-workspace
-*.png
+skins
+wolfram.png
 error.dat
 asd.py

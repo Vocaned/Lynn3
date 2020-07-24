@@ -282,7 +282,7 @@ class Minecraft(commands.Cog):
         if 'favicon' in response and response['favicon']:
             favicon = io.BytesIO(base64.b64decode(response['favicon'].replace('data:image/png;base64,', '')))
         else:
-            favicon = 'pack.png'
+            favicon = 'res/pack.png'
         favicon = discord.File(favicon, filename='pack.png')
         
         embed = discord.Embed(colour=0xa4d168)
