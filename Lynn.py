@@ -29,7 +29,7 @@ if __name__ == '__main__':
             if message.author.bot and message.author.id != 671726702967259169:
                 return
 
-            async with ctx.channel.trigger_typing():
+            async with ctx.channel.typing():
                 await bot.invoke(ctx)
 
     bot.run(config.token, bot=True, reconnect=True)
