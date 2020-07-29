@@ -75,5 +75,15 @@ class Eval(commands.Cog):
         new_ctx = await self.bot.get_context(msg)
         await self.bot.invoke(new_ctx)
 
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def sudo(self, ctx, *command):
+        """Run a command as a superuser.
+        Bypasses filters."""
+        msg = copy.copy(ctx.message)
+        msg.content = ctx.prefix + " ".join(command)
+        new_ctx = await self.bot.get_context(msg)
+        return await new_ctx.command.reinvoke(new_ctx)
+
 def setup(bot):
     bot.add_cog(Eval(bot))
