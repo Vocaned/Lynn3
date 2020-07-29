@@ -22,9 +22,14 @@ if __name__ == '__main__':
 
     @bot.event
     async def on_message(message):
+        if message.author.id == 671726702967259169: # Command from DiscordSRV / MC
+            message.content = message.content.split(' » ')[-1]
         ctx = await bot.get_context(message)
         if ctx.valid:
-            await ctx.channel.trigger_typing()
-            await bot.process_commands(message)
+            if message.author.bot and message.author.id != 671726702967259169:
+                return
+
+            with await ctx.channel.trigger_typing():
+                await bot.invoke(ctx)
 
     bot.run(config.token, bot=True, reconnect=True)
