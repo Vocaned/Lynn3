@@ -7,7 +7,7 @@ class Mediawiki(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def mediawiki(self, ctx, query, apiURL, wikiName, introOnly=True, safe=False):
+    async def mediawiki(self, ctx, query, apiURL, wikiName, full, introOnly=True, safe=False):
         # Assuming the user knows what they are looking for by using srwhat=nearmatch
         search = await REST(f"{apiURL}?action=query&list=search&format=json&srwhat=nearmatch&utf8&srsearch={escapeURL(query)}")
         if not search['query']['search']:
@@ -47,12 +47,13 @@ class Mediawiki(commands.Cog):
         embed.description = extract[:min(m[0].start(), 2048)]
         totalchars += len(embed.description)
 
-        for i in range(len(m)):
-            next = None if i+1 == len(m) else m[i+1].start()
-            val = extract[m[i].end():next]
-            if val.strip() and len(val)+len(m[i].group(3))+totalchars < 6000:
-                embed.add_field(name=m[i].group(3), value=val.strip()[:1024], inline=False)
-                totalchars += len(val)+len(m[i].group(3))
+        if full:
+            for i in range(len(m)):
+                next = None if i+1 == len(m) else m[i+1].start()
+                val = extract[m[i].end():next]
+                if val.strip() and len(val)+len(m[i].group(3))+totalchars < 6000:
+                    embed.add_field(name=m[i].group(3), value=val.strip()[:1024], inline=False)
+                    totalchars += len(val)+len(m[i].group(3))
         
         await ctx.send(embed=embed)
 
@@ -61,36 +62,84 @@ class Mediawiki(commands.Cog):
 
     @commands.command(name='wiki', aliases=['wikipedia'])
     async def wiki(self, ctx, *, query):
-        await self.mediawiki(ctx, query, 'https://en.wikipedia.org/w/api.php', 'Wikipedia')
+        """Displays first 2048 characters of the wiki article.
+        If "--full " is passed into the query, as much as possible will be shown"""
+        full = False
+        if query.startswith('--full '):
+            query = query.replace('--full ', '', 1)
+            full = True
+        await self.mediawiki(ctx, query, 'https://en.wikipedia.org/w/api.php', 'Wikipedia', full)
 
     @commands.command(name='wiktionary', aliases=['dictionary', 'define'])
     async def wiktionary(self, ctx, *, query):
-        await self.mediawiki(ctx, query, 'https://en.wiktionary.org/w/api.php', 'Wiktionary')
+        """Displays first 2048 characters of the wiki article.
+        If "--full " is passed into the query, as much as possible will be shown"""
+        full = False
+        if query.startswith('--full '):
+            query = query.replace('--full ', '', 1)
+            full = True
+        await self.mediawiki(ctx, query, 'https://en.wiktionary.org/w/api.php', 'Wiktionary', full)
 
     @commands.command(name='wikilanguage', aliases=['wikil', 'wikilang'])
     async def wikilanguage(self, ctx, lang, *, query):
-        await self.mediawiki(ctx, query, f"https://{lang}.wikipedia.org/w/api.php", 'Wikipedia ' + lang.upper())
+        """Displays first 2048 characters of the wiki article.
+        If "--full " is passed into the query, as much as possible will be shown"""
+        full = False
+        if query.startswith('--full '):
+            query = query.replace('--full ', '', 1)
+            full = True
+        await self.mediawiki(ctx, query, f"https://{lang}.wikipedia.org/w/api.php", 'Wikipedia ' + lang.upper(), full)
 
     @commands.command(name='wiktionarylanguage', aliases=['wiktionarylang', 'dictionarylanguage', 'dictionarylang', 'definelang', 'definelanguage'])
     async def wiktionarylanguage(self, ctx, lang, *, query):
-        await self.mediawiki(ctx, query, f"https://{lang}.wiktionary.org/w/api.php", 'Wiktionary ' + lang.upper())
+        """Displays first 2048 characters of the wiki article.
+        If "--full " is passed into the query, as much as possible will be shown"""
+        full = False
+        if query.startswith('--full '):
+            query = query.replace('--full ', '', 1)
+            full = True
+        await self.mediawiki(ctx, query, f"https://{lang}.wiktionary.org/w/api.php", 'Wiktionary ' + lang.upper(), full)
 
     @commands.command(name='wikibooks', aliases=['wikibook', 'book', 'books'])
     async def wikibooks(self, ctx, *, query):
-        await self.mediawiki(ctx, query, 'https://en.wikibooks.org/w/api.php', 'Wikibooks')
+        """Displays first 2048 characters of the wiki article.
+        If "--full " is passed into the query, as much as possible will be shown"""
+        full = False
+        if query.startswith('--full '):
+            query = query.replace('--full ', '', 1)
+            full = True
+        await self.mediawiki(ctx, query, 'https://en.wikibooks.org/w/api.php', 'Wikibooks', full)
 
     @commands.command(name='wikibookslanguage', aliases=['wikibookslang', 'wikibooklanguage', 'wikibooklang', 'bookslanguage', 'bookslang', 'booklanguage', 'booklang'])
     async def wikibookslanguage(self, ctx, lang, *, query):
-        await self.mediawiki(ctx, query, f"https://{lang}.wikibooks.org/w/api.php", 'Wikibooks ' + lang.upper())
+        """Displays first 2048 characters of the wiki article.
+        If "--full " is passed into the query, as much as possible will be shown"""
+        full = False
+        if query.startswith('--full '):
+            query = query.replace('--full ', '', 1)
+            full = True
+        await self.mediawiki(ctx, query, f"https://{lang}.wikibooks.org/w/api.php", 'Wikibooks ' + lang.upper(), full)
 
     @commands.command(name='gamepedia')
     async def gamepedia(self, ctx, wiki, *, query):
-        await self.mediawiki(ctx, query, f"https://{wiki}.gamepedia.com/api.php", wiki.title() + ' Wiki', safe=True)
+        """Displays first 2048 characters of the wiki article.
+        If "--full " is passed into the query, as much as possible will be shown"""
+        full = False
+        if query.startswith('--full '):
+            query = query.replace('--full ', '', 1)
+            full = True
+        await self.mediawiki(ctx, query, f"https://{wiki}.gamepedia.com/api.php", wiki.title() + ' Wiki', full, safe=True)
 
     @commands.command(name='mcwiki', aliases=['minecraftwiki'])
     async def mcwiki(self, ctx, *, query):
-        await self.mediawiki(ctx, query, 'https://minecraft.gamepedia.com/api.php', 'Minecraft Wiki', safe=True)
-        
+        """Displays first 2048 characters of the wiki article.
+        If "--full " is passed into the query, as much as possible will be shown"""
+        full = False
+        if query.startswith('--full '):
+            query = query.replace('--full ', '', 1)
+            full = True
+        await self.mediawiki(ctx, query, 'https://minecraft.gamepedia.com/api.php', 'Minecraft Wiki', full, safe=True)
+
     # TODO: Bulbapedia doesn't return pageIDs in searches
 
 def setup(bot):
