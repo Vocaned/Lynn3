@@ -336,14 +336,10 @@ class Minecraft(commands.Cog):
 
     @classicube.command(name='player', aliases=['players', 'user', 'username'])
     async def classiCubeAPI(self, ctx, *, user):
-        """Searches ClassiCube players.
-        user = ID or name"""
+        """Searches ClassiCube players."""
         data = await REST(f"https://www.classicube.net/api/player/{escapeURL(user)}")
         if not data or data['error'] != '':
-            if user.isdigit():
-                data = await REST(f"https://www.classicube.net/api/id/{escapeURL(user)}")
-            if not data or data['error'] != '':
-                raise commands.BadArgument(message='User not found')
+                raise commands.BadArgument(message=data['error'] if data and data['error'] else 'User not found')
         
         flagName = {
             'b': 'Banned from forums',
@@ -396,9 +392,6 @@ class Minecraft(commands.Cog):
         """Gets ClassiCube stats"""
         data = await REST('https://www.classicube.net/api/players/')
         playercount = data['playercount']
-        players = ''
-        for p in data['lastfive']:
-            players += str(p) + '\n'
         data = await REST('https://www.classicube.net/api/servers/')
         serverlist = []
         servers = ''
@@ -413,7 +406,6 @@ class Minecraft(commands.Cog):
         serverlist.append(servers)
         embed = discord.Embed(title='ClassiCube', colour=0x977dab)
         embed.add_field(name='Total Accounts', value=playercount)
-        embed.add_field(name='Last five accounts', value=players)
         for i in range(len(serverlist)):
             embed.add_field(name=(f"({str(i+1)}/{str(len(serverlist))})" if len(serverlist) != 1 else '') + 'Servers with players\nClick the server names to join!', value=serverlist[i], inline=False)
 
