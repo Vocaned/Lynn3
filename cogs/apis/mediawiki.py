@@ -62,7 +62,7 @@ class Mediawiki(commands.Cog):
 
     @commands.command(name='wiki', aliases=['wikipedia'])
     async def wiki(self, ctx, *, query):
-        """Displays first 2048 characters of the wiki article.
+        """Displays summary of the wiki article.
         If "--full " is passed into the query, as much as possible will be shown"""
         full = False
         if query.startswith('--full '):
@@ -72,7 +72,7 @@ class Mediawiki(commands.Cog):
 
     @commands.command(name='wiktionary', aliases=['dictionary', 'define'])
     async def wiktionary(self, ctx, *, query):
-        """Displays first 2048 characters of the wiki article.
+        """Displays summary of the wiki article.
         If "--full " is passed into the query, as much as possible will be shown"""
         full = False
         if query.startswith('--full '):
@@ -82,7 +82,7 @@ class Mediawiki(commands.Cog):
 
     @commands.command(name='wikilanguage', aliases=['wikil', 'wikilang'])
     async def wikilanguage(self, ctx, lang, *, query):
-        """Displays first 2048 characters of the wiki article.
+        """Displays summary of the wiki article.
         If "--full " is passed into the query, as much as possible will be shown"""
         full = False
         if query.startswith('--full '):
@@ -92,7 +92,7 @@ class Mediawiki(commands.Cog):
 
     @commands.command(name='wiktionarylanguage', aliases=['wiktionarylang', 'dictionarylanguage', 'dictionarylang', 'definelang', 'definelanguage'])
     async def wiktionarylanguage(self, ctx, lang, *, query):
-        """Displays first 2048 characters of the wiki article.
+        """Displays summary of the wiki article.
         If "--full " is passed into the query, as much as possible will be shown"""
         full = False
         if query.startswith('--full '):
@@ -102,7 +102,7 @@ class Mediawiki(commands.Cog):
 
     @commands.command(name='wikibooks', aliases=['wikibook', 'book', 'books'])
     async def wikibooks(self, ctx, *, query):
-        """Displays first 2048 characters of the wiki article.
+        """Displays summary of the wiki article.
         If "--full " is passed into the query, as much as possible will be shown"""
         full = False
         if query.startswith('--full '):
@@ -112,7 +112,7 @@ class Mediawiki(commands.Cog):
 
     @commands.command(name='wikibookslanguage', aliases=['wikibookslang', 'wikibooklanguage', 'wikibooklang', 'bookslanguage', 'bookslang', 'booklanguage', 'booklang'])
     async def wikibookslanguage(self, ctx, lang, *, query):
-        """Displays first 2048 characters of the wiki article.
+        """Displays summary of the wiki article.
         If "--full " is passed into the query, as much as possible will be shown"""
         full = False
         if query.startswith('--full '):
@@ -122,7 +122,7 @@ class Mediawiki(commands.Cog):
 
     @commands.command(name='gamepedia')
     async def gamepedia(self, ctx, wiki, *, query):
-        """Displays first 2048 characters of the wiki article.
+        """Displays summary of the wiki article.
         If "--full " is passed into the query, as much as possible will be shown"""
         full = False
         if query.startswith('--full '):
@@ -132,7 +132,7 @@ class Mediawiki(commands.Cog):
 
     @commands.command(name='mcwiki', aliases=['minecraftwiki'])
     async def mcwiki(self, ctx, *, query):
-        """Displays first 2048 characters of the wiki article.
+        """Displays summary of the wiki article.
         If "--full " is passed into the query, as much as possible will be shown"""
         full = False
         if query.startswith('--full '):
