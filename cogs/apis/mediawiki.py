@@ -1,5 +1,5 @@
 from discord.ext import commands
-from BotUtils import REST, escapeURL, getAPIKey
+from BotUtils import REST, escapeURL
 import discord
 import re
 
@@ -39,15 +39,6 @@ class Mediawiki(commands.Cog):
         embed = discord.Embed(title=title, color=0x32cd32, url=url)
         if imgUrl and (safe or (not ctx.guild or ctx.channel.is_nsfw())):
             embed.set_image(url=imgUrl)
-        elif imgUrl:
-            nsfw = await REST(f"https://api.imagga.com/v2/categories/nsfw_beta?image_url={imgUrl}", auth=(getAPIKey('imaggaKey'), getAPIKey('imaggaSecret')))
-            confidence = 0
-            if nsfw['result']['status']['type'] == 'success':
-                for category in nsfw['result']['categories']:
-                    if category['name']['en'] == 'safe':
-                        confidence = category['confidence']
-            if confidence > 50:
-                embed.set_image(url=imgUrl)
 
         extract = info['extract'].replace('\\t', '')
         r = re.compile('([^=])(==\\s)(.+?)(\\s==)')
