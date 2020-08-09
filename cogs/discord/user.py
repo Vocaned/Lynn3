@@ -90,6 +90,8 @@ class UserInfo(commands.Cog):
         if user.premium_since:
             serverinfo.append(f"Boosting server since {user.joined_at.strftime('%c')}")
 
+        embed.color(user.roles[-1].color)
+
         flags = []
         for flag in user.public_flags.all():
             # Awful code, I know.
