@@ -14,7 +14,8 @@ class UserInfo(commands.Cog):
             ('month',       60*60*24*30),
             ('day',         60*60*24),
             ('hour',        60*60),
-            ('minute',      60)
+            ('minute',      60),
+            ('second',      1)
         ]
 
         strings=[]
@@ -27,36 +28,36 @@ class UserInfo(commands.Cog):
         return ', '.join(strings)
 
     UserFlags = {
-        'UserFlags.staff': '<:staff:534793917296803870> Discord Staff',
+        'UserFlags.staff': '<:staff:720576645345574913> Discord Staff',
         'UserFlags.partner': '<:partner:720576779554783253> Discord Partner',
         'UserFlags.hypesquad': '<:hypesquad:720576880733847562> HypeSquad Events',
-        'UserFlags.bug_hunter': '<:bughunter:720580370516410410> Bug Hunter',
-        'UserFlags.hypesquad_bravery': '<:bravery:526604585750626304> HypeSquad Bravery',
-        'UserFlags.hypesquad_brilliance': '<:brilliance:526604589735346196> HypeSquad Brilliance',
-        'UserFlags.hypesquad_balance': '<:balance:526604585020948480> HypeSquad Balance',
+        'UserFlags.bug_hunter': '<:hypesquad:720576880733847562> Bug Hunter',
+        'UserFlags.hypesquad_bravery': '<:bravery:720576989265789001> HypeSquad Bravery',
+        'UserFlags.hypesquad_brilliance': '<:brilliance:720579240050950144> HypeSquad Brilliance',
+        'UserFlags.hypesquad_balance': '<:balance:720579490924986379> HypeSquad Balance',
         'UserFlags.early_supporter': '<:earlysupporter:720577134627782716> Early Supporter',
         'UserFlags.team_user': 'Team User',
-        'UserFlags.system': '<:system:649406682060816404> System',
+        'UserFlags.system': '<:system:720579663134720001> System',
         'UserFlags.bug_hunter_level_2': '<:bughunter2:720577058027208817> Bug Hunter Level 2',
         'UserFlags.verified_bot': '<:verifiedbot:720579572537753630> Verified Bot',
         'UserFlags.verified_bot_developer': '<:botdev:720579320531124235> Verified Bot Developer',
-        'UserFlags.bot': '<:bot:649406682912391189> Bot'
+        'UserFlags.bot': '<:bot:720579762795577416> Bot'
     }
 
     Status = {
-        'online': ':online: Online',
-        'idle': ':idle: Idle',
-        'dnd': ':dnd: Do Not Disturb',
-        'offline': ':offline: Offline',
-        'invisible': ':offline: Invisible'
+        'online': 'Online',
+        'idle': 'Idle',
+        'dnd': 'Do Not Disturb',
+        'offline': 'Offline',
+        'invisible': 'Invisible'
     }
 
     MobileStatus = {
-        'online': ':mobileonline: Online',
-        'idle': ':mobileidle: Idle',
-        'dnd': ':mobilednd: Do Not Disturb'
+        'online': 'Online',
+        'idle': 'Idle',
+        'dnd': 'Do Not Disturb'
     }
-    
+
     ActivityTypes = {
         'ActivityType.unknown': 'unknown',
         'ActivityType.playing': 'Playing',
@@ -90,7 +91,7 @@ class UserInfo(commands.Cog):
         if user.premium_since:
             serverinfo.append(f"Boosting server since {user.joined_at.strftime('%c')}")
 
-        embed.color(user.roles[-1].color)
+        embed.color = user.roles[-1].color
 
         flags = []
         for flag in user.public_flags.all():
@@ -99,7 +100,7 @@ class UserInfo(commands.Cog):
 
         if user.bot:
             flags.append(self.UserFlags['UserFlags.bot'])
-        
+
         statusinfo = []
         if user.is_on_mobile():
             statusinfo.append(self.MobileStatus.get(str(user.status), str(user.status)))
@@ -121,7 +122,7 @@ class UserInfo(commands.Cog):
             if type(activity) is discord.Spotify:
                 embed = discord.Embed(title=activity.name, color=activity.color)
                 embed.url = f"https://open.spotify.com/track/{activity.track_id}"
-                embed.description = f"Listening to {activity.title} by {','.join(activity.artists)}"
+                embed.description = f"Listening to {activity.title} by {','.join(activity.artists)}\n\n`{self.td_format(datetime.utcnow()-activity.start)}` / `{self.td_format(activity.duration)}`"
                 embed.set_thumbnail(url=activity.album_cover_url)
                 embeds.append(embed)
             elif type(activity) is discord.Streaming:
