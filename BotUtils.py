@@ -20,6 +20,8 @@ async def REST(url: str, method='GET', headers=None, data=None, auth=None, retur
                     temp.append(r.status)
                 elif ret == 'raw':
                     temp.append(await r.read())
+                elif ret == 'text':
+                    temp.append(await r.text())
                 elif ret == 'object':
                     return r
             if len(temp) == 1:

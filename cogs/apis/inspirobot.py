@@ -9,8 +9,9 @@ class inspirobot(commands.Cog):
     @commands.command(name='inspire', aliases=['inspirobot', 'inspireme'])
     async def inspirobotAPI(self, ctx):
         """Generates an inspirational quote"""
-        data = await REST('https://inspirobot.me/api?generate=true', returns='raw')
+        data = await REST('https://inspirobot.me/api?generate=true', returns='text')
         embed = discord.Embed(color=0x00af00)
+        print(data)
         embed.set_image(url=data)
         await ctx.send(embed=embed)
 
