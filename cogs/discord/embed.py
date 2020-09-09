@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import json
+from datetime import datetime
 
 class Embed(commands.Cog):
     '''Embed'''
@@ -19,16 +20,15 @@ class Embed(commands.Cog):
     @commands.guild_only()
     async def embed(self, ctx, *, embedjson):
         """Turns an embed json into an embed. Use https://embed.discord.website/, https://discohook.org etc. to generate an embed.
-        If you put the json in a code block, put a newline after the backticks
-        Doesn't currently support timestamps"""
+        If you put the json in a code block, put a newline after the backticks"""
         dictionary = json.loads(self.cleanup_code(embedjson))
         if 'embed' in dictionary:
             dictionary = dictionary['embed']
         elif 'embeds' in dictionary:
             dictionary = dictionary['embeds'][0]
         
-        if 'timestamp' in dictionary:
-            dictionary['timestamp'] = ''
+        if 'timestamp' in dictionary and 'T' in dictionary['timestamp']:
+            dictionary['timestamp'] = datetime.fromisoformat(dictionary['timestamp'].replace('Z', ''))
 
         embed = discord.Embed.from_dict(dictionary)
         hook = [h for h in await ctx.channel.webhooks() if h.name == 'EmoteFix']
