@@ -5,6 +5,16 @@ from datetime import datetime
 
 token = '[TOKEN]'
 description ='Lynn'
+gitURI = "git@github.com:Fam0r/Lynn3.git"
+
+dbConfig = {
+    "database": "lynnDB",
+    "user": "pi",
+    "password": "pass123",
+    "host": "raspberry.pi",
+    "port": "5432"
+}
+useDB = True
 
 os.makedirs('logs', exist_ok=True)
 logging.basicConfig(format='%(asctime)s | [%(levelname)s] (%(filename)s) - %(message)s',
