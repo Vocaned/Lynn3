@@ -2,6 +2,7 @@ from discord.ext import commands
 import logging
 import os
 from datetime import datetime
+uptime = datetime.now()
 
 token = '[TOKEN]'
 description ='Lynn'
