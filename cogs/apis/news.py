@@ -21,7 +21,7 @@ class News(commands.Cog):
         embed.url = data['url']
         embed.description = data['description']
         embed.timestamp = datetime.fromisoformat(data['publishedAt'].replace('Z',''))
-        if 'urlToImage' in data and isURL(data['urlToImage']):
+        if 'urlToImage' in data and isURL(str(data['urlToImage'])):
             embed.set_image(url=data['urlToImage'])
         embed.set_footer(text=f"{data['source']['name']} | Written by {data['author']}. Published ")
         await ctx.send(embed=embed)
