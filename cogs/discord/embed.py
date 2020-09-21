@@ -26,7 +26,7 @@ class Embed(commands.Cog):
             dictionary = dictionary['embed']
         elif 'embeds' in dictionary:
             dictionary = dictionary['embeds'][0]
-        
+
         if 'timestamp' in dictionary and 'T' in dictionary['timestamp']:
             dictionary['timestamp'] = datetime.fromisoformat(dictionary['timestamp'].replace('Z', ''))
 

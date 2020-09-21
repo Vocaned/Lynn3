@@ -72,12 +72,8 @@ class Mediawiki(commands.Cog):
 
     @commands.command(name='wiktionary', aliases=['dictionary', 'define'])
     async def wiktionary(self, ctx, *, query):
-        """Displays summary of the wiki article.
-        If "--full " is passed into the query, as much as possible will be shown"""
-        full = False
-        if query.startswith('--full '):
-            query = query.replace('--full ', '', 1)
-            full = True
+        """Displays summary of the wiki article."""
+        full = True
         await self.mediawiki(ctx, query, 'https://en.wiktionary.org/w/api.php', 'Wiktionary', full)
 
     @commands.command(name='wikilanguage', aliases=['wikil', 'wikilang'])
@@ -92,12 +88,8 @@ class Mediawiki(commands.Cog):
 
     @commands.command(name='wiktionarylanguage', aliases=['wiktionarylang', 'dictionarylanguage', 'dictionarylang', 'definelang', 'definelanguage'])
     async def wiktionarylanguage(self, ctx, lang, *, query):
-        """Displays summary of the wiki article.
-        If "--full " is passed into the query, as much as possible will be shown"""
-        full = False
-        if query.startswith('--full '):
-            query = query.replace('--full ', '', 1)
-            full = True
+        """Displays summary of the wiki article."""
+        full = True
         await self.mediawiki(ctx, query, f"https://{lang}.wiktionary.org/w/api.php", 'Wiktionary ' + lang.upper(), full)
 
     @commands.command(name='wikibooks', aliases=['wikibook', 'book', 'books'])
