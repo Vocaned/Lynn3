@@ -3,6 +3,7 @@ import logging
 import os
 from datetime import datetime
 uptime = datetime.now()
+cache = []
 
 token = '[TOKEN]'
 description ='Lynn'

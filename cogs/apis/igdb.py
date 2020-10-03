@@ -1,5 +1,5 @@
 from discord.ext import commands
-from BotUtils import REST, getAPIKey, escapeURL
+from BotUtils import REST, getAPIKey, escapeURL, getTwitchToken
 from datetime import datetime
 import discord
 
@@ -10,9 +10,7 @@ class IGDB(commands.Cog):
     @commands.command(name='igdb', aliases=['game', 'games'])
     async def IGDBAPI(self, ctx, *, title):
         """Gets information about videogames using IGDB.com"""
-        # TODO: Cache tokens
-        token = await REST(f"https://id.twitch.tv/oauth2/token?client_id={getAPIKey('twitchID')}&client_secret={getAPIKey('twitchSecret')}&grant_type=client_credentials", method='POST')
-        token = token['access_token']
+        token = await getTwitchToken()
         
         title = title.replace("'", "\\'").replace('"', '\\"')
         exactmatch = f'where name ~ "{title}";sort url asc;'
