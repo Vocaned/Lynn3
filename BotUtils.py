@@ -6,7 +6,7 @@ import aiohttp
 import urllib
 import json
 import re
-from config import apiKeys
+from config import apiKeys, cache
 from PIL import Image, ImageOps
 
 async def REST(url: str, method='GET', headers=None, data=None, auth=None, returns='json'):
@@ -27,6 +27,19 @@ async def REST(url: str, method='GET', headers=None, data=None, auth=None, retur
             if len(temp) == 1:
                 return temp[0]
             return temp
+
+def getCache(key: str) -> str:
+    if not key in cache:
+        return None
+ 
+    value = cache[key]
+    cache.pop(key)
+    return value
+
+def setCache(key: str, value: str):
+    if key in cache:
+        raise Exception()
+    cache.append({key: value})
 
 def escapeURL(url: str) -> str:
     return urllib.parse.quote(url)
