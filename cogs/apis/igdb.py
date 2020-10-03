@@ -18,6 +18,7 @@ class IGDB(commands.Cog):
         exactmatch = f'where name ~ "{title}";'
         closematch = f'search "{title}";'
         body = '''fields name,cover.image_id,release_dates.date,release_dates.platform.name,genres.name,rating,summary,age_ratings.category,age_ratings.rating,game_modes.name,involved_companies.*,involved_companies.company.name,websites.url,url,artworks.image_id,status;
+sort url asc;
 limit 1;'''
 
         data = await REST(f"https://api.igdb.com/v4/games", method='POST', data=exactmatch+body, headers={'Authorization': 'Bearer ' + token, 'Client-ID': getAPIKey('twitchID')})
