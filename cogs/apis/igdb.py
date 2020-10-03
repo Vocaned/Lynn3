@@ -68,7 +68,10 @@ limit 1;'''
                 else:
                     human = 'TBD'
                 for release in releases:
-                    if human == release[0]:
+                    if date['platform']['name'] == release[1]:
+                        # Don't show duplicate platform names
+                        new = False
+                    elif human == release[0]:
                         release[1] += ', '+date['platform']['name']
                         new = False
                 if new:
