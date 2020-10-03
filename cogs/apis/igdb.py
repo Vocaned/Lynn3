@@ -62,19 +62,20 @@ limit 1;'''
             releases = []
             for date in data['release_dates']:
                 new = True
+                if 'date' in date:
+                    human = datetime.fromtimestamp(date['date']).strftime('%Y-%m-%d')
+                else:
+                    human = 'TBD'
                 for release in releases:
-                    if datetime.fromtimestamp(date['date']).strftime('%Y-%m-%d') == release[0]:
+                    if human == release[0]:
                         release[1] += ', '+date['platform']['name']
                         new = False
                 if new:
-                    if 'date' in date:
-                        releases.append([datetime.fromtimestamp(date['date']).strftime('%Y-%m-%d'), date['platform']['name']])
-                    else:
-                        releases.append(['TBD', date['platform']['name']])
+                    releases.append([human, date['platform']['name']])
             temp = []
             for release in sorted(releases):
                 temp.append(f"**{release[1]}** ({release[0]})")
-            embed.add_field(name='Released', value='\n'.join(temp), inline=False)
+            embed.add_field(name='Platforms', value='\n'.join(temp), inline=False)
 
         if 'involved_companies' in data:
             temp = []
