@@ -1,5 +1,5 @@
 from discord.ext import commands
-from BotUtils import REST, getAPIKey, escapeURL, getCache, setCache
+from BotUtils import REST, getAPIKey, escapeURL, getTwitchToken
 from datetime import datetime
 import discord
 
@@ -29,14 +29,7 @@ class Twitch(commands.Cog):
     @commands.command(name='twitch')
     async def TwitchAPI(self, ctx, *, user):
         """Gets information about twitch users"""
-        token = getCache('twitchToken')
-        if token:
-            authenticate = await REST('https://id.twitch.tv/oauth2/validate', headers={'Authorization': 'Bearer ' + token})
-        if not token or 'status' in authenticate:
-            # Invalid token
-            token = await REST(f"https://id.twitch.tv/oauth2/token?client_id={getAPIKey('twitchID')}&client_secret={getAPIKey('twitchSecret')}&grant_type=client_credentials", method='POST')
-            token = token['access_token']
-            setCache('twitchToken', token)
+        token = await getTwitchToken()
         data = await REST(f"https://api.twitch.tv/helix/users?login={escapeURL(user)}", headers={'Authorization': 'Bearer ' + token, 'Client-ID': getAPIKey('twitchID')})
         data = data['data'][0]
         stream = await REST(f"https://api.twitch.tv/helix/streams?user_login={escapeURL(user)}", headers={'Authorization': 'Bearer ' + token, 'Client-ID': getAPIKey('twitchID')})

@@ -36,6 +36,17 @@ def getCache(key: str) -> str:
     cache.pop(key)
     return value
 
+async def getTwitchToken() -> str:
+    token = getCache('twitchToken')
+    if token:
+        authenticate = await REST('https://id.twitch.tv/oauth2/validate', headers={'Authorization': 'Bearer ' + token})
+    if not token or 'status' in authenticate:
+        # Invalid token
+        token = await REST(f"https://id.twitch.tv/oauth2/token?client_id={getAPIKey('twitchID')}&client_secret={getAPIKey('twitchSecret')}&grant_type=client_credentials", method='POST')
+        token = token['access_token']
+        setCache('twitchToken', token)
+    return token
+
 def setCache(key: str, value: str):
     if key in cache:
         raise Exception()
