@@ -10,7 +10,7 @@ class Random(commands.Cog):
 
     @commands.command(name='dice', aliases=['die'])
     async def dice(self, ctx, *, args='1d6'):
-        """Rolls n dice with set amount of faces. For example:
+        """Rolls n dice with set amount of faces. Default 1d6. For example:
         1d6 = 1 dice with 6 faces.
         2d10 = 2 dices with 10 faces each."""
         if not 'd' in args:
@@ -38,6 +38,14 @@ class Random(commands.Cog):
         roll = random.randint(n, n*f)
         await ctx.send(f"You roll {n} {'dice' if n > 1 else 'die'} with {f} face{'s' if f > 1 else ''}. You rolled **{roll}**!")
 
+    @commands.command(name='coinflip', aliases=['coin'])
+    async def coinflip(self, ctx):
+        """Flips a coin"""
+        flip = random.randint(1, 6001)
+        if flip == 0:
+            await ctx.send('You flip a coin. It lands on its edge!')
+        else:
+            await ctx.send(f"You flip a coin. It lands on **{'heads' if flip < 3000 else 'tails'}**.")
 
 
 def setup(bot):
