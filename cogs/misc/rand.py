@@ -47,6 +47,10 @@ class Random(commands.Cog):
         else:
             await ctx.send(f"You flip a coin. It lands on **{'heads' if flip < 3000 else 'tails'}**.")
 
+    @commands.command(name='choose', aliases=['pick'])
+    async def choose(self, ctx, *, choises):
+        """Enter a list of things (seperated with a comma) and the bot will pick one at random"""
+        await ctx.send(f"Picked **{random.choice(choises.split(',')).strip()}**.")
 
 def setup(bot):
     bot.add_cog(Random(bot))
