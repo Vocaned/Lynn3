@@ -28,14 +28,6 @@ async def REST(url: str, method='GET', headers=None, data=None, auth=None, retur
                 return temp[0]
             return temp
 
-def getCache(key: str) -> str:
-    if not key in cache:
-        return None
- 
-    value = cache[key]
-    cache.pop(key)
-    return value
-
 async def getTwitchToken() -> str:
     token = getCache('twitchToken')
     if token:
@@ -46,6 +38,14 @@ async def getTwitchToken() -> str:
         token = token['access_token']
         setCache('twitchToken', token)
     return token
+
+def getCache(key: str) -> str:
+    if not key in cache:
+        return None
+ 
+    value = cache[key]
+    cache.pop(key)
+    return value
 
 def setCache(key: str, value: str):
     if key in cache:
