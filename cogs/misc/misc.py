@@ -34,12 +34,6 @@ class Misc(commands.Cog):
         embed.description = f'**Red** = **{str(r)}** (**{str(rp)}%**)\n**Green** = **{str(g)}** (**{str(gp)}%**)\n**Blue** = **{str(b)}** (**{str(bp)}%**)'
         await ctx.send(embed=embed, content='')
 
-    @commands.command()
-    async def ping(self, ctx):
-        embed = discord.Embed(title='Pong!', colour=0xfffdd0)
-        embed.description = f'{str(round(self.bot.latency*1000, 2))}ms'
-        await ctx.send(embed=embed, content='')
-
     @commands.command(aliases=['id'])
     async def snowflake(self, ctx, *, snowflake):
         # HACK: Parse mentions by just removing everything that's not a digit
@@ -56,10 +50,12 @@ class Misc(commands.Cog):
         return subprocess.check_output(command, stderr=subprocess.PIPE, shell=shell).decode('utf-8')
 
     @commands.cooldown(1, 120)
-    @commands.command(name='hostinfo', aliases=['hostping', 'helpmyhostisonfire'])
-    async def hostinfo(self, ctx, *message):
+    @commands.command(name='ping', aliases=['hostinfo'])
+    async def ping(self, ctx, *message):
         if not sys.platform.startswith('linux'):
-            await ctx.send("This command is only usable when the bot is hosted on linux. Sorry!")
+            embed = discord.Embed(title='Pong!', colour=0xfffdd0)
+            embed.description = f'{str(round(self.bot.latency*1000, 2))}ms'
+            await ctx.send(embed=embed, content='')
             return
         hostname = self.getOutput(['hostname'])
         uname = self.getOutput(['uname', '-a'])
@@ -68,7 +64,7 @@ class Misc(commands.Cog):
         ram = self.getOutput(['free -m | grep Mem | awk \'{print ($3 "\057" $2 " MB")}\''], shell=True)
         cpu = self.getOutput(["mpstat | awk '$12 ~ /[0-9.]+/ { print 100 - $12 \"%\"}'"], shell=True)
 
-        embed=discord.Embed(title="Host Information")
+        embed = discord.Embed(title=f'Pong! {round(self.bot.latency*1000, 2)}ms', colour=0xfffdd0)
         embed.set_author(name=hostname)
         embed.add_field(name="Current Time", value=f"🕒 {datetime.now().isoformat()}", inline=False)
         embed.add_field(name="System", value=f"ℹ️ {uname}", inline=False)

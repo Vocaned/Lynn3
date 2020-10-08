@@ -22,6 +22,7 @@ class Mediawiki(commands.Cog):
                 return
 
         pageID = search['query']['search'][0]['pageid']
+        # FIXME: pageimages deprecated on fandom/gamepedia
         info = await REST(f'{apiURL}?action=query&prop=info|pageimages|extracts&inprop=url|displaytitle&piprop=original&pilicense=any&exlimit=1&format=json&explaintext&utf8&redirects&pageids={pageID}')
         # Get "first" page with an unknown pageID
         info = list(info['query']['pages'].values())[0]
@@ -54,7 +55,7 @@ class Mediawiki(commands.Cog):
                 if val.strip() and len(val)+len(m[i].group(3))+totalchars < 6000:
                     embed.add_field(name=m[i].group(3), value=val.strip()[:1024], inline=False)
                     totalchars += len(val)+len(m[i].group(3))
-        
+
         await ctx.send(embed=embed)
 
     # The wiki has to have the TextExtracts extension in order for the API to work.
@@ -131,6 +132,20 @@ class Mediawiki(commands.Cog):
             query = query.replace('--full ', '', 1)
             full = True
         await self.mediawiki(ctx, query, 'https://minecraft.gamepedia.com/api.php', 'Minecraft Wiki', full, safe=True)
+
+    @commands.command(name='customwiki', aliases=['cwiki'])
+    async def customwiki(self, ctx, url, *, query):
+        """Displays summary of the wiki article.
+        URL should be base url for api.php. Usually https://[domain]/w/ or https://[domain]/
+        If "--full " is passed into the query, as much as possible will be shown"""
+        full = False
+        if query.startswith('--full '):
+            query = query.replace('--full ', '', 1)
+            full = True
+        if url[-1] != '/':
+            url += '/'
+        await self.mediawiki(ctx, query, url+'/api.php', url, full)
+
 
     # TODO: Bulbapedia doesn't return pageIDs in searches
 
