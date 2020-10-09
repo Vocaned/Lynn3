@@ -13,7 +13,9 @@ async def REST(url: str, method='GET', headers=None, data=None, auth=None, retur
     async with aiohttp.ClientSession() as s:
         async with s.request(method, url, headers=headers, data=data, auth=auth) as r:
             temp = []
-            for ret in returns.split('|'):
+            if isinstance(returns, str):
+                returns = (returns,)
+            for ret in returns:
                 if ret == 'json':
                     temp.append(await r.json())
                 elif ret == 'status':
@@ -24,6 +26,8 @@ async def REST(url: str, method='GET', headers=None, data=None, auth=None, retur
                     temp.append(await r.text())
                 elif ret == 'object':
                     return r
+                else:
+                    raise NotImplementedError('Invalid return type ' + ret)
             if len(temp) == 1:
                 return temp[0]
             return temp
@@ -42,7 +46,7 @@ async def getTwitchToken() -> str:
 def getCache(key: str) -> str:
     if not key in cache:
         return None
- 
+
     value = cache[key]
     cache.pop(key)
     return value
