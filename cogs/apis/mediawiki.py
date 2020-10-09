@@ -44,8 +44,12 @@ class Mediawiki(commands.Cog):
         extract = info['extract'].replace('\\t', '')
         r = re.compile('([^=])(==\\s)(.+?)(\\s==)')
         m = [m for m in r.finditer(extract)]
+        if m:
+            desclength = min(m[0].start(), 2048)
+        else:
+            desclength = 2048
 
-        embed.description = extract[:min(m[0].start(), 2048)]
+        embed.description = extract[:desclength]
         totalchars += len(embed.description)
 
         if full:
