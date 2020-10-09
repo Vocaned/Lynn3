@@ -7,7 +7,7 @@ class Mediawiki(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def mediawiki(self, ctx, query, apiURL, wikiName, full, introOnly=True, safe=False):
+    async def mediawiki(self, ctx, query, apiURL, full, introOnly=True, safe=False):
         # Assuming the user knows what they are looking for by using srwhat=nearmatch
         search = await REST(f"{apiURL}?action=query&list=search&format=json&srwhat=nearmatch&utf8&srsearch={escapeURL(query)}")
         if not search['query']['search']:
@@ -23,7 +23,8 @@ class Mediawiki(commands.Cog):
 
         pageID = search['query']['search'][0]['pageid']
         # FIXME: pageimages deprecated on fandom/gamepedia
-        info = await REST(f'{apiURL}?action=query&prop=info|pageimages|extracts&inprop=url|displaytitle&piprop=original&pilicense=any&exlimit=1&format=json&explaintext&utf8&redirects&pageids={pageID}')
+        info = await REST(f'{apiURL}?action=query&meta=siteinfo&prop=info|pageimages|extracts&inprop=url|displaytitle&piprop=original&pilicense=any&exlimit=1&format=json&explaintext&utf8&redirects&pageids={pageID}')
+        wikiName = info['query']['general']['sitename']
         # Get "first" page with an unknown pageID
         info = list(info['query']['pages'].values())[0]
 
@@ -73,13 +74,13 @@ class Mediawiki(commands.Cog):
         if query.startswith('--full '):
             query = query.replace('--full ', '', 1)
             full = True
-        await self.mediawiki(ctx, query, 'https://en.wikipedia.org/w/api.php', 'Wikipedia', full)
+        await self.mediawiki(ctx, query, 'https://en.wikipedia.org/w/api.php', full)
 
     @commands.command(name='wiktionary', aliases=['dictionary', 'define'])
     async def wiktionary(self, ctx, *, query):
         """Displays summary of the wiki article."""
         full = True
-        await self.mediawiki(ctx, query, 'https://en.wiktionary.org/w/api.php', 'Wiktionary', full)
+        await self.mediawiki(ctx, query, 'https://en.wiktionary.org/w/api.php', full)
 
     @commands.command(name='wikilanguage', aliases=['wikil', 'wikilang'])
     async def wikilanguage(self, ctx, lang, *, query):
@@ -89,13 +90,13 @@ class Mediawiki(commands.Cog):
         if query.startswith('--full '):
             query = query.replace('--full ', '', 1)
             full = True
-        await self.mediawiki(ctx, query, f"https://{lang}.wikipedia.org/w/api.php", 'Wikipedia ' + lang.upper(), full)
+        await self.mediawiki(ctx, query, f"https://{lang}.wikipedia.org/w/api.php", full)
 
     @commands.command(name='wiktionarylanguage', aliases=['wiktionarylang', 'dictionarylanguage', 'dictionarylang', 'definelang', 'definelanguage'])
     async def wiktionarylanguage(self, ctx, lang, *, query):
         """Displays summary of the wiki article."""
         full = True
-        await self.mediawiki(ctx, query, f"https://{lang}.wiktionary.org/w/api.php", 'Wiktionary ' + lang.upper(), full)
+        await self.mediawiki(ctx, query, f"https://{lang}.wiktionary.org/w/api.php", full)
 
     @commands.command(name='wikibooks', aliases=['wikibook', 'book', 'books'])
     async def wikibooks(self, ctx, *, query):
@@ -115,7 +116,7 @@ class Mediawiki(commands.Cog):
         if query.startswith('--full '):
             query = query.replace('--full ', '', 1)
             full = True
-        await self.mediawiki(ctx, query, f"https://{lang}.wikibooks.org/w/api.php", 'Wikibooks ' + lang.upper(), full)
+        await self.mediawiki(ctx, query, f"https://{lang}.wikibooks.org/w/api.php", full)
 
     @commands.command(name='gamepedia')
     async def gamepedia(self, ctx, wiki, *, query):
@@ -125,7 +126,7 @@ class Mediawiki(commands.Cog):
         if query.startswith('--full '):
             query = query.replace('--full ', '', 1)
             full = True
-        await self.mediawiki(ctx, query, f"https://{wiki}.gamepedia.com/api.php", wiki.title() + ' Wiki', full, safe=True)
+        await self.mediawiki(ctx, query, f"https://{wiki}.gamepedia.com/api.php", full, safe=True)
 
     @commands.command(name='mcwiki', aliases=['minecraftwiki'])
     async def mcwiki(self, ctx, *, query):
@@ -135,7 +136,7 @@ class Mediawiki(commands.Cog):
         if query.startswith('--full '):
             query = query.replace('--full ', '', 1)
             full = True
-        await self.mediawiki(ctx, query, 'https://minecraft.gamepedia.com/api.php', 'Minecraft Wiki', full, safe=True)
+        await self.mediawiki(ctx, query, 'https://minecraft.gamepedia.com/api.php', full, safe=True)
 
     @commands.command(name='customwiki', aliases=['cwiki'])
     async def customwiki(self, ctx, url, *, query):
