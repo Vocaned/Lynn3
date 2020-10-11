@@ -6,6 +6,7 @@ import aiohttp
 import urllib
 import json
 import re
+import select
 import asyncio
 import time
 from config import apiKeys, cache
@@ -81,39 +82,47 @@ def isURL(string: str) -> bool:
 def codeBlockWrapper(string: str, lang: str = ''):
     return f'```{lang}\n{string}\n```'
 
-async def sendShellMsg(ctx: commands.Context, message: discord.Message, curmsg: str):
-    if len(codeBlockWrapper(curmsg, 'sh')) < 2000:
-        await message.edit(content=codeBlockWrapper(curmsg, 'sh'))
+async def sendShellMsg(ctx: commands.Context, message: discord.Message, curmsg: list):
+    if len(codeBlockWrapper('\n'.join(curmsg), 'sh')) < 2000:
+        await message.edit(content=codeBlockWrapper('\n'.join(curmsg), 'sh'))
         return message, curmsg
     else:
-        curmsg = curmsg.split('\n')[-1]
-        message = await ctx.send(codeBlockWrapper(curmsg, 'sh'))
+        curmsg = curmsg[-1]
+        message = await ctx.send(codeBlockWrapper('\n'.join(curmsg), 'sh'))
         return message, curmsg
 
 async def shellCommand(ctx: commands.Context, command: str, realtime: bool = True, timeout: int = 10):
-    curmsg = '$ ' + command
+    curmsg = [f'$ {command}', ]
     # FIXME: STDERR -> STDOUT PIPE
-    p = Popen(command, stdout = PIPE, stderr = STDOUT, shell = True)
-    curmsg += f'\n[PID] {p.pid}'
-    message = await ctx.send(codeBlockWrapper(curmsg, 'sh'))
+    p = Popen(command, stdout=PIPE, stderr=STDOUT, shell=True)
+    curmsg.append(f'[PID] {p.pid}')
+    message = await ctx.send(codeBlockWrapper('\n'.join(curmsg), 'sh'))
     startTime = time.time()
     lastEdit = time.time()
+    out = p.stdout
     while True:
-        out = p.stdout
+        r, _, _ = select.select([out], [], [], 0.5)
         if p.poll() != None:
             break
-        for line in out:
-            if timeout and time.time()-startTime > timeout:
-                curmsg += '\n\n[SIGKILLED AFTER 10 SECONDS]'
-                message, curmsg = await sendShellMsg(ctx, message, curmsg)
-                p.kill()
-                break
-            curmsg += '\n' + line.decode().strip().replace('\n', '\\n')
+        if out in r:
+            line = os.read(out.fileno(), 4096)
+            if isinstance(line, bytes):
+                curmsg.append(line.decode().strip())
+            else:
+                curmsg.append(str(line))
             if time.time()-lastEdit > 1:
                 message, curmsg = await sendShellMsg(ctx, message, curmsg)
                 lastEdit = time.time()
 
-    curmsg += f'\n[RET] {p.returncode}'
+        if timeout and time.time()-startTime > timeout:
+            curmsg.append('[SIGKILLED AFTER 10 SECONDS]')
+            message, curmsg = await sendShellMsg(ctx, message, curmsg)
+            p.kill()
+            p.wait()
+            break
+
+    message, curmsg = await sendShellMsg(ctx, message, curmsg)
+    curmsg.append(f'[RET] {p.returncode}')
     await sendShellMsg(ctx, message, curmsg)
 
 async def makeBodyPart(img, img2, p, s, o11, o12, o21, o22):
