@@ -6,7 +6,10 @@ import aiohttp
 import urllib
 import json
 import re
+import asyncio
+import time
 from config import apiKeys, cache
+from subprocess import Popen, PIPE, STDOUT
 from PIL import Image, ImageOps
 
 async def REST(url: str, method='GET', headers=None, data=None, auth=None, returns='json'):
@@ -74,6 +77,44 @@ def isURL(string: str) -> bool:
         r'(?::\d+)?' # optional port
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
     return re.match(regex, string) is not None
+
+def codeBlockWrapper(string: str, lang: str = ''):
+    return f'```{lang}\n{string}\n```'
+
+async def sendShellMsg(ctx: commands.Context, message: discord.Message, curmsg: str):
+    if len(codeBlockWrapper(curmsg, 'sh')) < 2000:
+        await message.edit(content=codeBlockWrapper(curmsg, 'sh'))
+        return message, curmsg
+    else:
+        curmsg = curmsg.split('\n')[-1]
+        message = await ctx.send(codeBlockWrapper(curmsg, 'sh'))
+        return message, curmsg
+
+async def shellCommand(ctx: commands.Context, command: str, realtime: bool = True, timeout: int = 10):
+    curmsg = '$ ' + command
+    # FIXME: STDERR -> STDOUT PIPE
+    p = Popen(command, stdout = PIPE, stderr = STDOUT, shell = True)
+    curmsg += f'\n[PID] {p.pid}'
+    message = await ctx.send(codeBlockWrapper(curmsg, 'sh'))
+    startTime = time.time()
+    lastEdit = time.time()
+    while True:
+        out = p.stdout
+        if p.poll() != None:
+            break
+        for line in out:
+            if timeout and time.time()-startTime > timeout:
+                curmsg += '\n\n[SIGKILLED AFTER 10 SECONDS]'
+                message, curmsg = await sendShellMsg(ctx, message, curmsg)
+                p.kill()
+                break
+            curmsg += '\n' + line.decode().strip().replace('\n', '\\n')
+            if time.time()-lastEdit > 1:
+                message, curmsg = await sendShellMsg(ctx, message, curmsg)
+                lastEdit = time.time()
+
+    curmsg += f'\n[RET] {p.returncode}'
+    await sendShellMsg(ctx, message, curmsg)
 
 async def makeBodyPart(img, img2, p, s, o11, o12, o21, o22):
     size = (p*s[0], p*s[1], p*s[2], p*s[3])
