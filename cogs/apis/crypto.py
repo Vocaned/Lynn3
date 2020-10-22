@@ -107,7 +107,7 @@ class Crypto(commands.Cog):
             embed.add_field(name='Unconfirmed Balance', value=self.balanceformat(symbol, data['unconfirmed_balance'], currency, value))
         embed.add_field(name='Total Transactions', value=data['final_n_tx'], inline=False)
         if data['unconfirmed_n_tx']:
-            embed.add_field(name='Unfonfirmed Transactions', value=data['unconfirmed_n_tx'], inline=False)
+            embed.add_field(name='Unconfirmed Transactions', value=data['unconfirmed_n_tx'], inline=False)
 
         return embed
 
