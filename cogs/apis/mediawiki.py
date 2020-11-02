@@ -22,49 +22,64 @@ class Mediawiki(commands.Cog):
                 return
 
         pageID = search['query']['search'][0]['pageid']
-        # FIXME: pageimages deprecated on fandom/gamepedia
-        info = await REST(f'{apiURL}?action=query&meta=siteinfo&prop=info|pageimages|extracts&inprop=url|displaytitle&piprop=original&pilicense=any&exlimit=1&format=json&explaintext&utf8&redirects&pageids={pageID}')
-        wikiName = info['query']['general']['sitename']
-        # Get "first" page with an unknown pageID
-        info = list(info['query']['pages'].values())[0]
 
-        title = info['title']
-        url = info['fullurl']
-        try:
-            imgUrl = info['original']['source']
-        except:
-            imgUrl = None
+        props = []
+        getProps = await REST(f"{apiURL}?action=paraminfo&modules=query+info|query+pageimages|query+extracts")
+        if 'modules' in getProps['paraminfo']:
+            for module in getProps['paraminfo']['modules']:
+                props.append(module['name'])
+
+        if 'info' not in props:
+            raise commands.CommandError(message="Wiki doesn't support required API modules")
+
+        params = ''
+        if 'info' in props:
+            params += '&inprop=url|displaytitle'
+        if 'pageimages' in props:
+            params += '&piprop=original&pilicense=any'
+        if 'extracts' in props:
+            params += '&exlimit=1&explaintext'
+
+        # FIXME: pageimages, extracts deprecated on fandom/gamepedia
+        # TODO: Don't rely on TextExtracts by stripping html manually (?)
+
+        info = await REST(f"{apiURL}?action=query&meta=siteinfo&prop={'|'.join(props)}{params}&format=json&utf8&redirects&pageids={pageID}")
+        # Get "first" page with an unknown pageID
+        page = list(info['query']['pages'].values())[0]
+
+        embed = discord.Embed(title=f"{page['title']} - {info['query']['general']['sitename']}", color=0x32cd32, url=page['fullurl'])
 
         totalchars = 0
-        title = f"{title} - {wikiName}"
-        totalchars += len(title)
-        embed = discord.Embed(title=title, color=0x32cd32, url=url)
-        if imgUrl and (safe or (not ctx.guild or ctx.channel.is_nsfw())):
-            embed.set_image(url=imgUrl)
+        totalchars += len(embed.title)
 
-        extract = info['extract'].replace('\\t', '')
-        r = re.compile('([^=])(==\\s)(.+?)(\\s==)')
-        m = [m for m in r.finditer(extract)]
-        if m:
-            desclength = min(m[0].start(), 2048)
-        else:
-            desclength = 2048
+        if 'pageimages' in props:
+            try:
+                if safe or (not ctx.guild or ctx.channel.is_nsfw()):
+                    embed.set_image(url=page['original']['source'])
+            except:
+                pass
 
-        embed.description = extract[:desclength]
-        totalchars += len(embed.description)
+        if 'extracts' in props:
+            extract = page['extract'].replace('\\t', '')
+            r = re.compile('([^=])(==\\s)(.+?)(\\s==)')
+            m = [m for m in r.finditer(extract)]
+            if m:
+                desclength = min(m[0].start(), 2048)
+            else:
+                desclength = 2048
 
-        if full:
-            for i in range(len(m)):
-                next = None if i+1 == len(m) else m[i+1].start()
-                val = extract[m[i].end():next]
-                if val.strip() and len(val)+len(m[i].group(3))+totalchars < 6000:
-                    embed.add_field(name=m[i].group(3), value=val.strip()[:1024], inline=False)
-                    totalchars += len(val)+len(m[i].group(3))
+            embed.description = extract[:desclength]
+            totalchars += len(embed.description)
+
+            if full:
+                for i in range(len(m)):
+                    nex = None if i+1 == len(m) else m[i+1].start()
+                    val = extract[m[i].end():nex]
+                    if val.strip() and len(val)+len(m[i].group(3))+totalchars < 6000:
+                        embed.add_field(name=m[i].group(3), value=val.strip()[:1024], inline=False)
+                        totalchars += len(val)+len(m[i].group(3))
 
         await ctx.send(embed=embed)
-
-    # The wiki has to have the TextExtracts extension in order for the API to work.
-    # TODO: Don't rely on TextExtracts by stripping html manually (?)
 
     @commands.command(name='wiki', aliases=['wikipedia'])
     async def wiki(self, ctx, *, query):
@@ -137,6 +152,16 @@ class Mediawiki(commands.Cog):
             query = query.replace('--full ', '', 1)
             full = True
         await self.mediawiki(ctx, query, f"https://{wiki}.gamepedia.com/api.php", full)
+
+    @commands.command(name='wikia')
+    async def wikia(self, ctx, wiki, *, query):
+        """Displays summary of the wiki article.
+        If "--full " is passed into the query, as much as possible will be shown"""
+        full = False
+        if query.startswith('--full '):
+            query = query.replace('--full ', '', 1)
+            full = True
+        await self.mediawiki(ctx, query, f"https://{wiki}.wikia.org/api.php", full)
 
     @commands.command(name='mcwiki', aliases=['minecraftwiki'])
     async def mcwiki(self, ctx, *, query):
