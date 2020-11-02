@@ -118,6 +118,16 @@ class Mediawiki(commands.Cog):
             full = True
         await self.mediawiki(ctx, query, f"https://{lang}.wikibooks.org/w/api.php", full)
 
+    @commands.command(name='fandom')
+    async def fandom(self, ctx, wiki, *, query):
+        """Displays summary of the wiki article.
+        If "--full " is passed into the query, as much as possible will be shown"""
+        full = False
+        if query.startswith('--full '):
+            query = query.replace('--full ', '', 1)
+            full = True
+        await self.mediawiki(ctx, query, f"https://{wiki}.fandom.com/api.php", full)
+
     @commands.command(name='gamepedia')
     async def gamepedia(self, ctx, wiki, *, query):
         """Displays summary of the wiki article.
@@ -126,7 +136,7 @@ class Mediawiki(commands.Cog):
         if query.startswith('--full '):
             query = query.replace('--full ', '', 1)
             full = True
-        await self.mediawiki(ctx, query, f"https://{wiki}.gamepedia.com/api.php", full, safe=True)
+        await self.mediawiki(ctx, query, f"https://{wiki}.gamepedia.com/api.php", full)
 
     @commands.command(name='mcwiki', aliases=['minecraftwiki'])
     async def mcwiki(self, ctx, *, query):

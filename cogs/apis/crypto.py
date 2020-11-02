@@ -9,6 +9,7 @@ class Crypto(commands.Cog):
     #region Groups
     @commands.group(name='btc', aliases=['bitcoin'], description='Bitcoin')
     async def btc(self, ctx):
+        """Bitcoin"""
         if not ctx.invoked_subcommand:
             raise commands.UserInputError()
 
@@ -27,6 +28,12 @@ class Crypto(commands.Cog):
     @commands.group(name='doge', aliases=['dogecoin'], description='Dogecoin')
     async def doge(self, ctx):
         """Dogecoin"""
+        if not ctx.invoked_subcommand:
+            raise commands.UserInputError()
+
+    @commands.group(name='dash', description='DASH')
+    async def dash(self, ctx):
+        """DASH"""
         if not ctx.invoked_subcommand:
             raise commands.UserInputError()
     #endregion
@@ -52,6 +59,11 @@ class Crypto(commands.Cog):
     async def dogeprice(self, ctx, currency='USD'):
         value = await self.price(ctx.command.parent.name, currency)
         await ctx.send(f'**1 DOGE = {value} {currency.upper()}**')
+
+    @dash.command(name='price')
+    async def dashprice(self, ctx, currency='USD'):
+        value = await self.price(ctx.command.parent.name, currency)
+        await ctx.send(f'**1 DASH = {value} {currency.upper()}**')
     #endregion
 
     #region Wallet
@@ -72,6 +84,11 @@ class Crypto(commands.Cog):
 
     @doge.command(name='balance', aliases=['wallet', 'address'])
     async def dogebalance(self, ctx, address, currency='USD'):
+        embed = await self.balance(ctx.command.parent.description, ctx.command.parent.name, address, currency)
+        await ctx.send(embed=embed)
+
+    @dash.command(name='balance', aliases=['wallet', 'address'])
+    async def dashbalance(self, ctx, address, currency='USD'):
         embed = await self.balance(ctx.command.parent.description, ctx.command.parent.name, address, currency)
         await ctx.send(embed=embed)
     #endregion
