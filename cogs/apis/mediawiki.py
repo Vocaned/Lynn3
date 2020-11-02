@@ -24,7 +24,7 @@ class Mediawiki(commands.Cog):
         pageID = search['query']['search'][0]['pageid']
 
         props = []
-        getProps = await REST(f"{apiURL}?action=paraminfo&modules=query+info|query+pageimages|query+extracts")
+        getProps = await REST(f"{apiURL}?action=paraminfo&modules=query+info|query+pageimages|query+extracts&format=json&utf8")
         if 'modules' in getProps['paraminfo']:
             for module in getProps['paraminfo']['modules']:
                 props.append(module['name'])
