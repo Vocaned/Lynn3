@@ -40,7 +40,7 @@ class Mediawiki(commands.Cog):
         if 'extracts' in props:
             params += '&exlimit=1&explaintext'
 
-        # FIXME: pageimages, extracts deprecated on fandom/gamepedia
+        # FIXME: pageimages, extracts deprecated on fandom/gamepedia/wikia
         # TODO: Don't rely on TextExtracts by stripping html manually (?)
 
         info = await REST(f"{apiURL}?action=query&meta=siteinfo&prop={'|'.join(props)}{params}&format=json&utf8&redirects&pageids={pageID}")
