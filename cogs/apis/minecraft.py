@@ -225,17 +225,16 @@ class Minecraft(commands.Cog):
         embed = discord.Embed(title='Minecraft', colour=0xa4d168)
         embed.add_field(name='Sold total', value=sale['total'])
         embed.add_field(name='Sold in the last 24h', value=sale['last24h'])
-        embed.add_field(name='Sold every minute', value=str(float(sale['saleVelocityPerSeconds'])*60))
-        embed.set_footer(text='\U00002063', icon_url='https://minecraft.net/favicon-96x96.png')
+        embed.add_field(name='Sold per hour', value=str(float(sale['saleVelocityPerSeconds'])*60*60))
+        embed.set_footer(text='\U00002063', icon_url='https://static.wikia.nocookie.net/minecraft_gamepedia/images/3/3b/Grass_Block_(side_texture)_JE2_BE2.png')
         embed.timestamp = datetime.utcnow()
         
         sale = await REST('https://api.mojang.com/orders/statistics', method='POST', data='{"metricKeys":["item_sold_dungeons"]}', headers={"content-type": "application/json"})
         embed2 = discord.Embed(title='Minecraft Dungeons', colour=0xe57834)
         embed2.add_field(name='Sold total', value=sale['total'])
         embed2.add_field(name='Sold in the last 24h', value=sale['last24h'])
-        embed2.add_field(name='Sold every minute', value=str(float(sale['saleVelocityPerSeconds'])*60))
-        # TODO: Minecraft dungeons favicon
-        embed2.set_footer(text='\U00002063', icon_url='https://minecraft.net/favicon-96x96.png')
+        embed2.add_field(name='Sold per hour', value=str(float(sale['saleVelocityPerSeconds'])*60*60))
+        embed2.set_footer(text='\U00002063', icon_url='https://i.imgur.com/EkLm2j8.png')
         embed2.timestamp = datetime.utcnow()
 
         await ctx.send(embed=embed)
