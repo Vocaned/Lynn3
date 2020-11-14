@@ -8,7 +8,7 @@ class Random(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='dice', aliases=['die'])
+    @commands.command(name='dice', aliases=['die', 'roll'])
     async def dice(self, ctx, *, args='1d6'):
         """Rolls n dice with set amount of faces. Default 1d6. For example:
         1d6 = 1 dice with 6 faces.
@@ -38,7 +38,7 @@ class Random(commands.Cog):
         roll = random.randint(n, n*f)
         await ctx.send(f"You roll {n} {'dice' if n > 1 else 'die'} with {f} face{'s' if f > 1 else ''}. You rolled **{roll}**!")
 
-    @commands.command(name='coinflip', aliases=['coin'])
+    @commands.command(name='coinflip', aliases=['coin', 'flip'])
     async def coinflip(self, ctx):
         """Flips a coin"""
         flip = random.randint(1, 6001)
@@ -47,7 +47,7 @@ class Random(commands.Cog):
         else:
             await ctx.send(f"You flip a coin. It lands on **{'heads' if flip < 3000 else 'tails'}**.")
 
-    @commands.command(name='choose', aliases=['pick'])
+    @commands.command(name='choose', aliases=['pick', 'select'])
     async def choose(self, ctx, *, choises):
         """Enter a list of things (seperated with a comma) and the bot will pick one at random"""
         await ctx.send(f"Picked **{random.choice(choises.split(',')).strip()}**.")

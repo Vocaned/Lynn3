@@ -128,11 +128,11 @@ class Minecraft(commands.Cog):
         return byte
 
     async def getMinecraftUUID(self, name):
-        r = await REST(f"https://api.mojang.com/users/profiles/minecraft/{name}", returns='raw|status')
+        r = await REST(f"https://api.mojang.com/users/profiles/minecraft/{name}", returns=('raw', 'status'))
         if r[1] == 200:
             return json.loads(r[0])
 
-        r = await REST(f"https://api.mojang.com/users/profiles/minecraft/{name}?at=0", returns='raw|status')
+        r = await REST(f"https://api.mojang.com/users/profiles/minecraft/{name}?at=0", returns=('raw', 'status'))
         if r[1] == 200:
             return json.loads(r[0])
         return None

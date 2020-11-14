@@ -114,7 +114,8 @@ class UserInfo(commands.Cog):
         embed.add_field(name='Global Information', value='\n'.join(globalinfo), inline=False)
         embed.add_field(name='Server Information', value='\n'.join(serverinfo), inline=False)
         embed.add_field(name='Status', value='\n'.join(statusinfo), inline=False)
-        embed.add_field(name='Public Badges', value='\n'.join(flags), inline=False)
+        if flags:
+            embed.add_field(name='Public Badges', value='\n'.join(flags), inline=False)
 
         embeds.append(embed)
 

@@ -6,14 +6,20 @@ import aiohttp
 import urllib
 import json
 import re
+import select
+import asyncio
+import time
 from config import apiKeys, cache
+from subprocess import Popen, PIPE, STDOUT
 from PIL import Image, ImageOps
 
 async def REST(url: str, method='GET', headers=None, data=None, auth=None, returns='json'):
     async with aiohttp.ClientSession() as s:
         async with s.request(method, url, headers=headers, data=data, auth=auth) as r:
             temp = []
-            for ret in returns.split('|'):
+            if isinstance(returns, str):
+                returns = (returns,)
+            for ret in returns:
                 if ret == 'json':
                     temp.append(await r.json())
                 elif ret == 'status':
@@ -24,6 +30,8 @@ async def REST(url: str, method='GET', headers=None, data=None, auth=None, retur
                     temp.append(await r.text())
                 elif ret == 'object':
                     return r
+                else:
+                    raise NotImplementedError('Invalid return type ' + ret)
             if len(temp) == 1:
                 return temp[0]
             return temp
@@ -42,7 +50,7 @@ async def getTwitchToken() -> str:
 def getCache(key: str) -> str:
     if not key in cache:
         return None
- 
+
     value = cache[key]
     cache.pop(key)
     return value
@@ -70,6 +78,52 @@ def isURL(string: str) -> bool:
         r'(?::\d+)?' # optional port
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
     return re.match(regex, string) is not None
+
+def codeBlockWrapper(string: str, lang: str = ''):
+    return f'```{lang}\n{string}\n```'
+
+async def sendShellMsg(ctx: commands.Context, message: discord.Message, curmsg: list):
+    if len(codeBlockWrapper('\n'.join(curmsg), 'sh')) < 2000:
+        await message.edit(content=codeBlockWrapper('\n'.join(curmsg), 'sh'))
+        return message, curmsg
+    else:
+        curmsg = curmsg[-1]
+        message = await ctx.send(codeBlockWrapper('\n'.join(curmsg), 'sh'))
+        return message, curmsg
+
+async def shellCommand(ctx: commands.Context, command: str, realtime: bool = True, timeout: int = 10):
+    curmsg = [f'$ {command}', ]
+    # FIXME: STDERR -> STDOUT PIPE
+    p = Popen(command, stdout=PIPE, stderr=STDOUT, shell=True)
+    curmsg.append(f'[PID] {p.pid}')
+    message = await ctx.send(codeBlockWrapper('\n'.join(curmsg), 'sh'))
+    startTime = time.time()
+    lastEdit = time.time()
+    out = p.stdout
+    while True:
+        r, _, _ = select.select([out], [], [], 0.5)
+        if p.poll() != None:
+            break
+        if out in r:
+            line = os.read(out.fileno(), 4096)
+            if isinstance(line, bytes):
+                curmsg.append(line.decode().strip())
+            else:
+                curmsg.append(str(line))
+            if time.time()-lastEdit > 1:
+                message, curmsg = await sendShellMsg(ctx, message, curmsg)
+                lastEdit = time.time()
+
+        if timeout and time.time()-startTime > timeout:
+            curmsg.append('[SIGKILLED AFTER 10 SECONDS]')
+            message, curmsg = await sendShellMsg(ctx, message, curmsg)
+            p.kill()
+            p.wait()
+            break
+
+    message, curmsg = await sendShellMsg(ctx, message, curmsg)
+    curmsg.append(f'[RET] {p.returncode}')
+    await sendShellMsg(ctx, message, curmsg)
 
 async def makeBodyPart(img, img2, p, s, o11, o12, o21, o22):
     size = (p*s[0], p*s[1], p*s[2], p*s[3])
