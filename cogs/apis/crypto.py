@@ -43,7 +43,7 @@ class Crypto(commands.Cog):
     @btc.command(name='price')
     async def btcprice(self, ctx, amount=1, currency='USD'):
         value = await self.price(ctx.command.parent.name, currency)
-        await ctx.send(f'**1 BTC = {value} {currency.upper()}**')
+        await ctx.send(f'**{amount} BTC = {value*amount} {currency.upper()}**')
 
     @eth.command(name='price')
     async def ethprice(self, ctx, amount=1, currency='USD'):
