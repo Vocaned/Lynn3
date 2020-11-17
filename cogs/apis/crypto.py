@@ -41,29 +41,29 @@ class Crypto(commands.Cog):
     # Can't have a command in multiple groups so I guess I'll have to do it the hard way
     #region Price commands
     @btc.command(name='price')
-    async def btcprice(self, ctx, currency='USD'):
+    async def btcprice(self, ctx, amount=1, currency='USD'):
         value = await self.price(ctx.command.parent.name, currency)
         await ctx.send(f'**1 BTC = {value} {currency.upper()}**')
 
     @eth.command(name='price')
-    async def ethprice(self, ctx, currency='USD'):
+    async def ethprice(self, ctx, amount=1, currency='USD'):
         value = await self.price(ctx.command.parent.name, currency)
-        await ctx.send(f'**1 ETH = {value} {currency.upper()}**')
+        await ctx.send(f'**{amount} ETH = {value*amount} {currency.upper()}**')
 
     @ltc.command(name='price')
-    async def ltcprice(self, ctx, currency='USD'):
+    async def ltcprice(self, ctx, amount=1, currency='USD'):
         value = await self.price(ctx.command.parent.name, currency)
-        await ctx.send(f'**1 LTC = {value} {currency.upper()}**')
+        await ctx.send(f'**{amount} LTC = {value*amount} {currency.upper()}**')
 
     @doge.command(name='price')
-    async def dogeprice(self, ctx, currency='USD'):
+    async def dogeprice(self, ctx, amount=1, currency='USD'):
         value = await self.price(ctx.command.parent.name, currency)
-        await ctx.send(f'**1 DOGE = {value} {currency.upper()}**')
+        await ctx.send(f'**{amount} DOGE = {value*amount} {currency.upper()}**')
 
     @dash.command(name='price')
-    async def dashprice(self, ctx, currency='USD'):
+    async def dashprice(self, ctx, amount=1, currency='USD'):
         value = await self.price(ctx.command.parent.name, currency)
-        await ctx.send(f'**1 DASH = {value} {currency.upper()}**')
+        await ctx.send(f'**{amount} DASH = {value*amount} {currency.upper()}**')
     #endregion
 
     #region Wallet
