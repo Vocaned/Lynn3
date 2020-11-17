@@ -43,27 +43,27 @@ class Crypto(commands.Cog):
     @btc.command(name='price')
     async def btcprice(self, ctx, amount=1, currency='USD'):
         value = await self.price(ctx.command.parent.name, currency)
-        await ctx.send(f'**{amount} BTC = {value*amount} {currency.upper()}**')
+        await ctx.send(f'**{amount} BTC = {"{:,}".format(value*amount)} {currency.upper()}**')
 
     @eth.command(name='price')
     async def ethprice(self, ctx, amount=1, currency='USD'):
         value = await self.price(ctx.command.parent.name, currency)
-        await ctx.send(f'**{amount} ETH = {value*amount} {currency.upper()}**')
+        await ctx.send(f'**{amount} ETH = {"{:,}".format(value*amount)} {currency.upper()}**')
 
     @ltc.command(name='price')
     async def ltcprice(self, ctx, amount=1, currency='USD'):
         value = await self.price(ctx.command.parent.name, currency)
-        await ctx.send(f'**{amount} LTC = {value*amount} {currency.upper()}**')
+        await ctx.send(f'**{amount} LTC = {"{:,}".format(value*amount)} {currency.upper()}**')
 
     @doge.command(name='price')
     async def dogeprice(self, ctx, amount=1, currency='USD'):
         value = await self.price(ctx.command.parent.name, currency)
-        await ctx.send(f'**{amount} DOGE = {value*amount} {currency.upper()}**')
+        await ctx.send(f'**{amount} DOGE = {"{:,}".format(value*amount)} {currency.upper()}**')
 
     @dash.command(name='price')
     async def dashprice(self, ctx, amount=1, currency='USD'):
         value = await self.price(ctx.command.parent.name, currency)
-        await ctx.send(f'**{amount} DASH = {value*amount} {currency.upper()}**')
+        await ctx.send(f'**{amount} DASH = {"{:,}".format(value*amount)} {currency.upper()}**')
     #endregion
 
     #region Wallet
