@@ -172,7 +172,8 @@ class Minecraft(commands.Cog):
         if not skin:
             raise commands.CommandOnCooldown(commands.BucketType.default, 10)
         embed = discord.Embed(title='Minecraft User', colour=0x82540f)
-        embed.set_author(name=user, icon_url='attachment://head.png')
+        embed.set_author(name=user)
+        embed.set_thumbnail(url='attachment://head.png')
         embed.add_field(name='Name history', value='\n'.join(names))
         embed.add_field(name='UUID', value=uuid['id'])
         try:
@@ -353,8 +354,8 @@ class Minecraft(commands.Cog):
         
         flags = data['flags']
         embed = discord.Embed(title='ClassiCube User', colour=0x977dab)
-        embed.set_author(name=data['username'],
-            icon_url='attachment://head.png')
+        embed.set_author(name=data['username'])
+        embed.set_thumbnail(url='attachment://head.png')
         embed.add_field(name='ID', value=data['id'])
         ago = self.td_format(datetime.utcnow() - datetime.utcfromtimestamp(data['registered']))
         
