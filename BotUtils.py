@@ -8,6 +8,7 @@ import json
 import re
 import select
 import asyncio
+import typing
 import time
 from config import apiKeys, cache
 from subprocess import Popen, PIPE, STDOUT
@@ -91,11 +92,17 @@ async def sendShellMsg(ctx: commands.Context, message: discord.Message, curmsg: 
         message = await ctx.send(codeBlockWrapper('\n'.join(curmsg), 'sh'))
         return message, curmsg
 
-async def shellCommand(ctx: commands.Context, command: str, realtime: bool = True, timeout: int = 10):
-    curmsg = [f'$ {command}', ]
+async def shellCommand(ctx: commands.Context, command: typing.Union[str, tuple, list], realtime: bool = True, timeout: int = 10, verbose: bool = False):
     # FIXME: STDERR -> STDOUT PIPE
-    p = Popen(command, stdout=PIPE, stderr=STDOUT, shell=True)
-    curmsg.append(f'[PID] {p.pid}')
+    if type(command) == str:
+        p = Popen(command, stdout=PIPE, stderr=STDOUT, shell=True)
+    else:
+        p = Popen(command, stdout=PIPE, stderr=STDOUT)
+    if verbose:
+        curmsg = [f'$ {command}', ]
+        curmsg.append(f'[PID] {p.pid}')
+    else:
+        curmsg = ['⏳']
     message = await ctx.send(codeBlockWrapper('\n'.join(curmsg), 'sh'))
     startTime = time.time()
     lastEdit = time.time()
@@ -110,7 +117,7 @@ async def shellCommand(ctx: commands.Context, command: str, realtime: bool = Tru
                 curmsg.append(line.decode().strip())
             else:
                 curmsg.append(str(line))
-            if time.time()-lastEdit > 1:
+            if time.time()-lastEdit > 1 and realtime:
                 message, curmsg = await sendShellMsg(ctx, message, curmsg)
                 lastEdit = time.time()
 
@@ -121,8 +128,8 @@ async def shellCommand(ctx: commands.Context, command: str, realtime: bool = Tru
             p.wait()
             break
 
-    message, curmsg = await sendShellMsg(ctx, message, curmsg)
-    curmsg.append(f'[RET] {p.returncode}')
+    if verbose:
+        curmsg.append(f'[RET] {p.returncode}')
     await sendShellMsg(ctx, message, curmsg)
 
 async def makeBodyPart(img, img2, p, s, o11, o12, o21, o22):
