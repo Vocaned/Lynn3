@@ -92,7 +92,7 @@ async def sendShellMsg(ctx: commands.Context, message: discord.Message, curmsg: 
         message = await ctx.send(codeBlockWrapper('\n'.join(curmsg), 'sh'))
         return message, curmsg
 
-async def shellCommand(ctx: commands.Context, command: typing.Union[str, tuple, list], realtime: bool = True, timeout: int = 10, verbose: bool = False):
+async def shellCommand(ctx: commands.Context, command: typing.Union[str, tuple, list], realtime: bool = False, timeout: int = 10, verbose: bool = False):
 
     curmsg = ['⏳']
     message = await ctx.send(codeBlockWrapper('\n'.join(curmsg), 'sh'))
@@ -136,7 +136,7 @@ async def shellCommand(ctx: commands.Context, command: typing.Union[str, tuple, 
             else:
                 curmsg.append(check_output(command, stderr=STDOUT, timeout=timeout).decode('utf-8'))
         except CalledProcessError as e:
-            curmsg.append(e.output.decode('utf-8'))
+            curmsg.append(e.output.decode('utf-8s'))
 
     if verbose and realtime:
         curmsg.append(f'[RET] {p.returncode}')
