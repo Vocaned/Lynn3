@@ -136,7 +136,7 @@ async def shellCommand(ctx: commands.Context, command: typing.Union[str, tuple, 
             else:
                 curmsg.append(check_output(command, stderr=STDOUT, timeout=timeout).decode('utf-8'))
         except CalledProcessError as e:
-            curmsg.append(e.output.decode('utf-8s'))
+            curmsg.append(e.output.decode('utf-8'))
 
     if verbose and realtime:
         curmsg.append(f'[RET] {p.returncode}')
