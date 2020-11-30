@@ -1,9 +1,6 @@
 import discord
 from discord.ext import commands
-from datetime import datetime
-import asyncio
 import subprocess
-import sys
 from BotUtils import shellCommand
 
 '''Units commands'''
@@ -16,7 +13,12 @@ class Units(commands.Cog):
         self.bot = bot
 
     @commands.command(aliases=['convert', 'unit'])
-    async def units(self, ctx, *, source, out):
+    async def units(self, ctx, *, arg):
+        '''Converts one unit into another. Use "|" to seperate input and output units'''
+        source = arg.split('|')[0].strip()
+        out = arg.split('|')[1].strip()
+        if source[0] == '-' or out[0] == '-':
+            raise commands.BadArgument(message='Units cannot start with a -')
         await shellCommand(ctx, ['units', '-1t', source, out], realtime=False)
 
 
