@@ -11,7 +11,7 @@ import asyncio
 import typing
 import time
 from config import apiKeys, cache
-from subprocess import Popen, PIPE, STDOUT
+from subprocess import Popen, PIPE, STDOUT, check_output, CalledProcessError
 from PIL import Image, ImageOps
 
 async def REST(url: str, method='GET', headers=None, data=None, auth=None, returns='json'):
@@ -93,44 +93,52 @@ async def sendShellMsg(ctx: commands.Context, message: discord.Message, curmsg: 
         return message, curmsg
 
 async def shellCommand(ctx: commands.Context, command: typing.Union[str, tuple, list], realtime: bool = True, timeout: int = 10, verbose: bool = False):
-    # FIXME: STDERR -> STDOUT PIPE
-    if type(command) == str:
-        p = Popen(command, stdout=PIPE, stderr=STDOUT, shell=True)
-    else:
-        p = Popen(command, stdout=PIPE, stderr=STDOUT)
-    if verbose:
-        curmsg = [f'$ {command}', f'[PID] {p.pid}']
-    else:
-        curmsg = ['⏳']
+
+    curmsg = ['⏳']
     message = await ctx.send(codeBlockWrapper('\n'.join(curmsg), 'sh'))
 
-    if len(curmsg) == 1:
-        curmsg = []
-    startTime = time.time()
-    lastEdit = time.time()
-    out = p.stdout
-    while True:
-        r, _, _ = select.select([out], [], [], 0.5)
-        if p.poll() != None:
-            break
-        if out in r:
-            line = os.read(out.fileno(), 4096)
-            if isinstance(line, bytes):
-                curmsg.append(line.decode().strip())
-            else:
-                curmsg.append(str(line))
-            if time.time()-lastEdit > 1 and realtime:
+    curmsg = []
+
+    if realtime:
+        if type(command) == str:
+            p = Popen(command, stdout=PIPE, stderr=STDOUT, shell=True)
+        else:
+            p = Popen(command, stdout=PIPE, stderr=STDOUT)
+        if verbose:
+            curmsg = [f'$ {command}', f'[PID] {p.pid}']
+        startTime = time.time()
+        lastEdit = time.time()
+        out = p.stdout
+        while True:
+            r, _, _ = select.select([out], [], [], 0.5)
+            if p.poll() != None:
+                break
+            if out in r:
+                line = os.read(out.fileno(), 4096)
+                if isinstance(line, bytes):
+                    curmsg.append(line.decode().strip())
+                else:
+                    curmsg.append(str(line))
+                if time.time()-lastEdit > 1 and realtime:
+                    message, curmsg = await sendShellMsg(ctx, message, curmsg)
+                    lastEdit = time.time()
+
+            if timeout and time.time()-startTime > timeout:
+                curmsg.append('[SIGKILLED AFTER 10 SECONDS]')
                 message, curmsg = await sendShellMsg(ctx, message, curmsg)
-                lastEdit = time.time()
+                p.kill()
+                p.wait()
+                break
+    else:
+        try:
+            if type(command) == str:
+                curmsg.append(check_output(command, stderr=STDOUT, shell=True, timeout=timeout).decode('utf-8'))
+            else:
+                curmsg.append(check_output(command, stderr=STDOUT, timeout=timeout).decode('utf-8'))
+        except CalledProcessError as e:
+            curmsg.append(e.output.decode('utf-8'))
 
-        if timeout and time.time()-startTime > timeout:
-            curmsg.append('[SIGKILLED AFTER 10 SECONDS]')
-            message, curmsg = await sendShellMsg(ctx, message, curmsg)
-            p.kill()
-            p.wait()
-            break
-
-    if verbose:
+    if verbose and realtime:
         curmsg.append(f'[RET] {p.returncode}')
     await sendShellMsg(ctx, message, curmsg)
 
