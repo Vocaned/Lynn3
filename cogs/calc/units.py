@@ -15,7 +15,7 @@ class Units(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(aliases=['convert', 'unit', 'colour'])
+    @commands.command(aliases=['convert', 'unit'])
     async def units(self, ctx, *, source, out):
         await shellCommand(ctx, ['units', '-1t', source, out], realtime=False)
 
