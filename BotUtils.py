@@ -99,11 +99,13 @@ async def shellCommand(ctx: commands.Context, command: typing.Union[str, tuple, 
     else:
         p = Popen(command, stdout=PIPE, stderr=STDOUT)
     if verbose:
-        curmsg = [f'$ {command}', ]
-        curmsg.append(f'[PID] {p.pid}')
+        curmsg = [f'$ {command}', f'[PID] {p.pid}']
     else:
         curmsg = ['⏳']
     message = await ctx.send(codeBlockWrapper('\n'.join(curmsg), 'sh'))
+
+    if len(curmsg) == 1:
+        curmsg = []
     startTime = time.time()
     lastEdit = time.time()
     out = p.stdout
