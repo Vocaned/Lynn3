@@ -152,8 +152,8 @@ class Minecraft(commands.Cog):
         embed = discord.Embed(title='Minecraft User', colour=0x82540f)
         embed.set_author(name=user)
         embed.set_thumbnail(url='attachment://head.png')
-        embed.add_field(name='Name history', value='\n'.join(names))
-        embed.add_field(name='UUID', value=uuid['id'])
+        embed.add_field(name='Name history', value='\n'.join(names), inline=False)
+        embed.add_field(name='UUID', value=uuid['id'], inline=False)
         try:
             embed.add_field(name='Skin URL', value='[Click me]('+skin['textures']['SKIN']['url']+')')
             await skinRenderer2D(skin['textures']['SKIN']['url'])
