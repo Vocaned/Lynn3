@@ -14,26 +14,6 @@ class Minecraft(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    # Ported to python from
-    # https://gist.github.com/jomo/be7dbb5228187edbb993
-    async def getMinecraftAge(self, name):
-        a = 1263146630 # notch sign-up
-        b = math.floor(datetime.utcnow().timestamp())
-        last = 0
-        for _ in range(30):
-            if a == b:
-                if last == a-1 and await REST(f"https://api.mojang.com/users/profiles/minecraft/{name}?at={str(a)}", returns='status') == 200:
-                    return datetime.utcfromtimestamp(a)
-                else:
-                    return False
-            else:
-                mid = a + math.floor((b - a) / 2)
-                if await REST(f"https://api.mojang.com/users/profiles/minecraft/{name}?at={str(mid)}", returns='status')  == 200:
-                    b = mid
-                else:
-                    a = mid+1
-                    last = mid
-
     # thanks stackoverflow love ya
     # https://stackoverflow.com/a/13756038
     def td_format(self, td_object):
@@ -152,7 +132,6 @@ class Minecraft(commands.Cog):
             raise commands.UserInputError()
 
     @minecraft.command(name='player', aliases=['players', 'user', 'username'])
-    @commands.cooldown(rate=1, per=10)
     async def minecraftAPI(self, ctx, *, user):
         """Searches minecraft players."""
         uuid = await self.getMinecraftUUID(user)
@@ -167,7 +146,6 @@ class Minecraft(commands.Cog):
             names[i] = names[i].replace('*', '\\*').replace('_', '\\_').replace('~', '\\~')
         names.reverse()
         names[0] += ' **[CURRENT]**'
-        created = await self.getMinecraftAge(user)
         skin = await self.getMinecraftSkinUrl(uuid['id'])
         if not skin:
             raise commands.CommandOnCooldown(commands.BucketType.default, 10)
@@ -188,10 +166,6 @@ class Minecraft(commands.Cog):
             await headRenderer('https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Steve_skin.png')
             skinFile = discord.File('skins/2d/Steve_skin.png', filename='skin.png')
             headFile = discord.File('skins/head/Steve_skin.png', filename='head.png')
-        if created:
-            embed.add_field(name='Account created', value=f"On {created.strftime('%c')}\n{self.td_format(datetime.utcnow() - created)} ago")
-        else:
-            embed.add_field(name='Account created', value='???')
         embed.set_footer(text='\U00002063', icon_url='https://minecraft.net/favicon-96x96.png')
         embed.set_image(url='attachment://skin.png')
         embed.timestamp = datetime.utcnow()
