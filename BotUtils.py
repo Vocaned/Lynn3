@@ -88,8 +88,11 @@ async def sendShellMsg(ctx: commands.Context, message: discord.Message, curmsg: 
         await message.edit(content=codeBlockWrapper('\n'.join(curmsg), 'sh'))
         return message, curmsg
     else:
+        msgs = splitMessage('\n'.join(curmsg), 'sh')
+        await message.edit(content=msgs[0])
         curmsg = curmsg[-1]
-        message = await ctx.send(codeBlockWrapper('\n'.join(curmsg), 'sh'))
+        for msg in msgs[1:]:
+            message = await ctx.send(msg)
         return message, curmsg
 
 async def shellCommand(ctx: commands.Context, command: typing.Union[str, tuple, list], realtime: bool = False, timeout: int = 10, verbose: bool = False):
