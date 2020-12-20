@@ -21,7 +21,7 @@ class Units(commands.Cog):
         out = arg.split('|')[1].strip()
         if source[0] == '-' or out[0] == '-':
             raise commands.BadArgument(message='Units cannot start with a -')
-        await shellCommand(ctx, ['units', '-1t', source, out], realtime=False, verbose=True)
+        await shellCommand(ctx, ['units', '-1t', source, out], realtime=False)
 
 
 def setup(bot):
