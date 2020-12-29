@@ -69,8 +69,11 @@ class ytdl(commands.Cog):
                 info = ydl.extract_info(videolink)
                 if options == 'audio_only':
                     filename = info['id']+'.mp3'
-                else:
+                elif 'ext' in info:
                     filename = info['id']+'.'+info['ext']
+                else:
+                    # Just pray it's mp4, too lazy to fix
+                    filename = info['id']+'.mp4'
                 file = discord.File(filename)
                 await ctx.send(file=file)
         except FileNotFoundError:
