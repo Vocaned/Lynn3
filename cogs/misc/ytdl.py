@@ -48,7 +48,7 @@ class ytdl(commands.Cog):
                 if 'is_live' in info and info['is_live']:
                     raise commands.BadArgument('Cannot download a livestream')
 
-                if options != 'audio_only' and 'filesize' in info['formats'][0] and info['formats'][0]['filesize']:
+                if options != 'audio_only' and 'formats' in info and info['formats'] and 'filesize' in info['formats'][0] and info['formats'][0]['filesize']:
                     biggest = 0
                     for formats in info['formats']:
                         if not formats['filesize'] or not formats['width']:
@@ -78,7 +78,7 @@ class ytdl(commands.Cog):
         except Exception as e:
             raise e
         finally:
-            if os.path.exists(filename):
+            if filename and os.path.exists(filename):
                 os.remove(filename)
 
 def setup(bot):
