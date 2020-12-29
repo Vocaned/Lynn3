@@ -7,7 +7,7 @@ import time
 from config import uptime
 import subprocess
 import sys
-from BotUtils import splitMessage
+from BotUtils import splitMessage, shellCommand
 
 '''Misc commands'''
 
@@ -45,6 +45,14 @@ class Misc(commands.Cog):
                                 **Internal process ID**: {str((snowflake & 0x1F000) >> 12)}
                                 **Increment**: {str(snowflake & 0xFFF)}'''
         await ctx.send(embed=embed, content='')
+
+    @commands.command()
+    async def whois(self, ctx, *, domain):
+        """Whois"""
+        if not sys.platform.startswith('linux'):
+            await ctx.send("This command is only usable when the bot is hosten on linux. Sorry!")
+            return
+        await shellCommand(ctx, ['whois', domain], realtime=False)
 
     def getOutput(self, command, shell=False):
         return subprocess.check_output(command, stderr=subprocess.PIPE, shell=shell).decode('utf-8')
