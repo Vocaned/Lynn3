@@ -95,10 +95,11 @@ async def sendShellMsg(ctx: commands.Context, message: discord.Message, curmsg: 
             message = await ctx.send(msg)
         return message, curmsg
 
-async def shellCommand(ctx: commands.Context, command: typing.Union[str, tuple, list], realtime: bool = False, timeout: int = 10, verbose: bool = False):
+async def shellCommand(ctx: commands.Context, command: typing.Union[str, tuple, list], realtime: bool = False, timeout: int = 10, verbose: bool = False, silent: bool = False):
 
     curmsg = ['⏳']
-    message = await ctx.send(codeBlockWrapper('\n'.join(curmsg), 'sh'))
+    if not silent:
+        message = await ctx.send(codeBlockWrapper('\n'.join(curmsg), 'sh'))
 
     curmsg = []
 
@@ -123,12 +124,14 @@ async def shellCommand(ctx: commands.Context, command: typing.Union[str, tuple, 
                 else:
                     curmsg.append(str(line))
                 if time.time()-lastEdit > 1 and realtime:
-                    message, curmsg = await sendShellMsg(ctx, message, curmsg)
+                    if not silent:
+                        message, curmsg = await sendShellMsg(ctx, message, curmsg)
                     lastEdit = time.time()
 
             if timeout and time.time()-startTime > timeout:
                 curmsg.append('[SIGKILLED AFTER 10 SECONDS]')
-                message, curmsg = await sendShellMsg(ctx, message, curmsg)
+                if not silent:
+                    message, curmsg = await sendShellMsg(ctx, message, curmsg)
                 p.kill()
                 p.wait()
                 break
@@ -143,7 +146,8 @@ async def shellCommand(ctx: commands.Context, command: typing.Union[str, tuple, 
 
     if verbose and realtime:
         curmsg.append(f'[RET] {p.returncode}')
-    await sendShellMsg(ctx, message, curmsg)
+    if not silent:
+        await sendShellMsg(ctx, message, curmsg)
 
 async def makeBodyPart(img, img2, p, s, o11, o12, o21, o22):
     size = (p*s[0], p*s[1], p*s[2], p*s[3])
