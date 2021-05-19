@@ -15,21 +15,30 @@ class Twitter(commands.Cog):
                                 consumer_secret=getAPIKey('twitterConsSecret'),
                                 oauth_token=getAPIKey('twitterAccToken'),
                                 oauth_token_secret=getAPIKey('twitterAccSecret'))
-        data = await twitter.request('GET', 'users/search.json', params={'count': 1, 'q': escapeURL(user)})
+        userfields = [
+            'created_at', 'description', 'location',
+            'name', 'profile_image_url', 'protected',
+            'public_metrics', 'url', 'username',
+            'verified', 'withheld'
+        ]
+        data = await twitter.request('GET', f'../2/users/by/username/{escapeURL(user)}', params={'expansions': 'author_id', 'user.fields': ",".join(userfields)})
         data = data[0]
-        embed = discord.Embed(title=f"{data['name']} (@{data['screen_name']})", url=f"https://twitter.com/{data['screen_name']}", description=data['description'], color=0x1DA1F2)
-        embed.set_thumbnail(url=data['profile_image_url_https'])
-        embed.add_field(name='Tweets', value=str(data['statuses_count']))
-        embed.add_field(name='Followers', value=str(data['followers_count']))
-        embed.add_field(name='Following', value=str(data['friends_count']))
-        embed.add_field(name='Liked posts', value=str(data['favourites_count']))
+        embed = discord.Embed(title=f"{data['name']} (@{data['username']})", url=data['url'], description=data['description'], color=0x1DA1F2)
+        embed.set_thumbnail(url=data['profile_image_url'])
+        embed.add_field(name='Tweets', value=str(data['public_metrics.tweet_count']))
+        embed.add_field(name='Followers', value=str(data['public_metrics.followers_count']))
+        embed.add_field(name='Following', value=str(data['public_metrics.following_count']))
         if data['location']:
             embed.add_field(name='Location', value=data['location'])
+        if data['withheld'] and data['withheld.scope'] == 'user':
+            embed.add_field(name='Banned in countries:', value=data['withheld.country_codes'])
+
         extra = []
         if data['verified']:
             extra.append('Verified')
         if data['protected']:
             extra.append('Private')
+
         if extra:
             embed.add_field(name='+', value='\n'.join(extra))
         embed.set_footer(icon_url='https://about.twitter.com/etc/designs/about-twitter/public/img/favicon-32x32.png', text='Twitter • Account created')
