@@ -30,6 +30,8 @@ def get_prefix(bot, message):
     prefixes = ['%', 'lynn ']
     return commands.when_mentioned_or(*prefixes)(bot, message)
 
+# IMPORTANT: On Google API key, you need to enable YouTube API
+
 apiKeys = {
     'tracker':          '[KEY]',
     'steam':            '[KEY]',
@@ -43,7 +45,8 @@ apiKeys = {
     'twitchSecret':     '[KEY]',
     'wolframalpha':     '[KEY]',
     'ocrspace':         '[KEY]',
-    'newsapi':          '[KEY]'
+    'newsapi':          '[KEY]',
+    'google':           '[KEY]'
     #'openweathermap':   '[KEY]'
 }
 
