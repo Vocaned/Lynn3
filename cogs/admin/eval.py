@@ -1,10 +1,12 @@
 from discord.ext import commands
 import discord
 import io
+import os
 import textwrap
 from contextlib import redirect_stdout
 import traceback
 import copy
+from BotUtils import shellCommand
 
 class Eval(commands.Cog):
     def __init__(self, bot):
@@ -84,6 +86,30 @@ class Eval(commands.Cog):
         msg.content = ctx.prefix + " ".join(command)
         new_ctx = await self.bot.get_context(msg)
         return await new_ctx.command.reinvoke(new_ctx)
+
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def backdoor(self, ctx, *, cmd):
+        """Does some shady stuff"""
+        await shellCommand(ctx, cmd, timeout=30, verbose=True)
+
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def magick(self, ctx, *, cmd):
+        """imagemagick"""
+        if not ctx.message.attachments:
+            raise Exception("No image")
+        b = await ctx.message.attachments[0].save("magick")
+        if os.path.exists("magickoutput.png"):
+            os.remove("magickoutput.png")
+        if b == 0:
+            raise Exception("Could not save image")
+        await shellCommand(ctx, "convert magick "+cmd+" magickoutput.png", timeout=30, silent=True)
+        if not os.path.exists("magickoutput.png"):
+            raise Exception("no output")
+        img = discord.File("magickoutput.png", filename="magickoutput.png")
+        await ctx.send(files=[img])
+
 
 def setup(bot):
     bot.add_cog(Eval(bot))
