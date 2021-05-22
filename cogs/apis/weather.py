@@ -53,8 +53,7 @@ class Weather(commands.Cog):
                         alerts.append(alert['title'])
         except:
             pass
-        embed.add_field(name='Weather', value=str(round(data['currently']['temperature'], 2)) + '°C (' + str(round(data['currently']['temperature'] * (9/5) + 32, 2)) + '°F)\n' \
-            + data['currently']['summary'] + '\n' \
+        embed.add_field(name=data['currently']['summary'], value=str(round(data['currently']['temperature'], 2)) + '°C (' + str(round(data['currently']['temperature'] * (9/5) + 32, 2)) + '°F)\n' \
             + 'Feels Like: ' + str(round(data['currently']['apparentTemperature'], 2)) + '°C (' + str(round(data['currently']['apparentTemperature'] * (9/5) + 32, 2)) + '°F)\n' \
             + 'Humidity: ' + str(round(data['currently']['humidity'] * 100, 2)) + '%\n' \
             + 'Clouds: ' + str(round(data['currently']['cloudCover'] * 100, 2)) + '%\n' \
