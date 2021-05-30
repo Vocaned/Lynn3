@@ -46,7 +46,7 @@ apiKeys = {
     'wolframalpha':     '[KEY]',
     'ocrspace':         '[KEY]',
     'newsapi':          '[KEY]',
-    'google':           '[KEY]'
+    'google':           '[KEY]' #youtube
     #'openweathermap':   '[KEY]'
 }
 
