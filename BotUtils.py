@@ -22,7 +22,12 @@ async def REST(url: str, method='GET', headers=None, data=None, auth=None, retur
                 returns = (returns,)
             for ret in returns:
                 if ret == 'json':
-                    temp.append(await r.json())
+                    try:
+                        j = await r.json()
+                    except aiohttp.ContentTypeError:
+                        j = None
+                    finally:
+                        temp.append(j)
                 elif ret == 'status':
                     temp.append(r.status)
                 elif ret == 'raw':

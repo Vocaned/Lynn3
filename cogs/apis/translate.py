@@ -11,7 +11,8 @@ class Translate(commands.Cog):
     async def TranslateAPI(self, ctx, *, query):
         """Translate stuff using Google Translate.
         Defaults to Auto-Detect -> English
-        use 2 letter country codes i guess lol too lazy to make this bot any good"""
+        use 2 letter country codes i guess lol too lazy to make this bot any good
+        add from:[lang] and/or to:[lang] to control the translation languages"""
 
         inlang = 'auto'
         outlang = 'en'
@@ -28,6 +29,9 @@ class Translate(commands.Cog):
 
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'}
         data = await REST(f'https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&ie=UTF-8&oe=UTF-8&sl={inlang}&tl={outlang}&q={query}', headers=headers)
+        if not data:
+            await ctx.send('Did not get a response from Google. Probably an invalid language.')
+            return
 
         fromlang = data[2]
 
