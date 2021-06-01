@@ -17,7 +17,7 @@ class Translate(commands.Cog):
         outlang = 'en'
 
         newquery = []
-        for word in query:
+        for word in query.split():
             if word.startswith('from:') and word != 'from:': # check that there's no space after from:
                 inlang = word.split(':')[1]
             elif word.startswith('to:') and word != 'to:':
