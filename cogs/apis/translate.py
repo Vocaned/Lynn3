@@ -16,11 +16,15 @@ class Translate(commands.Cog):
         inlang = 'auto'
         outlang = 'en'
 
+        newquery = []
         for word in query:
             if word.startswith('from:') and word != 'from:': # check that there's no space after from:
                 inlang = word.split(':')[1]
-            if word.startswith('to:') and word != 'to:':
+            elif word.startswith('to:') and word != 'to:':
                 outlang = word.split(':')[1]
+            else:
+                newquery.append(word)
+        query = ' '.join(newquery)
 
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'}
         data = await REST(f'https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&ie=UTF-8&oe=UTF-8&sl={inlang}&tl={outlang}&q={query}', headers=headers)
