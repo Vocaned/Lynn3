@@ -57,7 +57,7 @@ class ytdl(commands.Cog):
                             biggest = formats['filesize']
                     for formats in info['formats']:
                         if formats['filesize'] == biggest:
-                            if not formats['acodec'] or formats['acodec'] == 'none':
+                            if 'acodec' not in formats or not formats['acodec'] or formats['acodec'] == 'none':
                                 formatcode = formats['format_id'] + '+worstaudio'
                             else:
                                 formatcode = formats['format_id']
