@@ -107,9 +107,62 @@ class Eval(commands.Cog):
         await shellCommand(ctx, "convert magick "+cmd+" magickoutput.png", timeout=30, silent=True)
         if not os.path.exists("magickoutput.png"):
             raise Exception("no output")
-        img = discord.File("magickoutput.png", filename="magickoutput.png")
+        img = discord.File("magickoutput.png", filename="magick.png")
         await ctx.send(files=[img])
 
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def svg(self, ctx, width, height):
+        """inkscape"""
+        assert width.isnumeric()
+        assert height.isnumeric()
+
+        if not ctx.message.attachments:
+            raise Exception("No image")
+        b = await ctx.message.attachments[0].save("svg.svg")
+        if os.path.exists("svgoutput.png"):
+            os.remove("svgoutput.png")
+        if b == 0:
+            raise Exception("Could not save image")
+        await shellCommand(ctx, f"inkscape -z -w {width} -h {height} svg.svg -e svgoutput.png", timeout=30, silent=True)
+        if not os.path.exists("svgoutput.png"):
+            raise Exception("no output")
+        img = discord.File("svgoutput.png", filename="svg.png")
+        await ctx.send(files=[img])
+
+    @commands.command(hidden=True, aliases=["imageconvert"])
+    @commands.is_owner()
+    async def imgconvert(self, ctx, *, ff):
+        """imagemagick convert"""
+        if not ctx.message.attachments:
+            raise Exception("No image")
+        b = await ctx.message.attachments[0].save("magick")
+        if os.path.exists("magickoutput."+ff):
+            os.remove("magickoutput."+ff)
+        if b == 0:
+            raise Exception("Could not save image")
+        await shellCommand(ctx, "convert magick magickoutput." + ff, timeout=30, silent=True)
+        if not os.path.exists("magickoutput."+ff):
+            raise Exception("no output")
+        img = discord.File("magickoutput."+ff, filename="magick."+ff)
+        await ctx.send(files=[img])
+
+    @commands.command(hidden=True, aliases=["videoconvert"])
+    @commands.is_owner()
+    async def vidconvert(self, ctx, *, ff):
+        """ffmpeg convert"""
+        if not ctx.message.attachments:
+            raise Exception("No video")
+        b = await ctx.message.attachments[0].save("ffmpeg")
+        if os.path.exists("ffmpeg."+ff):
+            os.remove("ffmpeg."+ff)
+        if b == 0:
+            raise Exception("Could not save video")
+        await shellCommand(ctx, "ffmpeg -i ffmpeg -o ffmpeg." + ff, timeout=30, silent=True)
+        if not os.path.exists("ffmpeg."+ff):
+            raise Exception("no output")
+        img = discord.File("ffmpeg."+ff, filename="ffmpeg."+ff)
+        await ctx.send(files=[img])
 
 def setup(bot):
     bot.add_cog(Eval(bot))
