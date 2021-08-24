@@ -61,7 +61,7 @@ class Mixer(commands.Cog):
 
         embed.set_footer(icon_url='https://mixer.com/_latest/assets/favicons/favicon-32x32.png', text=f"LVL {data['user']['level']} • Account created ")
         embed.timestamp = datetime.strptime(data['createdAt'], '%Y-%m-%dT%H:%M:%S.%fZ')
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 def setup(bot):
     bot.add_cog(Mixer(bot))

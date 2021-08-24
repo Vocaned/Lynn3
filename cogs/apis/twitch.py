@@ -68,7 +68,7 @@ class Twitch(commands.Cog):
             embed.add_field(name='Live for', value=self.td_format(datetime.now() - datetime.fromisoformat(stream['started_at'][:-1])))
 
         embed.set_footer(icon_url='https://static.twitchcdn.net/assets/favicon-32-d6025c14e900565d6177.png', text='User ID ' + data['id'])
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 def setup(bot):
     bot.add_cog(Twitch(bot))

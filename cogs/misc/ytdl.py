@@ -75,7 +75,7 @@ class ytdl(commands.Cog):
                     # Just pray it's mp4, too lazy to fix
                     filename = info['id']+'.mp4'
                 file = discord.File(filename)
-                await ctx.send(file=file)
+                await ctx.reply(file=file)
         except FileNotFoundError:
             raise youtube_dl.DownloadError('Could not download video. It is most likely too large for discord (max 8MB)')
         except Exception as e:

@@ -29,7 +29,7 @@ class CSGO(commands.Cog):
         embed.add_field(name='Win %', value=str(round(self.getCSStat(data, 'total_matches_won') / self.getCSStat(data, 'total_matches_played') * 100, 1)) + '%')
         embed.add_field(name='Accuracy', value=str(round(self.getCSStat(data, 'total_shots_hit') / self.getCSStat(data, 'total_shots_fired') * 100, 1)) + '%')
         embed.timestamp = datetime.utcnow()
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 def setup(bot):
     bot.add_cog(CSGO(bot))

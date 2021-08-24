@@ -149,7 +149,7 @@ limit 1;'''
                 temp.append(website['url'])
             embed.add_field(name='External Links', value='\n'.join(temp[:3]))
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 def setup(bot):
     bot.add_cog(IGDB(bot))

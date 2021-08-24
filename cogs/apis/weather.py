@@ -60,7 +60,7 @@ class Weather(commands.Cog):
             + 'Wind: ' + str(data['currently']['windSpeed']) + ' m/s (' + str(round(int(data['currently']['windSpeed']) * 2.2369362920544, 2)) + ' mph)', inline=False)
         embed.set_footer(text='Powered by Dark Sky and OpenStreetMap')
         embed.timestamp = datetime.utcfromtimestamp(data['currently']['time'])
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)
 
 
 def setup(bot):

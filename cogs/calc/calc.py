@@ -330,7 +330,7 @@ class Calculator(commands.Cog):
           expr = implicit_multiplication(expr)
           expr = to_rpn(expr)
           expr = eval_rpn(expr)
-          await ctx.send('> {}'.format(expr))
+          await ctx.reply('> {}'.format(expr))
 
 def setup(bot):
     bot.add_cog(Calculator(bot))

@@ -556,7 +556,7 @@ class FlagMashup(commands.Cog):
         embed = discord.Embed(title=f'{data[0][0]} {data[1][0]} + {data[0][1]} {data[1][1]} = {data[2]}', color=int(color, 16))
         flag = discord.File('output.png')
         embed.set_image(url=f'attachment://output.png')
-        await ctx.send(file=flag, embed=embed)
+        await ctx.reply(file=flag, embed=embed)
 
 def setup(bot):
     bot.add_cog(FlagMashup(bot))

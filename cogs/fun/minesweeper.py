@@ -105,7 +105,7 @@ class Minesweeper(commands.Cog):
             output += '\n'
         embed = discord.Embed(title='Minesweeper', colour=0xFFA500)
         embed.description = output
-        await ctx.send(embed=embed, content='')
+        await ctx.reply(embed=embed, content='')
 
 def setup(bot):
 	bot.add_cog(Minesweeper(bot))
