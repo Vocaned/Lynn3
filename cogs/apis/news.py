@@ -13,7 +13,7 @@ class News(commands.Cog):
         data = await REST(f"http://newsapi.org/v2/everything?qInTitle={escapeURL(query)}&from={datetime.now().strftime('%Y-%m-%d')}&sortBy=popularity&pageSize=1&apiKey={getAPIKey('newsapi')}")
 
         if len(data['articles']) == 0:
-            await ctx.send('No articles found.')
+            await ctx.message.reply('No articles found.')
             return
         data = data['articles'][0]
         embed = discord.Embed(colour=0xf5c518)
@@ -24,7 +24,7 @@ class News(commands.Cog):
         if 'urlToImage' in data and isURL(str(data['urlToImage'])):
             embed.set_image(url=data['urlToImage'])
         embed.set_footer(text=f"{data['source']['name']} | Written by {data['author']}. Published ")
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
 def setup(bot):
     bot.add_cog(News(bot))

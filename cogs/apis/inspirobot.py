@@ -12,7 +12,7 @@ class inspirobot(commands.Cog):
         data = await REST('https://inspirobot.me/api?generate=true', returns='text')
         embed = discord.Embed(color=0x00af00)
         embed.set_image(url=data)
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
 def setup(bot):
     bot.add_cog(inspirobot(bot))

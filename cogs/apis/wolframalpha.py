@@ -17,7 +17,7 @@ class WolframAlpha(commands.Cog):
         elif res[1] != 200:
             raise commands.CommandError(data.read().decode('utf-8'))
         answer = discord.File(data, filename='wolfram.png')
-        await ctx.send(files=[answer])
+        await ctx.message.reply(files=[answer])
 
 def setup(bot):
     bot.add_cog(WolframAlpha(bot))

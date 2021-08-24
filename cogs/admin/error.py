@@ -28,9 +28,11 @@ class Error(commands.Cog):
         except:
             pass
   
+        errmsg = ''
+
         try:
             if hasattr(error, 'args'):
-                await ctx.send(f"Error: `{type(error).__name__}: {error}`")
+                errmsg = f"Error: `{type(error).__name__}: {error}`\n"
         except:
             pass
 
@@ -41,19 +43,19 @@ class Error(commands.Cog):
             else:
                 fmt = ' and '.join(missing)
             _message = 'I need the **{}** permission(s) to run this command.'.format(fmt)
-            await ctx.send(_message)
+            errmsg += _message
             return
 
         if isinstance(error, commands.NSFWChannelRequired):
-            await ctx.send('This command can only be used in NSFW channels.')
+            errmsg += 'This command can only be used in NSFW channels.'
             return
 
         if isinstance(error, commands.DisabledCommand):
-            await ctx.send('This command has been disabled in this server.')
+            errmsg += 'This command has been disabled in this server.'
             return
 
         if isinstance(error, commands.CommandOnCooldown):
-            await ctx.send('This command is on cooldown, please retry in {}s.'.format(math.ceil(error.retry_after)))
+            errmsg += 'This command is on cooldown, please retry in {}s.'.format(math.ceil(error.retry_after))
             return
 
         if isinstance(error, commands.MissingPermissions):
@@ -62,12 +64,11 @@ class Error(commands.Cog):
                 fmt = '{}, and {}'.format("**, **".join(missing[:-1]), missing[-1])
             else:
                 fmt = ' and '.join(missing)
-            _message = 'You need the **{}** permission(s) to use this command.'.format(fmt)
-            await ctx.send(_message)
+            errmsg += 'You need the **{}** permission(s) to use this command.'.format(fmt)
             return
 
         if isinstance(error, commands.UserInputError):
-            await ctx.send('Invalid input. Usage:')
+            await ctx.message.reply('Invalid input. Usage:')
             await ctx.send_help(ctx.command)
             return
 
@@ -79,24 +80,27 @@ class Error(commands.Cog):
             return
 
         if isinstance(error, commands.CheckFailure):
-            await ctx.send('You do not have permission to use this command.')
+            errmsg += 'You do not have permission to use this command.'
             return
 
         if isinstance(error, commands.ExtensionAlreadyLoaded):
-            await ctx.send('Extension already loaded.')
+            errmsg += 'Extension already loaded.'
             return
         
         if isinstance(error, commands.ExtensionNotFound):
-            await ctx.send('Extension not found.')
+            errmsg += 'Extension not found.'
             return
 
         if isinstance(error, commands.ExtensionNotLoaded):
-            await ctx.send('Extension not loaded.')
+            errmsg += 'Extension not loaded.'
             return
         
         if isinstance(error, commands.ExtensionFailed):
-            await ctx.send('Failed to load extension.')
+            errmsg += 'Failed to load extension.'
             return
+        
+        if errmsg:
+            await ctx.message.reply(errmsg)
 
 def setup(bot):
     bot.add_cog(Error(bot))

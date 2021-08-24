@@ -14,10 +14,10 @@ class Admin(commands.Cog):
         with open('error.dat', 'r') as errors:
             error = errors.read()
             if not error:
-                await ctx.send('No errors logged.')
+                await ctx.message.reply('No errors logged.')
             else:
                 for msg in splitMessage(error, highlight='py'):
-                    await ctx.send(msg)
+                    await ctx.message.reply(msg)
 
     @commands.command(hidden=True)
     @commands.is_owner()
@@ -44,7 +44,7 @@ class Admin(commands.Cog):
     @commands.is_owner()
     async def shutdown(self, ctx):
         await ctx.message.add_reaction('\N{WAVING HAND SIGN}')
-        await ctx.send('Goodbye!')
+        await ctx.message.reply('Goodbye!')
         await self.bot.close()
 
 def setup(bot):

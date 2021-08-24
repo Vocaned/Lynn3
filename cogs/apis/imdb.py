@@ -33,7 +33,7 @@ class IMDb(commands.Cog):
             for i in data['Ratings']:
                 ratings += f"**{i['Source']}** - `{i['Value']}`\n"
             embed.add_field(name='Ratings', value=ratings)
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
 def setup(bot):
     bot.add_cog(IMDb(bot))

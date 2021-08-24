@@ -18,7 +18,7 @@ class UrbanDictionary(commands.Cog):
         embed.add_field(name='Example', value='```'+data['example'].replace('\r','')+'```')
         embed.set_footer(text=str(data['thumbs_up'])+'\N{THUMBS UP SIGN}, ' + str(data['thumbs_down']) + '\N{THUMBS DOWN SIGN} | Submitted')
         embed.timestamp = datetime.strptime(data['written_on'].split('T')[0], '%Y-%m-%d')
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
 def setup(bot):
     bot.add_cog(UrbanDictionary(bot))

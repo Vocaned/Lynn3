@@ -1,4 +1,4 @@
-from discord.ext import commands
+ctx.message.replyfrom discord.ext import commands
 import glob
 
 class Modules(commands.Cog):
@@ -10,7 +10,7 @@ class Modules(commands.Cog):
         """Lists all loaded modules"""
         modulelist = list(map(lambda x: x.replace('cogs.', ''), self.bot.extensions))
         modulelist.sort()
-        await ctx.send("Loaded modules: ```" + "\n".join(modulelist) + "```")
+        await ctx.message.reply("Loaded modules: ```" + "\n".join(modulelist) + "```")
 
     @commands.command(hidden=True)
     @commands.is_owner()
@@ -20,7 +20,7 @@ class Modules(commands.Cog):
             self.bot.load_extension('cogs.'+module)
         except:
             raise commands.ExtensionNotFound(module, None)
-        await ctx.send('Loaded '+module)
+        await ctx.message.reply('Loaded '+module)
 
     @commands.command(hidden=True)
     @commands.is_owner()
@@ -30,7 +30,7 @@ class Modules(commands.Cog):
             self.bot.unload_extension('cogs.'+module)
         except:
             raise commands.ExtensionNotFound(module, None)
-        await ctx.send('Unloaded '+module)
+        await ctx.message.reply('Unloaded '+module)
 
     @commands.command(name='reload', hidden=True)
     @commands.is_owner()
@@ -46,10 +46,10 @@ class Modules(commands.Cog):
                     continue
                 self.bot.reload_extension(module)
                 n+=1
-            await ctx.send(f'Reloaded {str(n)} modules')
+            await ctx.message.reply(f'Reloaded {str(n)} modules')
         else:
             self.bot.reload_extension('cogs.'+module)
-            await ctx.send('Reloaded '+str(module))
+            await ctx.message.reply('Reloaded '+str(module))
 
 def setup(bot):
     bot.add_cog(Modules(bot))

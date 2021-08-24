@@ -33,7 +33,7 @@ class Guild(commands.Cog):
         embed.set_thumbnail(url=invite.guild.icon_url)
 
         embed.set_footer(text=f"Server ID {invite.guild.id}")
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
 def setup(bot):
     bot.add_cog(Guild(bot))

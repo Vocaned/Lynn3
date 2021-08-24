@@ -44,7 +44,7 @@ class Eval(commands.Cog):
         try:
             exec(to_compile, env)
         except Exception as e:
-            return await ctx.send(f'```py\n{e.__class__.__name__}: {e}\n```')
+            return await ctx.message.reply(f'```py\n{e.__class__.__name__}: {e}\n```')
 
         func = env['func']
         try:
@@ -52,7 +52,7 @@ class Eval(commands.Cog):
                 ret = await func()
         except Exception as e:
             value = stdout.getvalue()
-            await ctx.send(f'```py\n{value}{traceback.format_exc()}\n```')
+            await ctx.message.reply(f'```py\n{value}{traceback.format_exc()}\n```')
         else:
             value = stdout.getvalue()
             try:
@@ -62,10 +62,10 @@ class Eval(commands.Cog):
 
             if ret is None:
                 if value:
-                    await ctx.send(f'```py\n{value}\n```')
+                    await ctx.message.reply(f'```py\n{value}\n```')
             else:
                 self._last_result = ret
-                await ctx.send(f'```py\n{value}{ret}\n```')
+                await ctx.message.reply(f'```py\n{value}{ret}\n```')
 
     @commands.command(hidden=True)
     @commands.is_owner()
@@ -108,7 +108,7 @@ class Eval(commands.Cog):
         if not os.path.exists("magickoutput.png"):
             raise Exception("no output")
         img = discord.File("magickoutput.png", filename="magick.png")
-        await ctx.send(files=[img])
+        await ctx.message.reply(files=[img])
 
     @commands.command(hidden=True)
     @commands.is_owner()
@@ -128,7 +128,7 @@ class Eval(commands.Cog):
         if not os.path.exists("svgoutput.png"):
             raise Exception("no output")
         img = discord.File("svgoutput.png", filename="svg.png")
-        await ctx.send(files=[img])
+        await ctx.message.reply(files=[img])
 
     @commands.command(hidden=True, aliases=["imageconvert"])
     @commands.is_owner()
@@ -145,7 +145,7 @@ class Eval(commands.Cog):
         if not os.path.exists("magickoutput."+ff):
             raise Exception("no output")
         img = discord.File("magickoutput."+ff, filename="magick."+ff)
-        await ctx.send(files=[img])
+        await ctx.message.reply(files=[img])
 
     @commands.command(hidden=True, aliases=["videoconvert"])
     @commands.is_owner()
@@ -162,7 +162,7 @@ class Eval(commands.Cog):
         if not os.path.exists("ffmpeg."+ff):
             raise Exception("no output")
         img = discord.File("ffmpeg."+ff, filename="ffmpeg."+ff)
-        await ctx.send(files=[img])
+        await ctx.message.reply(files=[img])
 
 def setup(bot):
     bot.add_cog(Eval(bot))

@@ -12,7 +12,7 @@ class Statuspage(commands.Cog):
     async def StatusAPI(self, ctx, *, name=None):
         """Gets information about status pages. Run without arguments to see supported pages"""
         if not name:
-            await ctx.send('```Currently supported pages:\n' + '\n'.join([n.title() for n,u,c in statusPages]) + '```')
+            await ctx.message.reply('```Currently supported pages:\n' + '\n'.join([n.title() for n,u,c in statusPages]) + '```')
             return
         for page in statusPages:
             if name.lower() == page[0]:
@@ -38,7 +38,7 @@ class Statuspage(commands.Cog):
                         embed.add_field(name=m['metrics'][0]['metric']['name'], value=last)
                 embed.timestamp = datetime.utcnow()
 
-                await ctx.send(embed=embed)
+                await ctx.message.reply(embed=embed)
 
                 for incident in j['incidents']:
                     if incident['status'] == 'resolved' or incident['status'] == 'completed':

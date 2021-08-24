@@ -43,54 +43,54 @@ class Crypto(commands.Cog):
     @btc.command(name='price')
     async def btcprice(self, ctx, amount=1, currency='USD'):
         value = await self.price(ctx.command.parent.name, currency)
-        await ctx.send(f'**{amount} BTC = {"{:,}".format(value*amount)} {currency.upper()}**')
+        await ctx.message.reply(f'**{amount} BTC = {"{:,}".format(value*amount)} {currency.upper()}**')
 
     @eth.command(name='price')
     async def ethprice(self, ctx, amount=1, currency='USD'):
         value = await self.price(ctx.command.parent.name, currency)
-        await ctx.send(f'**{amount} ETH = {"{:,}".format(value*amount)} {currency.upper()}**')
+        await ctx.message.reply(f'**{amount} ETH = {"{:,}".format(value*amount)} {currency.upper()}**')
 
     @ltc.command(name='price')
     async def ltcprice(self, ctx, amount=1, currency='USD'):
         value = await self.price(ctx.command.parent.name, currency)
-        await ctx.send(f'**{amount} LTC = {"{:,}".format(value*amount)} {currency.upper()}**')
+        await ctx.message.reply(f'**{amount} LTC = {"{:,}".format(value*amount)} {currency.upper()}**')
 
     @doge.command(name='price')
     async def dogeprice(self, ctx, amount=1, currency='USD'):
         value = await self.price(ctx.command.parent.name, currency)
-        await ctx.send(f'**{amount} DOGE = {"{:,}".format(value*amount)} {currency.upper()}**')
+        await ctx.message.reply(f'**{amount} DOGE = {"{:,}".format(value*amount)} {currency.upper()}**')
 
     @dash.command(name='price')
     async def dashprice(self, ctx, amount=1, currency='USD'):
         value = await self.price(ctx.command.parent.name, currency)
-        await ctx.send(f'**{amount} DASH = {"{:,}".format(value*amount)} {currency.upper()}**')
+        await ctx.message.reply(f'**{amount} DASH = {"{:,}".format(value*amount)} {currency.upper()}**')
     #endregion
 
     #region Wallet
     @btc.command(name='balance', aliases=['wallet', 'address'])
     async def btcbalance(self, ctx, address, currency='USD'):
         embed = await self.balance(ctx.command.parent.description, ctx.command.parent.name, address, currency)
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
     @eth.command(name='balance', aliases=['wallet', 'address'])
     async def ethbalance(self, ctx, address, currency='USD'):
         embed = await self.balance(ctx.command.parent.description, ctx.command.parent.name, address, currency)
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
     @ltc.command(name='balance', aliases=['wallet', 'address'])
     async def ltcbalance(self, ctx, address, currency='USD'):
         embed = await self.balance(ctx.command.parent.description, ctx.command.parent.name, address, currency)
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
     @doge.command(name='balance', aliases=['wallet', 'address'])
     async def dogebalance(self, ctx, address, currency='USD'):
         embed = await self.balance(ctx.command.parent.description, ctx.command.parent.name, address, currency)
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
     @dash.command(name='balance', aliases=['wallet', 'address'])
     async def dashbalance(self, ctx, address, currency='USD'):
         embed = await self.balance(ctx.command.parent.description, ctx.command.parent.name, address, currency)
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
     #endregion
 
     async def price(self, symbol, currency):

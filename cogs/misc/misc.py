@@ -32,7 +32,7 @@ class Misc(commands.Cog):
         b = int(hexcol[4:6], 16)
         bp = round(int(hexcol[4:6], 16) / 2.55, 2)
         embed.description = f'**Red** = **{str(r)}** (**{str(rp)}%**)\n**Green** = **{str(g)}** (**{str(gp)}%**)\n**Blue** = **{str(b)}** (**{str(bp)}%**)'
-        await ctx.send(embed=embed, content='')
+        await ctx.message.reply(embed=embed, content='')
 
     @commands.command(aliases=['id'])
     async def snowflake(self, ctx, *, snowflake):
@@ -44,13 +44,13 @@ class Misc(commands.Cog):
                                 **Internal worker ID**: {str((snowflake & 0x3E0000) >> 17)}
                                 **Internal process ID**: {str((snowflake & 0x1F000) >> 12)}
                                 **Increment**: {str(snowflake & 0xFFF)}'''
-        await ctx.send(embed=embed, content='')
+        await ctx.message.reply(embed=embed, content='')
 
     @commands.command()
     async def whois(self, ctx, *, domain):
         """Whois"""
         if not sys.platform.startswith('linux'):
-            await ctx.send("This command is only usable when the bot is hosten on linux. Sorry!")
+            await ctx.message.reply("This command is only usable when the bot is hosten on linux. Sorry!")
             return
         await shellCommand(ctx, ['whois', domain], realtime=False)
 
@@ -63,7 +63,7 @@ class Misc(commands.Cog):
         if not sys.platform.startswith('linux'):
             embed = discord.Embed(title='Pong!', colour=0xfffdd0)
             embed.description = f'{str(round(self.bot.latency*1000, 2))}ms'
-            await ctx.send(embed=embed, content='')
+            await ctx.message.reply(embed=embed, content='')
             return
         hostname = self.getOutput(['hostname'])
         uname = self.getOutput(['uname', '-a'])
@@ -80,7 +80,7 @@ class Misc(commands.Cog):
         embed.add_field(name='Temperature', value=f"🔥 {temperature}")
         embed.add_field(name="Memory", value=f"💾 {ram}", inline=False)
         embed.add_field(name='CPU', value=f"🎚️ {cpu}", inline=True)
-        await ctx.send(embed=embed)
+        await ctx.message.reply(embed=embed)
 
 
 def setup(bot):

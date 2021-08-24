@@ -17,12 +17,12 @@ class db(commands.Cog):
         if not location:
             loc = await database.getValue('users', ctx.author.id, 'location')
             if not loc:
-                await ctx.send('No location set.')
+                await ctx.message.reply('No location set.')
             else:
-                await ctx.send(f'your current location is "{loc}"')
+                await ctx.message.reply(f'your current location is "{loc}"')
         else:
             loc = await database.setUser(ctx.author.id, 'location', location)
-            await ctx.send('Location set.')
+            await ctx.message.reply('Location set.')
 
 def setup(bot):
     bot.add_cog(db(bot))
