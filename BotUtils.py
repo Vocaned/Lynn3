@@ -104,7 +104,7 @@ async def shellCommand(ctx: commands.Context, command: typing.Union[str, tuple, 
 
     curmsg = ['⏳']
     if not silent:
-        message = await ctx.send(codeBlockWrapper('\n'.join(curmsg), 'sh'))
+        message = await ctx.message.reply(codeBlockWrapper('\n'.join(curmsg), 'sh'))
 
     curmsg = []
 
