@@ -30,7 +30,7 @@ class osu(commands.Cog):
                                                   + '\n**#' + data['pp_country_rank'] + '** in ' + data['country'])
         embed.set_footer(text='Account created', icon_url='https://osu.ppy.sh/favicon-32x32.png')
         embed.timestamp = datetime.strptime(data['join_date'], '%Y-%m-%d %H:%M:%S')
-        await ctx.message.reply(embed=embed)
+        await ctx.reply(embed=embed)
 
 def setup(bot):
     bot.add_cog(osu(bot))

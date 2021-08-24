@@ -17,7 +17,7 @@ class Reminders(commands.Cog):
 
         date = search_dates(' '.join(message), settings={"TIMEZONE": "UTC"})
         if not date:
-            await ctx.message.reply('No date or time found in your message')
+            await ctx.reply('No date or time found in your message')
             return
         elif len(date) > 1:
             await ctx.send(f'Multiple dates found in your message. Using the first one ("{date[0][0]}")')
@@ -27,7 +27,7 @@ class Reminders(commands.Cog):
         
         embed = discord.Embed(title='Reminder', colour=0x8630bf)
         embed.description = ' '.join(message)
-        await ctx.message.reply(embed=embed, content=ctx.author.mention)
+        await ctx.reply(embed=embed, content=ctx.author.mention)
 
 def setup(bot):
     bot.add_cog(Reminders(bot))

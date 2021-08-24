@@ -21,36 +21,36 @@ class Random(commands.Cog):
             f = int(args.split('d')[1])
 
         if n == 0:
-            await ctx.message.reply('You roll 0 dice. Nothing happens.')
+            await ctx.reply('You roll 0 dice. Nothing happens.')
             return
         if f == 0:
-            await ctx.message.reply(f"You roll {n} {'dice' if n > 1 else 'die'} with 0 faces. The world implodes as your zero-dimensional {'dice' if n > 1 else 'die'} hit the table.")
+            await ctx.reply(f"You roll {n} {'dice' if n > 1 else 'die'} with 0 faces. The world implodes as your zero-dimensional {'dice' if n > 1 else 'die'} hit the table.")
             return
         
         if f < 0:
-            await ctx.message.reply(f"You try to roll {n} {'dice' if n > 1 else 'die'} with negative faces, but you realize that you're all out of negative-dimensional dice.")
+            await ctx.reply(f"You try to roll {n} {'dice' if n > 1 else 'die'} with negative faces, but you realize that you're all out of negative-dimensional dice.")
             return
         if n < 0:
             roll = random.randint(abs(n), abs(n)*f)
-            await ctx.message.reply(f"You roll negative {n} dice. The dice jump from the table back into your hand. You rolled **{roll}**!")
+            await ctx.reply(f"You roll negative {n} dice. The dice jump from the table back into your hand. You rolled **{roll}**!")
             return
 
         roll = random.randint(n, n*f)
-        await ctx.message.reply(f"You roll {n} {'dice' if n > 1 else 'die'} with {f} face{'s' if f > 1 else ''}. You rolled **{roll}**!")
+        await ctx.reply(f"You roll {n} {'dice' if n > 1 else 'die'} with {f} face{'s' if f > 1 else ''}. You rolled **{roll}**!")
 
     @commands.command(name='coinflip', aliases=['coin', 'flip'])
     async def coinflip(self, ctx):
         """Flips a coin"""
         flip = random.randint(1, 6001)
         if flip == 0:
-            await ctx.message.reply('You flip a coin. It lands on its edge!')
+            await ctx.reply('You flip a coin. It lands on its edge!')
         else:
-            await ctx.message.reply(f"You flip a coin. It lands on **{'heads' if flip < 3000 else 'tails'}**.")
+            await ctx.reply(f"You flip a coin. It lands on **{'heads' if flip < 3000 else 'tails'}**.")
 
     @commands.command(name='choose', aliases=['pick', 'select'])
     async def choose(self, ctx, *, choises):
         """Enter a list of things (seperated with a comma) and the bot will pick one at random"""
-        await ctx.message.reply(f"Picked **{random.choice(choises.split(',')).strip()}**.")
+        await ctx.reply(f"Picked **{random.choice(choises.split(',')).strip()}**.")
 
 def setup(bot):
     bot.add_cog(Random(bot))

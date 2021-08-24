@@ -10,7 +10,7 @@ class Data(commands.Cog):
         self.bot = bot
 
     async def send(self, ctx, string: bytes) -> str:
-        await ctx.message.reply(ctx.author.mention + '```' + string.decode('utf-8', 'ignore').replace('```', '`\U00002063``') + '```')
+        await ctx.reply(ctx.author.mention + '```' + string.decode('utf-8', 'ignore').replace('```', '`\U00002063``') + '```')
 
     # BASE
     @commands.group(name='decode')
@@ -30,7 +30,7 @@ class Data(commands.Cog):
         try:
             await self.send(ctx, base64.b64decode(val.encode()))
         except binascii.Error:
-            await ctx.message.reply('Could not parse base64')
+            await ctx.reply('Could not parse base64')
 
     @encode.command(name='base64', aliases=['b64'])
     async def ebase64(self, ctx, *, val):
@@ -42,7 +42,7 @@ class Data(commands.Cog):
         try:
             await self.send(ctx, bytes.fromhex(val))
         except:
-            await ctx.message.reply('Could not parse hex')
+            await ctx.reply('Could not parse hex')
         
     @encode.command(name='hex', aliases=['base8', 'hexadecimal'])
     async def ehex(self, ctx, *, val):
@@ -55,7 +55,7 @@ class Data(commands.Cog):
             n = int(val.replace(' ', ''), 2)
             await self.send(ctx, n.to_bytes((n.bit_length() + 7) // 8, 'big').decode())
         except (ValueError, binascii.Error):
-            await ctx.message.reply('Could not parse binary')
+            await ctx.reply('Could not parse binary')
 
     @encode.command(name='binary', aliases=['base2', 'bin'])
     async def ebin(self, ctx, *, val):

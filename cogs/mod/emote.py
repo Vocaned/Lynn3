@@ -33,7 +33,7 @@ class Emote(commands.Cog):
                 name = '_'.join(args.split(' ')[0].split('.')[:-1])
         
         ret = await ctx.guild.create_custom_emoji(name=name, image=emoji)
-        await ctx.message.reply(f'Emote {ret} created successfully')
+        await ctx.reply(f'Emote {ret} created successfully')
 
 def setup(bot):
     bot.add_cog(Emote(bot))

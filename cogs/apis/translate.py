@@ -30,7 +30,7 @@ class Translate(commands.Cog):
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'}
         data = await REST(f'https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&ie=UTF-8&oe=UTF-8&sl={inlang}&tl={outlang}&q={query}', headers=headers)
         if not data:
-            await ctx.message.reply('Did not get a response from Google. Probably an invalid language.')
+            await ctx.reply('Did not get a response from Google. Probably an invalid language.')
             return
 
         fromlang = data[2]
@@ -39,7 +39,7 @@ class Translate(commands.Cog):
         if data[6] and data[6] != 1:
             confidence = f'(confidence: {round(data[6]*100)}%)'
 
-        await ctx.message.reply(f'{fromlang} -> {outlang}: {data[0][0][0]} {confidence}')
+        await ctx.reply(f'{fromlang} -> {outlang}: {data[0][0][0]} {confidence}')
 
 
 def setup(bot):

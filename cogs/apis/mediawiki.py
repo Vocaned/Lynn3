@@ -16,9 +16,9 @@ class Mediawiki(commands.Cog):
             # Check if user is just stupid and can't spell properly
             if not search['query']['search']:
                 if 'suggestionsnippet' in search['query']['searchinfo']:
-                    await ctx.message.reply('No results found. Did you mean: {}?'.format(search['query']['searchinfo']['suggestionsnippet'].replace('<em>', '__').replace('</em>', '__')))
+                    await ctx.reply('No results found. Did you mean: {}?'.format(search['query']['searchinfo']['suggestionsnippet'].replace('<em>', '__').replace('</em>', '__')))
                 else:
-                    await ctx.message.reply('No results found.')
+                    await ctx.reply('No results found.')
                 return
 
         pageID = search['query']['search'][0]['pageid']
@@ -79,7 +79,7 @@ class Mediawiki(commands.Cog):
                         embed.add_field(name=m[i].group(3), value=val.strip()[:1024], inline=False)
                         totalchars += len(val)+len(m[i].group(3))
 
-        await ctx.message.reply(embed=embed)
+        await ctx.reply(embed=embed)
 
     @commands.command(name='wiki', aliases=['wikipedia'])
     async def wiki(self, ctx, *, query):

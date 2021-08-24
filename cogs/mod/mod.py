@@ -32,9 +32,9 @@ class Mod(commands.Cog):
         try:
             await ctx.guild.ban(discord.Object(id=uId), reason=f'Hackbanned by {ctx.author.name}')
         except discord.Forbidden:
-            await ctx.message.reply(f'Could not hackban {uId}')
+            await ctx.reply(f'Could not hackban {uId}')
         else:
-            await ctx.message.reply(f'{uId} was hackbanned.')
+            await ctx.reply(f'{uId} was hackbanned.')
 
     @commands.command(name='ban')
     @commands.has_permissions(ban_members=True)
@@ -45,9 +45,9 @@ class Mod(commands.Cog):
         try:
             await ctx.guild.ban(user, reason=f'Banned by {ctx.author.name}')
         except discord.Forbidden:
-            await ctx.message.reply(f'Could not ban {user.name}')
+            await ctx.reply(f'Could not ban {user.name}')
         else:
-            await ctx.message.reply(f'{user.name} was banned.')
+            await ctx.reply(f'{user.name} was banned.')
 
     @commands.command(name='unban')
     @commands.has_permissions(ban_members=True)
@@ -58,9 +58,9 @@ class Mod(commands.Cog):
         try:
             await ctx.guild.unban(user.user, reason=f'Unbanned by {ctx.author.name}')
         except discord.Forbidden:
-            await ctx.message.reply(f'Could not unban {user.user.name}')
+            await ctx.reply(f'Could not unban {user.user.name}')
         else:
-            await ctx.message.reply(f'{user.user.name} was unbanned.')
+            await ctx.reply(f'{user.user.name} was unbanned.')
 
     @commands.command(name='kick')
     @commands.has_permissions(kick_members=True)
@@ -71,9 +71,9 @@ class Mod(commands.Cog):
         try:
             await ctx.guild.kick(user, reason=f'Kicked by {ctx.author.name}')
         except discord.Forbidden:
-            await ctx.message.reply(f'Could not kick {user.name}')
+            await ctx.reply(f'Could not kick {user.name}')
         else:
-            await ctx.message.reply(f'{user.name} was kicked.')
+            await ctx.reply(f'{user.name} was kicked.')
 
     @commands.command(name='nick', aliases=['nickname'])
     @commands.has_permissions(manage_nicknames=True)
@@ -84,9 +84,9 @@ class Mod(commands.Cog):
         try:
             await user.edit(nick=nick)
         except discord.Forbidden:
-            await ctx.message.reply(f'Could not change {user.name}\'s nickname')
+            await ctx.reply(f'Could not change {user.name}\'s nickname')
         else:
-            await ctx.message.reply(f'{user.name}\'s nickname was changed to `{nick}`')
+            await ctx.reply(f'{user.name}\'s nickname was changed to `{nick}`')
 
     @commands.command(name='role')
     @commands.has_permissions(manage_roles=True)
@@ -98,16 +98,16 @@ class Mod(commands.Cog):
             try:
                 await user.remove_roles(role)
             except discord.Forbidden:
-                await ctx.message.reply(f'Could not remove {user.name}\'s role')
+                await ctx.reply(f'Could not remove {user.name}\'s role')
             else:
-                await ctx.message.reply(f'{user.name}\'s {role.name} role was removed')
+                await ctx.reply(f'{user.name}\'s {role.name} role was removed')
         else:
             try:
                 await user.add_roles(role)
             except discord.Forbidden:
-                await ctx.message.reply(f'Could not add a role to {user.name}')
+                await ctx.reply(f'Could not add a role to {user.name}')
             else:
-                await ctx.message.reply(f'{user.name} was given the role {role.name}')
+                await ctx.reply(f'{user.name} was given the role {role.name}')
 
     @commands.command(name='createinvite', aliases=['makeinv'])
     @commands.has_permissions(create_instant_invite=True)
@@ -117,7 +117,7 @@ class Mod(commands.Cog):
         inv = await ctx.channel.create_invite(max_age=duration_minutes*60, max_uses=limit)
         info = f'''Invite lasts for `{(str(inv.max_age // 60) if inv.max_age else '∞')}` minutes.
 Invite can be used `{(str(inv.max_uses) if inv.max_uses else '∞')}` times.'''
-        await ctx.message.reply(f'Invite created: https://discord.gg/{inv.code}\n{info}')
+        await ctx.reply(f'Invite created: https://discord.gg/{inv.code}\n{info}')
 
     @commands.command(name='purge', aliases=['prune'])
     @commands.has_permissions(manage_messages=True)
@@ -129,7 +129,7 @@ Invite can be used `{(str(inv.max_uses) if inv.max_uses else '∞')}` times.'''
             raise commands.CommandError(message='Invalid amount')
         await ctx.message.delete()
         await ctx.message.channel.purge(limit=amount)
-        await ctx.message.reply(f'Successfully deleted **{int(amount)}** messages', delete_after=5)
+        await ctx.reply(f'Successfully deleted **{int(amount)}** messages', delete_after=5)
 
 
 

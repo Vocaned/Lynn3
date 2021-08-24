@@ -10,7 +10,7 @@ class QR(commands.Cog):
     async def QR(self, ctx, *, text):
         embed = discord.Embed()
         embed.set_thumbnail(url=f'https://chart.googleapis.com/chart?cht=qr&choe=UTF-8&chs=512x512&chl={escapeURL(text)}')
-        await ctx.message.reply(embed=embed)
+        await ctx.reply(embed=embed)
 
 def setup(bot):
     bot.add_cog(QR(bot))

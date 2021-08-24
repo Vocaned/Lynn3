@@ -186,7 +186,7 @@ class Minecraft(commands.Cog):
             OF.set_author(name=user, icon_url='attachment://head.png')
             OF.set_image(url=f"http://s.optifine.net/capes/{user}.png")
             headFile3 = discord.File(f"skins/head/{skin['textures']['SKIN']['url'].split('/')[-1]}.png", filename='head.png')
-        await ctx.message.reply(files=[skinFile, headFile], embed=embed)
+        await ctx.reply(files=[skinFile, headFile], embed=embed)
         
         if cape:
             await ctx.send(file=headFile2, embed=cape)
@@ -212,7 +212,7 @@ class Minecraft(commands.Cog):
         embed2.set_footer(text='\U00002063', icon_url='https://i.imgur.com/EkLm2j8.png')
         embed2.timestamp = datetime.utcnow()
 
-        await ctx.message.reply(embed=embed)
+        await ctx.reply(embed=embed)
         await ctx.send(embed=embed2)            
 
     @minecraft.command(name='server', aliases=['servers', 'ip'])
@@ -301,7 +301,7 @@ class Minecraft(commands.Cog):
             embed.add_field(name='Forge Server', value=f"{len(response['forgeData']['mods'])} mods enabled.")
 
         embed.timestamp = datetime.utcnow()
-        await ctx.message.reply(file=favicon, embed=embed)
+        await ctx.reply(file=favicon, embed=embed)
 
     @commands.group(name='classicube', aliases=['cc'])
     async def classicube(self, ctx):
@@ -359,7 +359,7 @@ class Minecraft(commands.Cog):
         embed.set_footer(text='\U00002063', icon_url='https://www.classicube.net/static/img/cc-cube-small.png')
         embed.set_image(url='attachment://skin.png')
         embed.timestamp = datetime.utcnow()
-        await ctx.message.reply(files=[file, file2], embed=embed)
+        await ctx.reply(files=[file, file2], embed=embed)
 
     @classicube.command(name='stats', aliases=['stat', 'statistics'])
     async def CCStats(self, ctx):
@@ -385,7 +385,7 @@ class Minecraft(commands.Cog):
 
         embed.set_footer(text='\U00002063', icon_url='https://www.classicube.net/static/img/cc-cube-small.png')
         embed.timestamp = datetime.utcnow()
-        await ctx.message.reply(embed=embed)
+        await ctx.reply(embed=embed)
 
     @classicube.command(name='servers', aliases=['server'])
     async def CCServers(self, ctx):

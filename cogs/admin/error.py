@@ -68,7 +68,7 @@ class Error(commands.Cog):
             return
 
         if isinstance(error, commands.UserInputError):
-            await ctx.message.reply('Invalid input. Usage:')
+            await ctx.reply('Invalid input. Usage:')
             await ctx.send_help(ctx.command)
             return
 
@@ -100,7 +100,7 @@ class Error(commands.Cog):
             return
         
         if errmsg:
-            await ctx.message.reply(errmsg)
+            await ctx.reply(errmsg)
 
 def setup(bot):
     bot.add_cog(Error(bot))

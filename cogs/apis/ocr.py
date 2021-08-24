@@ -46,7 +46,7 @@ class OCR(commands.Cog):
     @commands.command(name='ocrlangs', aliases=['ocrlanguages'])
     async def ocrlangs(self, ctx):
         """Shows supported ocr languages"""
-        await ctx.message.reply('```'+'\n'.join(self.langs.keys())+'```')
+        await ctx.reply('```'+'\n'.join(self.langs.keys())+'```')
 
     @commands.command(name='ocr')
     async def OCRSPACE(self, ctx, *, args=None):
@@ -104,9 +104,9 @@ class OCR(commands.Cog):
         data = await REST('https://api.ocr.space/parse/image', method='POST', headers={'apikey': getAPIKey('ocrspace')}, data={'url': link, 'language': lang, 'OCREngine': engine})
 
         if data['OCRExitCode'] != 1:
-            await ctx.message.reply(f"`{data['ErrorMessage']}`")
+            await ctx.reply(f"`{data['ErrorMessage']}`")
         else:
-            await ctx.message.reply(f"```{data['ParsedResults'][0]['ParsedText']} ```")
+            await ctx.reply(f"```{data['ParsedResults'][0]['ParsedText']} ```")
 
     @commands.command(name='ocr2')
     async def OCRSPACE2(self, ctx, *, args=None):

@@ -43,7 +43,7 @@ class Twitter(commands.Cog):
             embed.add_field(name='+', value='\n'.join(extra))
         embed.set_footer(icon_url='https://about.twitter.com/etc/designs/about-twitter/public/img/favicon-32x32.png', text='Twitter • Account created')
         embed.timestamp = datetime.strptime(data['created_at'], '%a %b %d %H:%M:%S %z %Y')
-        await ctx.message.reply(embed=embed)
+        await ctx.reply(embed=embed)
 
 def setup(bot):
     bot.add_cog(Twitter(bot))

@@ -18,7 +18,7 @@ class Screenshot(commands.Cog):
                 with open("website.png", "wb") as f:
                     f.write(await r.read())
         shot = discord.File("website.png", filename="website.png")
-        await ctx.message.reply(files=[shot])
+        await ctx.reply(files=[shot])
 
 def setup(bot):
     bot.add_cog(Screenshot(bot))
