@@ -67,9 +67,9 @@ class Snipe(commands.Cog):
         self.lastmsgs = valid
 
         if len(embed.fields) == 0:
-            await ctx.send('No messages to snipe')
+            await ctx.reply('No messages to snipe')
         else:
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed)
 
     @commands.Cog.listener()
     @commands.guild_only()
