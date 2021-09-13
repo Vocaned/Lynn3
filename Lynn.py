@@ -30,4 +30,4 @@ if __name__ == '__main__':
             async with ctx.channel.typing():
                 await bot.invoke(ctx)
 
-    bot.run(config.token, bot=True, reconnect=True)
+    bot.run(config.token, reconnect=True)

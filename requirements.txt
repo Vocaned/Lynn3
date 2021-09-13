@@ -3,3 +3,6 @@ discord.py>=1.4.0
 Pillow>=6.2.0
 psycopg2>=2.8.5
 dateparser>=0.7.6
+emoji>=1.4.2
+youtube-dl>=2021.6.6
+beautifulsoup4>=4.10.0
