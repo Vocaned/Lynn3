@@ -57,7 +57,7 @@ class Random(commands.Cog):
     @commands.command(name='perchance')
     async def perchance(self, ctx, *, generator):
         """Output from a generator on https://perchance.org/"""
-        await ctx.reply(await REST(f'{perchanceInstance}/api?list=output&generator={generator}'))
+        await ctx.reply(await REST(f'{perchanceInstance}/api?list=output&generator={generator}', returns='text'))
 
 def setup(bot):
     bot.add_cog(Random(bot))
