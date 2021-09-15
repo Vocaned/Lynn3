@@ -187,7 +187,7 @@ class Mediawiki(commands.Cog):
         await self.mediawiki(ctx, query, url+'/api.php', url, full)
 
 
-    # TODO: Bulbapedia doesn't return pageIDs in searches
+    # TODO: Bulbapedia, wikifur doesn't return pageIDs in searches
 
 def setup(bot):
     bot.add_cog(Mediawiki(bot))
