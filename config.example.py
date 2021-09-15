@@ -64,3 +64,6 @@ statusPages = [
     ('epicgames', 'https://status.epicgames.com', None),
     ('glitch', 'https://status.glitch.com', ('2hfs13clgy2x', 'lz9n5qdj9h67', '4kppgbgy1vg6', 'yfyd7k8t6c2t', 'f9m2jkbys0lt', '8hhlmmyf9fqw'))
 ]
+
+# https://perchance.org/diy-perchance-api
+perchanceInstance = 'https://stellar-noon-dogwood.glitch.me'

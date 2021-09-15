@@ -1,6 +1,8 @@
 import discord
 import random
 from discord.ext import commands
+from BotUtils import REST
+from config import perchanceInstance
 
 class Random(commands.Cog):
     '''Random'''
@@ -51,6 +53,11 @@ class Random(commands.Cog):
     async def choose(self, ctx, *, choises):
         """Enter a list of things (seperated with a comma) and the bot will pick one at random"""
         await ctx.reply(f"Picked **{random.choice(choises.split(',')).strip()}**.")
+
+    @commands.command(name='perchance')
+    async def perchance(self, ctx, *, generator):
+        """Output from a generator on https://perchance.org/"""
+        await ctx.reply(await REST(f'{perchanceInstance}/api?list=output&generator={generator}'))
 
 def setup(bot):
     bot.add_cog(Random(bot))
