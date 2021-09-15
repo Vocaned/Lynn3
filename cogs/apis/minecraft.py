@@ -134,7 +134,6 @@ class Minecraft(commands.Cog):
     @minecraft.command(name='player', aliases=['players', 'user', 'username'])
     async def minecraftAPI(self, ctx, *, user):
         """Searches minecraft players."""
-        embeds = []
         uuid = await self.getMinecraftUUID(user)
         if not uuid:
             raise commands.BadArgument(message='User not found')
@@ -170,30 +169,29 @@ class Minecraft(commands.Cog):
         embed.set_footer(text='\U00002063', icon_url='https://minecraft.net/favicon-96x96.png')
         embed.set_image(url='attachment://skin.png')
         embed.timestamp = datetime.utcnow()
-        embeds.append(embed)
         
-        headFile2 = discord.File(f"skins/head/{skin['textures']['SKIN']['url'].split('/')[-1]}.png", filename='head.png')
         # Minecraft Cape
-        cape = None
+        cape = False
         if 'CAPE' in skin['textures']:
             cape = discord.Embed(title='Minecraft Cape', colour=0x82540f)
             cape.set_author(name=user, icon_url='attachment://head.png')
             cape.set_image(url=skin['textures']['CAPE']['url'])
-            embeds.append(cape)
+            headFile2 = discord.File(f"skins/head/{skin['textures']['SKIN']['url'].split('/')[-1]}.png", filename='head.png')
         
         # Optifine Cape
-        OF = None
+        OF = False
         OFCape = await REST(f"http://s.optifine.net/capes/{user}.png", returns='status')
         if OFCape == 200:
             OF = discord.Embed(title='Optifine Cape', colour=0x82540f)
             OF.set_author(name=user, icon_url='attachment://head.png')
             OF.set_image(url=f"http://s.optifine.net/capes/{user}.png")
-            embeds.append(OF)
-
-        files = [skinFile, headFile]
-        if cape or OF:
-            files.append(headFile2)
-        await ctx.reply(files=files, embeds=embeds)
+            headFile3 = discord.File(f"skins/head/{skin['textures']['SKIN']['url'].split('/')[-1]}.png", filename='head.png')
+        await ctx.reply(files=[skinFile, headFile], embed=embed)
+        
+        if cape:
+            await ctx.send(file=headFile2, embed=cape)
+        if OF:
+            await ctx.send(file=headFile3, embed=OF)
 
     @minecraft.command(name='sales', aliases=['sale', 'stat', 'stats', 'statistics'])
     async def MCStats(self, ctx):
@@ -214,7 +212,8 @@ class Minecraft(commands.Cog):
         embed2.set_footer(text='\U00002063', icon_url='https://i.imgur.com/EkLm2j8.png')
         embed2.timestamp = datetime.utcnow()
 
-        await ctx.reply(embeds=[embed, embed2])            
+        await ctx.reply(embed=embed)
+        await ctx.send(embed=embed2)            
 
     @minecraft.command(name='server', aliases=['servers', 'ip'])
     async def mcServer(self, ctx, *, ip):
