@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-import youtube_dl
+import yt_dlp
 from typing import Union
 import os
 '''ytdl'''
@@ -43,7 +43,7 @@ class ytdl(commands.Cog):
         try:
             formatcode = None
             filename = None
-            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(videolink, download=False)
                 if 'is_live' in info and info['is_live']:
                     raise commands.BadArgument('Cannot download a livestream')
@@ -65,7 +65,7 @@ class ytdl(commands.Cog):
             if formatcode:
                 ydl_opts['format'] = formatcode
 
-            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(videolink)
                 if options == 'audio_only':
                     filename = info['id']+'.mp3'
@@ -77,7 +77,7 @@ class ytdl(commands.Cog):
                 file = discord.File(filename)
                 await ctx.reply(file=file)
         except FileNotFoundError:
-            raise youtube_dl.DownloadError('Could not download video. It is most likely too large for discord (max 8MB)')
+            raise yt_dlp.DownloadError('Could not download video. It is most likely too large for discord (max 8MB)')
         except Exception as e:
             raise e
         finally:
