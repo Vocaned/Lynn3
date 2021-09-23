@@ -30,7 +30,7 @@ class Snipe(commands.Cog):
 
         self.lastmsgs[message.guild.id].append((type, message, datetime.datetime.now()))
 
-    @commands.command(name='snipe')
+    @commands.command(name='snipe', aliases=['snijp'])
     async def snipe(self, ctx):
         embed = discord.Embed(title="Edits or deletes in the last 30 second")
         embed.set_footer(text=f'Sniped by {ctx.author.name}#{ctx.author.discriminator}')
