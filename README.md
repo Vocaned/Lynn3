@@ -1,3 +1,7 @@
+# ABANDONED
+
+Rewriting in [Fam0r/Lynn4](https://github.com/Fam0r/Lynn4). No patches will be done to this repo.
+
 # Lynn3
 
 General purpose discord bot, mostly used for connecting to other APIs around the internet.
